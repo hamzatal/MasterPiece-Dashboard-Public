@@ -66,7 +66,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/orders/export', [OrderController::class, 'export'])->name('orders.export');
         Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
         Route::get('/orders/export', [OrderController::class, 'exportOrders'])->name('orders.export');
-
+        Route::get('/orders/filter', [OrderController::class, 'filterOrders']);
     });
 });
 

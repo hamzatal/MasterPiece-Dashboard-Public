@@ -12,25 +12,25 @@
     </x-slot>
 
     <div class="py-12">
-    <div class="max-w-7xl sm:px-6 lg:px-8 mr-auto">
-    <!-- Order Management Buttons -->
-    <div class="mb-6 flex justify-end gap-4">
-            <a href="{{ route('orders.create') }}"
-               class="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all shadow-sm hover:shadow-md">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                </svg>
-                Create Order
-            </a>
+        <div class="max-w-7xl sm:px-6 lg:px-8 mr-auto">
+            <!-- Order Management Buttons -->
+            <div class="mb-6 flex justify-end gap-4">
+                <a href="{{ route('orders.create') }}"
+                    class="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all shadow-sm hover:shadow-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Create Order
+                </a>
 
-            <a href="{{ route('orders.export') }}"
-               class="inline-flex items-center px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-all shadow-sm hover:shadow-md">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                </svg>
-                Export Orders
-            </a>
-        </div>
+                <a href="{{ route('orders.export') }}"
+                    class="inline-flex items-center px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-all shadow-sm hover:shadow-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    Export Orders
+                </a>
+            </div>
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
                     <div class="flex items-center">
@@ -68,7 +68,7 @@
                             </svg>
                         </div>
                         <div class="ml-4">
-                            <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Pending Orders</h3>
+                            <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Pend-Process Orders</h3>
                             <p class="text-lg font-semibold text-gray-900 dark:text-gray-200">{{ $statistics['pendingOrders'] }}</p>
                         </div>
                     </div>
@@ -89,150 +89,270 @@
                 </div>
             </div>
 
-
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
-                <div class="p-6 bg-white dark:bg-gray-800">
-                    <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
-                        <div class="relative flex-grow md:mr-4">
-                            <input type="search" id="order-search" placeholder="Search orders by ID, customer name, or status"
-                                class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute left-3 top-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
-                        </div>
-
-                        <div class="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-3">
-                            <select id="status-filter" class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
-                                <option value="">All Statuses</option>
-                                <option value="pending">Pending</option>
-                                <option value="processing">Processing</option>
-                                <option value="shipped">Shipped</option>
-                                <option value="delivered">Delivered</option>
-                                <option value="cancelled">Cancelled</option>
-                            </select>
-
-                            <select id="date-filter" class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
-                                <option value="">All Dates</option>
-                                <option value="today">Today</option>
-                                <option value="this_week">This Week</option>
-                                <option value="this_month">This Month</option>
-                                <option value="last_month">Last Month</option>
-                            </select>
+            <div class="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                <form action="{{ route('orders.index') }}" method="GET" class="space-y-6">
+                    <!-- Search Bar -->
+                    <div class="relative">
+                        <label for="search" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            Search Orders
+                        </label>
+                        <div class="relative">
+                            <input
+                                type="text"
+                                id="search"
+                                name="search"
+                                value="{{ request('search') }}"
+                                placeholder="Search by order ID, customer name, or product..."
+                                class="w-full pl-10 pr-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600
+                           rounded-lg text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-blue-500
+                           focus:border-blue-500 transition-colors duration-200 ease-in-out">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="overflow-x-auto">
-                        <table class="w-full divide-y divide-gray-200 dark:divide-gray-700">
-                            <thead class="bg-gray-50 dark:bg-gray-700">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                        Order ID
-                                    </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                        Customer
-                                    </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                        Total
-                                    </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                        Date
-                                    </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                        Status
-                                    </th>
-                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                        Actions
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody id="orders-table-body" class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                                @foreach($orders as $order)
-                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-200">
-                                        #{{ $order->id }}
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="flex items-center">
-                                            <div class="flex-shrink-0 h-10 w-10">
-                                                <div class="h-10 w-10 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center">
-                                                    <span class="text-gray-600 dark:text-gray-300 text-sm font-medium">
-                                                        {{ strtoupper(substr($order->user->name ?? 'NA', 0, 2)) }}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="ml-4">
-                                                <div class="text-sm font-medium text-gray-900 dark:text-gray-200">
-                                                {{ $order->customer ? $order->customer->name : 'No customer name available' }}
-                                                </div>
-                                                <div class="text-sm text-gray-500 dark:text-gray-400">
-                                                {{ $order->customer->email ?? 'No email available' }}
-                                                </div>
-                                            </div>
+                    <!-- Filters Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <!-- Status Filter -->
+                        <div>
+                            <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                Order Status
+                            </label>
+                            <select
+                                id="status"
+                                name="status"
+                                x-data="{ status: '{{ request('status') }}' }"
+                                x-model="status"
+                                @change="$el.form.submit()"
+                                class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg
+                           text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                           transition-colors duration-200 ease-in-out">
+                                <option value="">All Statuses</option>
+                                @foreach(['pending', 'processing', 'shipped', 'delivered', 'cancelled'] as $status)
+                                <option
+                                    value="{{ $status }}"
+                                    @selected(request('status')==$status)>
+                                    {{ ucfirst($status) }}
+                                </option>
+                                @endforeach
+                            </select>
+                        </div>
 
+                        <!-- Time Filter -->
+                        <div>
+                            <label for="time_filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                Time Period
+                            </label>
+                            <select
+                                id="time_filter"
+                                name="time_filter"
+                                x-data="{ time_filter: '{{ request('time_filter') }}' }"
+                                x-model="time_filter"
+                                @change="$el.form.submit()"
+                                class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg
+                           text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                           transition-colors duration-200 ease-in-out">
+                                <option value="">All Time</option>
+                                <option value="today" @selected(request('time_filter')=='today' )>Today</option>
+                                <option value="yesterday" @selected(request('time_filter')=='yesterday' )>Yesterday</option>
+                                <option value="this_week" @selected(request('time_filter')=='this_week' )>This Week</option>
+                                <option value="last_week" @selected(request('time_filter')=='last_week' )>Last Week</option>
+                                <option value="this_month" @selected(request('time_filter')=='this_month' )>This Month</option>
+                                <option value="last_month" @selected(request('time_filter')=='last_month' )>Last Month</option>
+                                <option value="custom" @selected(request('time_filter')=='custom' )>Custom Range</option>
+                            </select>
+                        </div>
+
+                        <!-- Quick Stats -->
+                        <div class="lg:col-span-1 md:col-span-2 lg:col-start-3">
+                            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                                <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Quick Stats</h3>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">Filtered Orders</p>
+                                        <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ $orders->total() ?? 0 }}</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">Total Value</p>
+                                        <p class="text-lg font-semibold text-gray-900 dark:text-white">${{ number_format($orders->sum('total') ?? 0, 2) }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Custom Date Range -->
+                    <div x-data="{ showCustomDates: '{{ request('time_filter') }}' === 'custom' }"
+                        x-show="showCustomDates"
+                        class="grid grid-cols-1 md:grid-cols-2 gap-4"
+                        x-transition:enter="transition ease-out duration-300"
+                        x-transition:enter-start="opacity-0 transform scale-95"
+                        x-transition:enter-end="opacity-100 transform scale-100">
+                        <div>
+                            <label for="date_from" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                From Date
+                            </label>
+                            <input
+                                type="date"
+                                id="date_from"
+                                name="date_from"
+                                value="{{ request('date_from') }}"
+                                class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg
+                           text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                           transition-colors duration-200 ease-in-out">
+                        </div>
+                        <div>
+                            <label for="date_to" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                To Date
+                            </label>
+                            <input
+                                type="date"
+                                id="date_to"
+                                name="date_to"
+                                value="{{ request('date_to') }}"
+                                class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg
+                           text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                           transition-colors duration-200 ease-in-out">
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex justify-between items-center pt-4">
+                        <!-- Apply Filters Button (visible only for custom date range) -->
+                        <div x-data="{ showCustomDates: '{{ request('time_filter') }}' === 'custom' }"
+                            x-show="showCustomDates"
+                            x-transition>
+                            <button
+                                type="submit"
+                                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg
+                           transition-colors duration-200 ease-in-out focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                Apply Date Range
+                            </button>
+                        </div>
+
+                        <!-- Clear Filters Button (visible when any filter is active) -->
+                        @if(request('status') || request('time_filter') || request('search'))
+                        <a href="{{ route('orders.index') }}"
+                            class="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600
+                          text-gray-700 dark:text-gray-300 font-medium rounded-lg transition-colors duration-200 ease-in-out">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            Clear All Filters
+                        </a>
+                        @endif
+                    </div>
+                </form>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead class="bg-gray-50 dark:bg-gray-700">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                Order ID
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                Customer
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                Total
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                Date
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                Status
+                            </th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="orders-table-body" class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                        @foreach($orders as $order)
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-200">
+                                #{{ $order->id }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-10 w-10">
+                                        <div class="h-10 w-10 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center">
+                                            <span class="text-gray-600 dark:text-gray-300 text-sm font-medium">
+                                                {{ strtoupper(substr($order->user->name ?? 'NA', 0, 2)) }}
+                                            </span>
                                         </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-    <div class="text-sm text-gray-900 dark:text-gray-200">${{ number_format($order->total, 2) }}</div>
-    <div class="text-xs text-gray-500 dark:text-gray-400">{{ $order->orderItems->count() ?? 0 }} items</div>
-</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm text-gray-900 dark:text-gray-200">
-                                            {{ $order->created_at->format('M d, Y') }}
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-gray-900 dark:text-gray-200">
+                                            {{ $order->customer ? $order->customer->name : 'No customer name available' }}
                                         </div>
-                                        <div class="text-xs text-gray-500 dark:text-gray-400">
-                                            {{ $order->created_at->format('h:i A') }}
+                                        <div class="text-sm text-gray-500 dark:text-gray-400">
+                                            {{ $order->customer->email ?? 'No email available' }}
                                         </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                                    </div>
+
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900 dark:text-gray-200">${{ number_format($order->total, 2) }}</div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">{{ $order->orderItems->count() ?? 0 }} items</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900 dark:text-gray-200">
+                                    {{ $order->created_at->format('M d, Y') }}
+                                </div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">
+                                    {{ $order->created_at->format('h:i A') }}
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
                                                 @if($order->status == 'pending') bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200
                                                 @elseif($order->status == 'processing') bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200
                                                 @elseif($order->status == 'shipped') bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200
                                                 @elseif($order->status == 'delivered') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
                                                 @elseif($order->status == 'cancelled') bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200
                                                 @endif">
-                                            {{ ucfirst($order->status) }}
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <div class="flex justify-end space-x-2">
-                                            <a href="{{ route('orders.view', $order) }}"
-                                                class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-600 p-2 hover:bg-blue-50 dark:hover:bg-blue-900/50 rounded-full transition-colors"
-                                                title="View Order">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                                                    <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
-                                                </svg>
-                                            </a>
-                                            <a href="{{ route('orders.edit', $order) }}"
-                                                class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-600 p-2 hover:bg-indigo-50 dark:hover:bg-indigo-900/50 rounded-full transition-colors"
-                                                title="Edit Order">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                                                </svg>
-                                            </a>
-                                            <button onclick="updateOrderStatus('{{ $order->id }}')"
-                                                class="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-600 p-2 hover:bg-green-50 dark:hover:bg-green-900/50 rounded-full transition-colors"
-                                                title="Update Status">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
+                                    {{ ucfirst($order->status) }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <div class="flex justify-end space-x-2">
+                                    <a href="{{ route('orders.view', $order) }}"
+                                        class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-600 p-2 hover:bg-blue-50 dark:hover:bg-blue-900/50 rounded-full transition-colors"
+                                        title="View Order">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                                            <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
+                                        </svg>
+                                    </a>
+                                    <a href="{{ route('orders.edit', $order) }}"
+                                        class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-600 p-2 hover:bg-indigo-50 dark:hover:bg-indigo-900/50 rounded-full transition-colors"
+                                        title="Edit Order">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                                        </svg>
+                                    </a>
 
-                    <!-- Pagination -->
-                    <div class="mt-4">
-                        {{ $orders->links() }}
-                    </div>
-                </div>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="mt-4">
+                {{ $orders->links() }}
             </div>
         </div>
+    </div>
+    </div>
     </div>
 
     <!-- Order Status Update Modal -->
@@ -265,68 +385,92 @@
             const statusFilter = document.getElementById('status-filter');
             const dateFilter = document.getElementById('date-filter');
             const ordersTableBody = document.getElementById('orders-table-body');
-            const statusModal = document.getElementById('status-modal');
             let searchTimeout;
-            let currentOrderId;
 
-            // Get search URL dynamically
-            const searchUrl = '{{ route("orders.search") }}';
-
+            // Function to perform the search and filter
             function performSearch() {
-                const searchTerm = searchInput.value;
-                const status = statusFilter.value;
-                const dateRange = dateFilter.value;
+                clearTimeout(searchTimeout);
 
-                // Show loading spinner
-                ordersTableBody.innerHTML = `
-                <tr>
-                    <td colspan="6" class="px-6 py-4 text-center">
-                        <div class="animate-pulse flex justify-center items-center">
-                            <div class="w-6 h-6 border-t-2 border-b-2 border-blue-500 rounded-full animate-spin"></div>
-                            <span class="ml-2">Loading...</span>
-                        </div>
-                    </td>
-                </tr>
-            `;
+                searchTimeout = setTimeout(() => {
+                    // Show loading state
+                    ordersTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="px-6 py-4 text-center">
+                            <div class="animate-pulse flex justify-center items-center">
+                                <div class="w-6 h-6 border-t-2 border-b-2 border-blue-500 rounded-full animate-spin"></div>
+                                <span class="ml-2">Loading...</span>
+                            </div>
+                        </td>
+                    </tr>
+                `;
 
-                fetch(`${searchUrl}?search=${encodeURIComponent(searchTerm)}&status=${status}&date=${dateRange}`, {
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Failed to fetch data.');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        ordersTableBody.innerHTML = data.table_rows;
+                    // Build the query string
+                    const params = new URLSearchParams({
+                        search: searchInput.value,
+                        status: statusFilter.value,
+                        date: dateFilter.value
+                    });
 
-                        // Initialize tooltips after new rows are rendered
-                        initializeTooltips();
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        ordersTableBody.innerHTML = `
+                    // Make the AJAX request to fetch filtered orders
+                    fetch(`/orders/filter?${params.toString()}`, {
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            // Replace the table body content with fetched orders
+                            ordersTableBody.innerHTML = '';
+                            if (data.orders.length > 0) {
+                                data.orders.forEach(order => {
+                                    const orderRow = document.createElement('tr');
+                                    orderRow.innerHTML = `
+                                <td>${order.id}</td>
+                                <td>${order.customer_name}</td>
+                                <td>${order.status}</td>
+                                <td>${order.date}</td>
+                            `;
+                                    ordersTableBody.appendChild(orderRow);
+                                });
+                            } else {
+                                ordersTableBody.innerHTML = `
+                            <tr>
+                                <td colspan="4" class="px-6 py-4 text-center text-red-600">No orders found</td>
+                            </tr>
+                        `;
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            ordersTableBody.innerHTML = `
                         <tr>
-                            <td colspan="6" class="px-6 py-4 text-center text-red-600">
-                                An error occurred while fetching the data. Please try again.
-                            </td>
+                            <td colspan="4" class="px-6 py-4 text-center text-red-600">An error occurred while fetching the data. Please try again.</td>
                         </tr>
                     `;
-                    });
+                        });
+                }, 300); // Debounce delay
             }
 
-            // Debounced search handler
-            searchInput.addEventListener('input', function() {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(performSearch, 300);
-            });
-
-            // Trigger search on filter changes
+            // Event listeners for search and filters
+            searchInput.addEventListener('input', performSearch);
             statusFilter.addEventListener('change', performSearch);
             dateFilter.addEventListener('change', performSearch);
+
+            // Handle browser back/forward buttons (updates the filters based on URL)
+            window.addEventListener('popstate', function() {
+                const urlParams = new URLSearchParams(window.location.search);
+
+                // Update form values based on URL parameters
+                searchInput.value = urlParams.get('search') || '';
+                statusFilter.value = urlParams.get('status') || '';
+                dateFilter.value = urlParams.get('date') || '';
+
+                // Perform search with new values
+                performSearch();
+            });
+
+            // Initialize the search and filter state when the page loads
+            performSearch();
 
             // Export Orders
             document.getElementById('export-orders').addEventListener('click', function() {
@@ -336,7 +480,10 @@
                 window.location.href = `{{ route('orders.export') }}?status=${status}&date=${dateRange}&search=${encodeURIComponent(searchTerm)}`;
             });
 
-            // Open status update modal
+            // Open status update modal (for updating order status)
+            let currentOrderId;
+            const statusModal = document.getElementById('status-modal');
+
             function updateOrderStatus(orderId) {
                 currentOrderId = orderId;
                 statusModal.classList.remove('hidden');
@@ -367,7 +514,6 @@
                     .then(data => {
                         statusModal.classList.add('hidden');
                         performSearch();
-
                         showNotification('Order status updated successfully', 'success');
                     })
                     .catch(error => {
@@ -376,7 +522,7 @@
                     });
             });
 
-            // Show notifications
+            // Show notifications on order status update
             function showNotification(message, type = 'success') {
                 const notification = document.createElement('div');
                 notification.className = `fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg ${
@@ -391,7 +537,7 @@
                 }, 3000);
             }
 
-            // Initialize tooltips
+            // Initialize tooltips for the page (if any)
             function initializeTooltips() {
                 const tooltips = document.querySelectorAll('[title]');
                 tooltips.forEach(tooltip => {
@@ -413,10 +559,12 @@
                 });
             }
 
-            // Initial tooltip initialization
+            // Initialize tooltips on page load
             initializeTooltips();
         });
     </script>
+
+
 
     @endpush
 

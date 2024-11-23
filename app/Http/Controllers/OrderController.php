@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -12,135 +13,126 @@ use App\Exports\OrdersExport;
 
 class OrderController extends Controller
 {
+    const ALLOWED_STATUSES = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
+    const ALLOWED_PAYMENT_METHODS = ['credit_card', 'paypal', 'bank_transfer'];
 
     /**
      * Display a listing of orders with statistics
      */
-  public function index(Request $request)
-{
-    // Ensure that the $request variable is passed and used properly
-    // Get order statistics
-    $statistics = [
-        'totalOrders' => Order::count(),
-        'completedOrders' => Order::where('status', 'delivered')->count(),
-        'pendingOrders' => Order::where('status', 'pending')->count(),
-        'cancelledOrders' => Order::where('status', 'cancelled')->count(),
-    ];
+    public function index(Request $request)
+    {
+        $query = Order::query()->with(['customer', 'orderItems']);
 
-    // Get orders with customer (user) information
-    $orders = Order::with('customer')
-        ->when($request->input('status'), function ($query, $status) {
-            return $query->where('status', $status);
-        })
-        ->when($request->input('date'), function ($query, $date) {
-            return $this->applyDateFilter($query, $date);
-        })
-        ->orderBy('created_at', 'desc')
-        ->paginate(5);
+        // Apply filters
+        $query = $this->applyFilters($query, $request);
 
-    // Get user statistics
-    $userStatistics = [
-        'totalUsers' => User::count(),
-        'recentUsers' => User::orderBy('created_at', 'desc')->take(5)->get(),
-        'topCustomers' => User::withCount('orders')
-            ->orderBy('orders_count', 'desc')
-            ->take(5)
-            ->get()
-    ];
+        // Get paginated orders
+        $orders = $query->latest()->paginate(10);
 
-    // Return the view with the required variables
-    return view('admin.orders.index', compact('orders', 'statistics', 'userStatistics'));
-}
+        // Get statistics
+        $statistics = $this->getOrderStatistics();
 
+        // Get user statistics
+        $userStatistics = $this->getUserStatistics();
+
+        if ($request->ajax()) {
+            return view('orders.partials.table-rows', compact('orders'));
+        }
+
+        return view('admin.orders.index', compact('orders', 'statistics', 'userStatistics'));
+    }
 
     /**
      * Show order creation form
      */
     public function create()
     {
-        $order = new Order();
-        return view('admin.orders.edit', compact('order'));
+        return view('admin.orders.edit', ['order' => new Order()]);
     }
+    public function filterOrders(Request $request)
+    {
+        $search = $request->input('search');
+        $status = $request->input('status');
+        $dateFilter = $request->input('date');
+
+        // Define the statuses array
+        $statuses = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
+
+        $orders = Order::query()
+            ->when($search, function ($query) use ($search) {
+                $query->where('id', 'like', "%{$search}%")
+                    ->orWhere('customer_name', 'like', "%{$search}%")
+                    ->orWhere('status', 'like', "%{$search}%");
+            })
+            ->when($status, function ($query) use ($status) {
+                $query->where('status', $status);
+            })
+            ->when($dateFilter, function ($query) use ($dateFilter) {
+                $date = now();
+                switch ($dateFilter) {
+                    case 'today':
+                        $query->whereDate('created_at', $date->toDateString());
+                        break;
+                    case 'this_week':
+                        $query->whereBetween('created_at', [$date->startOfWeek(), $date->endOfWeek()]);
+                        break;
+                    case 'this_month':
+                        $query->whereMonth('created_at', $date->month)
+                            ->whereYear('created_at', $date->year);
+                        break;
+                    case 'last_month':
+                        $query->whereMonth('created_at', $date->subMonth()->month)
+                            ->whereYear('created_at', $date->year);
+                        break;
+                }
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        return view('orders.index', compact('orders', 'statuses')); // Pass statuses to the view
+    }
+
+    /**
+     * Show specific order details
+     */
     public function view($id)
     {
-        // Fetch the order by ID
-        $order = Order::find($id);
-
-        // If the order does not exist, return a 404 response
-        if (!$order) {
-            abort(404, 'Order not found');
-        }
-
-        // Return a view and pass the order data to it
+        $order = Order::with(['customer', 'orderItems'])->findOrFail($id);
         return view('admin.orders.view', compact('order'));
     }
-
 
     /**
      * Store a new order
      */
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'customer_name' => 'required|string|max:255',
-            'customer_email' => 'required|email|max:255',
-            'status' => 'required|in:pending,processing,shipped,delivered,cancelled',
-            'total' => 'required|numeric|min:0',
-            'payment_method' => 'required|in:credit_card,paypal,bank_transfer',
-            'notes' => 'nullable|string|max:1000'
-        ]);
+        $validatedData = $this->validateOrderData($request);
 
-        DB::transaction(function () use ($validatedData, $request) {
-            $customer = User::firstOrCreate(
-                ['email' => $validatedData['customer_email']],
-                ['name' => $validatedData['customer_name']]
-            );
+        try {
+            DB::transaction(function () use ($validatedData) {
+                $customer = User::firstOrCreate(
+                    ['email' => $validatedData['customer_email']],
+                    ['name' => $validatedData['customer_name']]
+                );
 
-            $order = Order::create([
-                'customer_id' => $customer->id,
-                'status' => $validatedData['status'],
-                'total' => $validatedData['total'],
-                'payment_method' => $validatedData['payment_method'],
-                'notes' => $validatedData['notes']
-            ]);
-        });
+                Order::create([
+                    'customer_id' => $customer->id,
+                    'status' => $validatedData['status'],
+                    'total' => $validatedData['total'],
+                    'payment_method' => $validatedData['payment_method'],
+                    'notes' => $validatedData['notes']
+                ]);
+            });
 
-
-
-        return redirect()
-            ->route('orders.index')
-            ->with('success', 'Order created successfully');
-    }
-
-    public function exportOrders(Request $request)
-    {
-        return Excel::download(new OrdersExport($request), 'orders.xlsx');
-    }
-
-    /**
-     * Show specific order details
-     */
-    public function show(Order $order)
-    {
-        $orders = Order::with('customer', 'orderItems')
-    ->when($request->input('status'), function ($query, $status) {
-        return $query->where('status', $status);
-    })
-    ->when($request->input('date'), function ($query, $date) {
-        return $this->applyDateFilter($query, $date);
-    })
-    ->orderBy('created_at', 'desc')
-    ->paginate(5);
-
-        return view('orders.view', compact('order'));
-    }
-
-    /**
-     * Edit existing order
-     */
-    public function edit(Order $order)
-    {
-        return view('admin.orders.edit', compact('order'));
+            return redirect()
+                ->route('orders.index')
+                ->with('success', 'Order created successfully');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', 'Failed to create order: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -148,79 +140,34 @@ class OrderController extends Controller
      */
     public function update(Request $request, Order $order)
     {
-        $validatedData = $request->validate([
-            'customer_name' => 'required|string|max:255',
-            'customer_email' => 'required|email|max:255',
-            'status' => 'required|in:pending,processing,shipped,delivered,cancelled',
-            'total' => 'required|numeric|min:0',
-            'payment_method' => 'required|in:credit_card,paypal,bank_transfer',
-            'notes' => 'nullable|string|max:1000'
-        ]);
+        $validatedData = $this->validateOrderData($request);
 
-        DB::transaction(function () use ($validatedData, $order) {
-            $customer = User::updateOrCreate(
-                ['email' => $validatedData['customer_email']],
-                ['name' => $validatedData['customer_name']]
-            );
+        try {
+            DB::transaction(function () use ($validatedData, $order) {
+                $customer = User::updateOrCreate(
+                    ['email' => $validatedData['customer_email']],
+                    ['name' => $validatedData['customer_name']]
+                );
 
-            $order->update([
-                'customer_id' => $customer->id,
-                'status' => $validatedData['status'],
-                'total' => $validatedData['total'],
-                'payment_method' => $validatedData['payment_method'],
-                'notes' => $validatedData['notes']
-            ]);
-        });
-
-        return redirect()
-            ->route('orders.index')
-            ->with('success', 'Order updated successfully');
-    }
-
-    /**
-     * Update order status via AJAX
-     */
-    public function updateStatus(Order $order)
-    {
-        $newStatus = $this->getNextStatus($order->status);
-        $order->update(['status' => $newStatus]);
-
-        return response()->json([
-            'status' => $newStatus,
-            'message' => "Order status updated to {$newStatus}"
-        ]);
-    }
-
-    /**
-     * Search and filter orders
-     */
-    public function search(Request $request)
-    {
-        $query = Order::with('customer')
-            ->when($request->input('search'), function ($q, $search) {
-                return $q->where('id', 'like', "%{$search}%")
-                    ->orWhereHas('customer', function ($subQuery) use ($search) {
-                        $subQuery->where('name', 'like', "%{$search}%")
-                            ->orWhere('email', 'like', "%{$search}%");
-                    });
-            })
-            ->when($request->input('status'), function ($q, $status) {
-                return $q->where('status', $status);
-            })
-            ->when($request->input('date'), function ($q, $date) {
-                return $this->applyDateFilter($q, $date);
+                $order->update([
+                    'customer_id' => $customer->id,
+                    'status' => $validatedData['status'],
+                    'total' => $validatedData['total'],
+                    'payment_method' => $validatedData['payment_method'],
+                    'notes' => $validatedData['notes']
+                ]);
             });
 
-        $orders = $query->paginate(15);
-
-        return response()->json([
-            'table_rows' => view('orders.partials.table-rows', compact('orders'))->render()
-        ]);
+            return redirect()
+                ->route('orders.index')
+                ->with('success', 'Order updated successfully');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', 'Failed to update order: ' . $e->getMessage());
+        }
     }
-
-    /**
-     * Export orders to Excel
-     */
 
     /**
      * Generate PDF invoice for order
@@ -231,34 +178,115 @@ class OrderController extends Controller
         $pdf = Pdf::loadView('orders.invoice', compact('order'));
         return $pdf->download("invoice_{$order->id}.pdf");
     }
+    public function edit(Order $order)
+    {
+        return view('admin.orders.edit', compact('order'));
+    }
+    /**
+     * Export orders to Excel
+     */
+    public function exportOrders(Request $request)
+    {
+        return Excel::download(new OrdersExport($request), 'orders.xlsx');
+    }
+
+    /**
+     * Apply filters to query
+     */
+    private function applyFilters($query, Request $request)
+    {
+        // Search filter
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('id', 'LIKE', "%{$search}%")
+                    ->orWhereHas('customer', function ($q) use ($search) {
+                        $q->where('name', 'LIKE', "%{$search}%")
+                            ->orWhere('email', 'LIKE', "%{$search}%");
+                    });
+            });
+        }
+
+        // Status filter
+        if ($request->filled('status')) {
+            $query->where('status', $request->input('status'));
+        }
+
+        // Date filter
+        if ($request->filled('date')) {
+            $query = $this->applyDateFilter($query, $request->input('date'));
+        }
+
+        return $query;
+    }
 
     /**
      * Apply date filtering to query
      */
     private function applyDateFilter($query, $dateFilter)
     {
-        return match ($dateFilter) {
-            'today' => $query->whereDate('created_at', today()),
-            'this_week' => $query->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()]),
-            'this_month' => $query->whereMonth('created_at', now()->month),
-            'last_month' => $query->whereMonth('created_at', now()->subMonth()->month),
-            default => $query
-        };
+        $now = Carbon::now();
+
+        switch ($dateFilter) {
+            case 'today':
+                return $query->whereDate('created_at', $now->toDateString());
+            case 'this_week':
+                return $query->whereBetween('created_at', [
+                    $now->startOfWeek(),
+                    $now->endOfWeek()
+                ]);
+            case 'this_month':
+                return $query->whereMonth('created_at', $now->month)
+                    ->whereYear('created_at', $now->year);
+            case 'last_month':
+                $lastMonth = $now->copy()->subMonth();
+                return $query->whereMonth('created_at', $lastMonth->month)
+                    ->whereYear('created_at', $lastMonth->year);
+            default:
+                return $query;
+        }
     }
 
     /**
-     * Determine next status in order lifecycle
+     * Get order statistics
      */
-    private function getNextStatus($currentStatus)
+    private function getOrderStatistics()
     {
-        $statusFlow = [
-            'pending' => 'processing',
-            'processing' => 'shipped',
-            'shipped' => 'delivered',
-            'delivered' => 'delivered',
-            'cancelled' => 'cancelled'
+        return [
+            'totalOrders' => Order::count(),
+            'completedOrders' => Order::where('status', 'delivered')->count(),
+            'pendingOrders' => Order::whereIn('status', ['pending', 'processing'])->count(),
+            'cancelledOrders' => Order::where('status', 'cancelled')->count(),
         ];
+    }
 
-        return $statusFlow[$currentStatus] ?? $currentStatus;
+    /**
+     * Get user statistics
+     */
+    private function getUserStatistics()
+    {
+        return [
+            'totalUsers' => User::count(),
+            'recentUsers' => User::orderBy('created_at', 'desc')->take(5)->get(),
+            'topCustomers' => User::withCount('orders')
+                ->orderBy('orders_count', 'desc')
+                ->take(5)
+                ->get()
+        ];
+    }
+
+    /**
+     * Validate order data
+     */
+    private function validateOrderData(Request $request)
+    {
+        return $request->validate([
+            'customer_name' => 'required|string|max:255',
+            'customer_email' => 'required|email|max:255',
+            'status' => 'required|in:' . implode(',', self::ALLOWED_STATUSES),
+            'total' => 'required|numeric|min:0',
+            'payment_method' => 'required|in:' . implode(',', self::ALLOWED_PAYMENT_METHODS),
+            'notes' => 'nullable|string|max:1000'
+        ]);
     }
 }
