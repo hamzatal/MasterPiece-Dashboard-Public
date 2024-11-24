@@ -288,10 +288,10 @@
                                     </div>
                                     <div class="ml-4">
                                         <div class="text-sm font-medium text-gray-900 dark:text-gray-200">
-                                            {{ $order->customer ? $order->customer->name : 'No customer name available' }}
+                                            {{ $order->user ? $order->user->name : 'No customer name available' }}
                                         </div>
                                         <div class="text-sm text-gray-500 dark:text-gray-400">
-                                            {{ $order->customer->email ?? 'No email available' }}
+                                            {{ $order->user->email ?? 'No email available' }}
                                         </div>
                                     </div>
 

@@ -89,9 +89,8 @@ class OrderController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
-        return view('orders.index', compact('orders', 'statuses')); // Pass statuses to the view
+        return view('orders.index', compact('orders', 'statuses')); // Passing statuses to the view
     }
-
     /**
      * Show specific order details
      */
