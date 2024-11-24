@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/dashboard/download-report', [DashboardController::class, 'downloadReport'])->name('dashboard.download-report');
+Route::patch('/coupons/{coupon}/toggle-status', [CouponController::class, 'toggleStatus'])->name('coupons.toggle-status');
+
 
 
 /*
@@ -30,6 +32,7 @@ Route::get('/categories/create', [CategoryController::class, 'create'])->name('c
 Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
 Route::get('categories/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
 Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+Route::put('/{categories}', [CategoryController::class, 'update'])->name('categories.update');
 
 /*
 |----------------------------------------------------------------------

@@ -13,13 +13,28 @@ class Order extends Model
         'customer_id',
         'total',
         'status',
-        // Add other fillable fields
+        'product_id',
+        'amount',
+        'status'
     ];
-
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
     // Relationship for customer (user)
+    public function customer_details()
+    {
+        return $this->belongsTo(Customer::class, 'customer_id'); // Adjust based on your database schema
+    }
     public function customer()
     {
-        return $this->belongsTo(User::class, 'customer_id');
+        return $this->belongsTo(Customer::class);
+    }
+
+
+    public function items()
+    {
+        return $this->hasMany(OrderItem::class);
     }
 
     // Relationship for order items (assuming you have an OrderItem model)

@@ -105,5 +105,7 @@ class="fixed left-0 top-0 h-full w-64 bg-white text-gray-900 dark:bg-[#1a1a2e] d
             </svg>
             contacts
         </a>
+        
+
     </nav>
 </aside>

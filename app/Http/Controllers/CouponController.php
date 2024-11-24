@@ -67,7 +67,14 @@ class CouponController extends Controller
         return redirect()->route('coupons.index')->with('success', 'Coupon updated successfully!');
     }
 
+    public function toggleStatus(Coupon $coupon)
+    {
+        $coupon->update([
+            'is_active' => !$coupon->is_active
+        ]);
 
+        return back()->with('success', 'Coupon status updated successfully');
+    }
     // Delete the coupon
     public function destroy(Coupon $coupon)
     {
