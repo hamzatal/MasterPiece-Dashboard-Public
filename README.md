@@ -20,7 +20,7 @@ These instructions will help you set up the project locally for development and 
 
 Make sure you have the following installed:
 
-- [PHP 10.x](https://www.php.net/)
+- [PHP 8.1](https://www.php.net/)
 - [Laravel 10.x](https://laravel.com/))
 - [Composer](https://getcomposer.org/)
 - [MySQL](https://www.mysql.com/)
