@@ -96,7 +96,7 @@ Make sure you have the following installed:
 
 ## **📊 Technology Stack**
 
-- **Backend:** Laravel 11
+- **Backend:** Laravel 10
 - **Frontend:** Blade Templates, Tailwind CSS
 - **Database:** MySQL
 - **Authentication:** Laravel Breeze
@@ -111,7 +111,7 @@ Once the project is set up, visit the following routes:
 
 - **Login Page:** `/login`
 - **Dashboard:** `/dashboard`
-- **Admin Panel:** `/admin` (for admins only)
+- **Admin Panel:** `/admin` (for admins & superAdmin only)
 
 ### **Admin Panel Access**
 To access the admin panel, use an admin account. You can create one using database seeding or via direct entry in the database.
@@ -149,7 +149,6 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 - **Laravel** - PHP framework used for the backend.
 - **Tailwind CSS** - Utility-first CSS framework used for styling.
 - **MySQL** - Used for database management.
-- **Chart.js** - JavaScript library used for data visualization.
 
 ---
 
@@ -157,6 +156,6 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 If you have any questions or need further assistance, feel free to reach out:
 
-- **Email**: [your-email@example.com](mailto:your-email@example.com)
-- **GitHub**: [github.com/your-username](https://github.com/your-username)
+- **Email**: [hamza.t.a.altal@gmail.com]
+- **GitHub**: [github.com/hamzatal/](https://github.com/hamzatal/)
 
