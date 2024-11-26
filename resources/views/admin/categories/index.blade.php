@@ -24,7 +24,7 @@
                                 name="search"
                                 id="search-categories"
                                 placeholder="Search categories..."
-                                value="{{ request('search') }}" 
+                                value="{{ request('search') }}"
                                 class="w-full md:w-96 px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300" />
                         </form>
                         <select

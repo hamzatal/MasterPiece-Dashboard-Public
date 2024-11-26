@@ -4,13 +4,16 @@
 class="fixed left-0 top-0 h-full w-64 bg-white text-gray-900 dark:bg-[#1a1a2e] dark:text-white transform -translate-x-full transition-transform duration-300 shadow-2xl z-50 border-r border-gray-100 dark:border-gray-800">
     <!-- Logo Section (unchanged) -->
 
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
 
-    <div class="flex items-center justify-between px-6 py-6 border-b border-gray-200 dark:border-gray-700">
+    <div class="flex items-center justify-between px-9 py-4 border-b border-gray-200 dark:border-gray-700">
         <a href="{{ route('dashboard') }}"
-            class="flex items-center space-x-3 text-2xl font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 transition-colors duration-300">
-            <span class="text-3xl font-extrabold">CoderZ <\></span>
-        </a>
+            class="flex items-center space-x-1 text-2xl font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 transition-colors duration-300">
+            <div class="flex items-center">
+                <i class="fas fa-code text-3xl mr-3"></i>
+                <h1 class="text-2xl font-bold">DevStore</h1>
+            </div>        </a>
 
         <!-- Close Button for Mobile (unchanged) -->
         <button id="closeSidebar" class="block lg:hidden text-gray-600 dark:text-gray-300 hover:text-red-500">
@@ -105,7 +108,5 @@ class="fixed left-0 top-0 h-full w-64 bg-white text-gray-900 dark:bg-[#1a1a2e] d
             </svg>
             contacts
         </a>
-        
-
     </nav>
 </aside>

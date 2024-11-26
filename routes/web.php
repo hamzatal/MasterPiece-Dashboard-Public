@@ -11,12 +11,14 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
 
 
 Route::get('/dashboard/download-report', [DashboardController::class, 'downloadReport'])->name('dashboard.download-report');
-Route::patch('/coupons/{coupon}/toggle-status', [CouponController::class, 'toggleStatus'])->name('coupons.toggle-status');
+
+Route::get('/home', [HomeController::class, 'index'])->name('home.index');
 
 
 
@@ -32,14 +34,13 @@ Route::get('/categories/create', [CategoryController::class, 'create'])->name('c
 Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
 Route::get('categories/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
 Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
-Route::put('/{categories}', [CategoryController::class, 'update'])->name('categories.update');
 
 /*
 |----------------------------------------------------------------------
 | Authentication Required Routes
 |----------------------------------------------------------------------
 */
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth' , 'auth.role'])->group(function () {
     // Profile Routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -69,7 +70,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/orders/export', [OrderController::class, 'export'])->name('orders.export');
         Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
         Route::get('/orders/export', [OrderController::class, 'exportOrders'])->name('orders.export');
-        Route::get('/orders/filter', [OrderController::class, 'filterOrders']);
+
     });
 });
 
@@ -80,7 +81,7 @@ Route::middleware(['auth'])->group(function () {
 */
 Route::middleware(['auth', 'auth.role'])->group(function () {
     // Dashboard
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::prefix('dashboard')->group(function () {
         // User Management
@@ -113,6 +114,8 @@ Route::middleware(['auth', 'auth.role'])->group(function () {
             Route::get('/{coupon}/deactivate', [CouponController::class, 'deactivate'])->name('coupons.deactivate');
             Route::get('/{coupon}/edit', [CouponController::class, 'edit'])->name('coupons.edit');
             Route::put('/{coupon}', [CouponController::class, 'update'])->name('coupons.update');
+            Route::patch('/{coupon}/toggle-status', [CouponController::class, 'toggleStatus'])->name('coupons.toggle-status');
+
         });
 
         // Discount Management

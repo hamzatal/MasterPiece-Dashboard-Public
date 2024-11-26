@@ -1,4 +1,8 @@
-<x-app-layout>
+<x-app-layout x-data="{
+    darkMode: false,
+    copiedCode: null
+}">
+
     <div class="py-6">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Header Section -->
@@ -18,44 +22,44 @@
 
             <!-- Filters and Search Section -->
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 mb-6">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <!-- Search -->
-                    <div class="col-span-1 md:col-span-2">
-                        <form action="{{ route('coupons.index') }}" method="GET">
-                            <div class="relative">
-                                <input type="text"
-                                    name="search"
-                                    value="{{ request('search') }}"
-                                    class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white focus:border-blue-500 focus:ring-blue-500"
-                                    placeholder="Search coupons...">
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                    </svg>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+             <!-- Update the filters section -->
+<form action="{{ route('coupons.index') }}" method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+    <!-- Search -->
+    <div class="col-span-1 md:col-span-2">
+        <div class="relative">
+            <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input type="text"
+                name="search"
+                value="{{ request('search') }}"
+                class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white focus:border-blue-500 focus:ring-blue-500"
+                placeholder="Search coupons...">
+        </div>
+    </div>
 
-                    <!-- Filters -->
-                    <div class="col-span-1">
-                        <select name="status"
-                            class="w-full border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white focus:border-blue-500 focus:ring-blue-500">
-                            <option value="">All Status</option>
-                            <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
-                            <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
-                        </select>
-                    </div>
+    <!-- Status Filter -->
+    <div class="col-span-1">
+        <select name="status"
+            onchange="this.form.submit()"
+            class="w-full border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white focus:border-blue-500 focus:ring-blue-500">
+            <option value="">All Status</option>
+            <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
+            <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
+        </select>
+    </div>
 
-                    <div class="col-span-1">
-                        <select name="type"
-                            class="w-full border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white focus:border-blue-500 focus:ring-blue-500">
-                            <option value="">All Types</option>
-                            <option value="percentage" {{ request('type') == 'percentage' ? 'selected' : '' }}>Percentage</option>
-                            <option value="fixed" {{ request('type') == 'fixed' ? 'selected' : '' }}>Fixed Amount</option>
-                        </select>
-                    </div>
-                </div>
+    <!-- Type Filter -->
+    <div class="col-span-1">
+        <select name="type"
+            onchange="this.form.submit()"
+            class="w-full border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white focus:border-blue-500 focus:ring-blue-500">
+            <option value="">All Types</option>
+            <option value="percentage" {{ request('type') == 'percentage' ? 'selected' : '' }}>Percentage</option>
+            <option value="fixed" {{ request('type') == 'fixed' ? 'selected' : '' }}>Fixed Amount</option>
+        </select>
+    </div>
+</form>
             </div>
 
             <!-- Stats Cards -->
@@ -122,32 +126,35 @@
             </div>
 
             <!-- Coupons Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @forelse ($coupons as $coupon)
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 dark:border-gray-700 relative group">
-                    <!-- Status Badge with Enhanced Toggle -->
-                    <div class="absolute top-4 right-4 z-10">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 dark:border-gray-700 relative group overflow-hidden"
+                    x-data="{ showActions: false, isActive: {{ $coupon->is_active ? 'true' : 'false' }} }">
+
+                    <!-- Status Toggle with Animation -->
+                    <div class="absolute top-4 right-4 z-10" x-data="{ isHovered: false }">
                         <form action="{{ route('coupons.toggle-status', $coupon->id) }}" method="POST" class="inline">
                             @csrf
                             @method('PATCH')
-                            <button type="submit"
-                                class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200
-                    {{ $coupon->is_active
-                        ? 'bg-green-100 text-green-800 hover:bg-red-100 hover:text-red-800 dark:bg-green-900/50 dark:text-green-300 dark:hover:bg-red-900/50 dark:hover:text-red-300'
-                        : 'bg-red-100 text-red-800 hover:bg-green-100 hover:text-green-800 dark:bg-red-900/50 dark:text-red-300 dark:hover:bg-green-900/50 dark:hover:text-green-300'
-                    }} shadow-sm group-hover:shadow-md"
-                                onclick="event.preventDefault();
-                             if(confirm('Are you sure you want to {{ $coupon->is_active ? 'deactivate' : 'activate' }} this coupon?')) {
-                                 this.closest('form').submit();
-                             }">
-                                <svg class="w-3.5 h-3.5 mr-1.5 transition-transform duration-200 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    @if($coupon->is_active)
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    @else
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    @endif
+                            <button type="submit" @mouseenter="isHovered = true" @mouseleave="isHovered = false"
+                                class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-300"
+                                :class="{
+                                    'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300': isActive && !isHovered,
+                                    'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300': !isActive && !isHovered,
+                                    'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300': isActive && isHovered,
+                                    'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300': !isActive && isHovered
+                                }"
+                                @click.prevent="if(confirm(`Are you sure you want to ${isActive ? 'deactivate' : 'activate'} this coupon?`)) {
+                                    isActive = !isActive;
+                                    $el.closest('form').submit();
+                                }">
+                                <svg class="w-3.5 h-3.5 mr-1.5 transition-transform duration-300"
+                                    :class="{ 'rotate-180': isHovered }"
+                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path x-show="isActive && !isHovered || !isActive && isHovered" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    <path x-show="!isActive && !isHovered || isActive && isHovered" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
-                                {{ $coupon->is_active ? 'Active' : 'Inactive' }}
+                                <span x-text="isActive ? (isHovered ? 'Deactivate' : 'Active') : (isHovered ? 'Activate' : 'Inactive')"></span>
                             </button>
                         </form>
                     </div>
@@ -158,35 +165,42 @@
                         <div class="flex justify-between items-start mb-6">
                             <div class="flex-1">
                                 <div class="flex items-center space-x-3 mb-2">
-                                    <h3 class="text-xl font-bold text-gray-900 dark:text-white tracking-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{{ $coupon->code }}</h3>
-                                    <button onclick="copyToClipboard('{{ $coupon->code }}')"
+                                    <h3 class="text-xl font-bold text-gray-900 dark:text-white tracking-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                                        {{ $coupon->code }}
+                                    </h3>
+                                    <button @click="
+                                        navigator.clipboard.writeText('{{ $coupon->code }}');
+                                        $dispatch('notify', {
+                                            message: 'Coupon code copied!',
+                                            type: 'success'
+                                        });"
                                         class="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 p-1 hover:bg-blue-50 dark:hover:bg-blue-900/50 rounded-full"
                                         title="Copy code">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
                                         </svg>
                                     </button>
                                 </div>
                             </div>
 
-                            <!-- Actions Dropdown with Enhanced Styling -->
-                            <div class="relative" x-data="{ open: false }">
+                            <!-- Enhanced Dropdown -->
+                            <div class="relative" x-data="{ open: false }" @click.away="open = false">
                                 <button @click="open = !open"
-                                    class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200 group">
-                                    <svg class="w-5 h-5 text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200">
+                                    <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
                                     </svg>
                                 </button>
 
+                                <!-- Dropdown Menu -->
                                 <div x-show="open"
-                                    @click.away="open = false"
                                     x-transition:enter="transition ease-out duration-200"
-                                    x-transition:enter-start="transform opacity-0 scale-95"
-                                    x-transition:enter-end="transform opacity-100 scale-100"
+                                    x-transition:enter-start="opacity-0 scale-95"
+                                    x-transition:enter-end="opacity-100 scale-100"
                                     x-transition:leave="transition ease-in duration-75"
-                                    x-transition:leave-start="transform opacity-100 scale-100"
-                                    x-transition:leave-end="transform opacity-0 scale-95"
-                                    class="absolute right-0 mt-2 w-48 rounded-lg shadow-lg bg-white dark:bg-gray-700 ring-1 ring-black ring-opacity-5 z-20 divide-y divide-gray-100 dark:divide-gray-600">
+                                    x-transition:leave-start="opacity-100 scale-100"
+                                    x-transition:leave-end="opacity-0 scale-95"
+                                    class="absolute right-0 mt-2 w-48 rounded-lg shadow-lg bg-white dark:bg-gray-700 ring-1 ring-black ring-opacity-5 z-50 divide-y divide-gray-100 dark:divide-gray-600">
                                     <div class="py-1">
                                         <a href="{{ route('coupons.edit', $coupon->id) }}"
                                             class="group flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600">
@@ -195,15 +209,17 @@
                                             </svg>
                                             Edit
                                         </a>
+
+                                        <!-- Delete Button with Confirmation -->
                                         <form action="{{ route('coupons.destroy', $coupon->id) }}" method="POST" class="w-full">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"
                                                 class="group flex w-full items-center px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/50"
-                                                onclick="event.preventDefault();
-                                             if(confirm('Are you sure you want to delete this coupon?')) {
-                                                 this.closest('form').submit();
-                                             }">
+                                                @click.prevent="
+                                                    if(confirm('Are you sure you want to delete this coupon? This action cannot be undone.')) {
+                                                        $el.closest('form').submit()
+                                                    }">
                                                 <svg class="mr-3 h-5 w-5 text-red-400 group-hover:text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                                 </svg>
@@ -215,10 +231,10 @@
                             </div>
                         </div>
 
-                        <!-- Coupon Details with Enhanced Visual Hierarchy -->
+                        <!-- Enhanced Coupon Details -->
                         <div class="space-y-4">
-                            <!-- Discount Info -->
-                            <div class="flex items-center text-sm bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/30 dark:to-purple-900/30 p-4 rounded-lg">
+                            <!-- Discount Info with Gradient -->
+                            <div class="flex items-center text-sm bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 p-4 rounded-lg">
                                 <svg class="w-6 h-6 mr-3 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
@@ -230,6 +246,7 @@
                                 </div>
                             </div>
 
+                            <!-- Minimum Order Value -->
                             @if($coupon->min_order_value)
                             <div class="flex items-center text-sm text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg">
                                 <svg class="w-5 h-5 mr-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -239,97 +256,121 @@
                             </div>
                             @endif
 
+                            <!-- Expiry Date with Dynamic Styling -->
                             @if($coupon->expiry_date)
                             <div class="flex items-center text-sm {{ strtotime($coupon->expiry_date) < time() ? 'text-red-600 dark:text-red-400' : 'text-gray-600 dark:text-gray-400' }} bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg">
-                                <svg class="w-5 h-5 mr-3 {{ strtotime($coupon->expiry_date) < time() ? 'text-red-500' : 'text-yellow-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                 </svg>
-                                <span>
-                                    @if(strtotime($coupon->expiry_date) < time())
-                                        <span class="font-medium">Expired:</span> {{ \Carbon\Carbon::parse($coupon->expiry_date)->format('M d, Y') }}
-                                @else
-                                <span class="font-medium">Expires:</span> {{ \Carbon\Carbon::parse($coupon->expiry_date)->format('M d, Y') }}
-                                <span class="ml-1 text-xs">({{ \Carbon\Carbon::parse($coupon->expiry_date)->diffForHumans() }})</span>
-                                @endif
-                                </span>
+                                <div class="flex flex-col">
+                                    <span>
+                                        @if(strtotime($coupon->expiry_date) < time())
+                                            <span class="font-medium">Expired:</span> {{ \Carbon\Carbon::parse($coupon->expiry_date)->format('M d, Y') }}
+                                    @else
+                                    <span class="font-medium">Expires:</span> {{ \Carbon\Carbon::parse($coupon->expiry_date)->format('M d, Y') }}
+                                    <span class="text-xs ml-1">({{ \Carbon\Carbon::parse($coupon->expiry_date)->diffForHumans() }})</span>
+                                    @endif
+                                    </span>
+                                </div>
                             </div>
                             @endif
 
-                            <!-- Usage Stats -->
+                            <!-- Enhanced Usage Stats with Animation -->
                             @if($coupon->max_uses)
-                            <div class="mt-4">
+                            <div class="mt-4" x-data="{ showDetails: false }">
                                 <div class="flex justify-between text-sm mb-2">
                                     <span class="text-gray-600 dark:text-gray-400">Usage Limit</span>
                                     <span class="font-medium text-gray-900 dark:text-white">
                                         {{ $coupon->usage_count ?? 0 }}/{{ $coupon->max_uses }}
                                     </span>
                                 </div>
-                                <div class="w-full bg-gray-100 rounded-full h-2.5 dark:bg-gray-700">
-                                    <div class="h-2.5 rounded-full transition-all duration-300
-                            @if(($coupon->usage_count / $coupon->max_uses) > 0.8)
-                                bg-red-500
-                            @elseif(($coupon->usage_count / $coupon->max_uses) > 0.5)
-                                bg-yellow-500
-                            @else
-                                bg-green-500
-                            @endif"
-                                        style="width: {{ min(($coupon->usage_count / $coupon->max_uses) * 100, 100) }}%">
+                                @php
+                                $usagePercentage = ($coupon->usage_count / $coupon->max_uses) * 100;
+                                $barColor = $usagePercentage > 80 ? 'bg-red-500' : ($usagePercentage > 50 ? 'bg-yellow-500' : 'bg-green-500');
+                                @endphp
+                                <div class="relative w-full bg-gray-100 rounded-full h-2.5 dark:bg-gray-700 overflow-hidden">
+                                    <div class="h-2.5 rounded-full transition-all duration-500 {{ $barColor }}"
+                                        style="width: {{ min($usagePercentage, 100) }}%"
+                                        @mouseenter="showDetails = true"
+                                        @mouseleave="showDetails = false">
+                                    </div>
+                                    <!-- Tooltip -->
+                                    <div x-show="showDetails"
+                                        x-transition:enter="transition ease-out duration-200"
+                                        x-transition:enter-start="opacity-0 transform -translate-y-2"
+                                        x-transition:enter-end="opacity-100 transform translate-y-0"
+                                        class="absolute -top-10 left-1/2 transform -translate-x-1/2 px-3 py-1 text-xs text-white bg-gray-900 rounded-md shadow-lg">
+                                        {{ number_format($usagePercentage, 1) }}% used
                                     </div>
                                 </div>
                             </div>
                             @endif
 
+                            <!-- Description with Expandable Text -->
                             @if($coupon->description)
-                            <div class="flex items-start text-sm text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg mt-4">
-                                <svg class="w-5 h-5 mr-3 mt-0.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div x-data="{ expanded: false }"
+                                class="flex items-start text-sm text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg mt-4">
+                                <svg class="w-5 h-5 mr-3 mt-0.5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
-                                <span class="leading-relaxed">{{ $coupon->description }}</span>
+                                <div class="flex-1">
+                                    <p class="leading-relaxed" :class="{ 'line-clamp-2': !expanded }">
+                                        {{ $coupon->description }}
+                                    </p>
+                                    @if(strlen($coupon->description) > 120)
+                                    <button @click="expanded = !expanded"
+                                        class="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 text-xs mt-1 focus:outline-none">
+                                        <span x-text="expanded ? 'Show less' : 'Show more'"></span>
+                                    </button>
+                                    @endif
+                                </div>
                             </div>
                             @endif
                         </div>
                     </div>
                 </div>
                 @empty
+                <!-- Enhanced Empty State -->
                 <div class="col-span-full">
                     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-8">
                         <div class="text-center max-w-sm mx-auto">
-                            <!-- Empty State Illustration -->
-                            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 dark:bg-blue-900/50 mb-4">
-                                <svg class="w-8 h-8 text-blue-500 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <!-- Animated Empty State Illustration -->
+                            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 dark:bg-blue-900/50 mb-4 relative overflow-hidden group">
+                                <svg class="w-8 h-8 text-blue-500 dark:text-blue-400 transform group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
+                                <div class="absolute inset-0 bg-blue-100 dark:bg-blue-800/50 transform -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
                             </div>
 
                             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">No Coupons Found</h3>
                             <p class="text-gray-500 dark:text-gray-400 mb-6">Start creating coupons to offer discounts to your customers.</p>
 
                             <a href="{{ route('coupons.create') }}"
-                                class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200 shadow-sm">
+                                class="inline-flex items-center justify-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-200 shadow-sm focus:ring-4 focus:ring-blue-500/20">
                                 <svg class="w-5 h-5 mr-2 -ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                                 </svg>
                                 Create New Coupon
                             </a>
 
-                            <!-- Quick Tips -->
+                            <!-- Quick Tips with Hover Effects -->
                             <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
                                 <h4 class="text-sm font-medium text-gray-900 dark:text-white mb-3">Quick Tips</h4>
-                                <ul class="space-y-2">
-                                    <li class="flex items-start text-sm text-gray-500 dark:text-gray-400">
-                                        <svg class="w-5 h-5 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <ul class="space-y-3">
+                                    <li class="flex items-start text-sm text-gray-500 dark:text-gray-400 group">
+                                        <svg class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 transform group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
                                         Set expiration dates to create urgency
                                     </li>
-                                    <li class="flex items-start text-sm text-gray-500 dark:text-gray-400">
-                                        <svg class="w-5 h-5 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <li class="flex items-start text-sm text-gray-500 dark:text-gray-400 group">
+                                        <svg class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 transform group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
                                         Use minimum order values strategically
                                     </li>
-                                    <li class="flex items-start text-sm text-gray-500 dark:text-gray-400">
-                                        <svg class="w-5 h-5 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <li class="flex items-start text-sm text-gray-500 dark:text-gray-400 group">
+                                        <svg class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 transform group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
                                         Track usage with analytics
@@ -341,17 +382,53 @@
                 </div>
                 @endforelse
             </div>
-
-            <!-- Add this script section at the bottom of your blade file -->
-
-
-
-
-            <!-- Pagination -->
-            <div class="mt-6">
-                {{ $coupons->links() }}
-            </div>
         </div>
+    </div>
+
+    <!-- Toast Notification Component -->
+    <div x-data="{
+        notifications: [],
+        add(message) {
+            this.notifications.push({
+                id: Date.now(),
+                message,
+                show: true
+            });
+            setTimeout(() => {
+                this.remove(this.notifications[0].id);
+            }, 3000);
+        },
+        remove(id) {
+            this.notifications = this.notifications.filter(n => n.id !== id);
+        }
+    }"
+        @notify.window="add($event.detail.message)"
+        class="fixed bottom-0 right-0 p-4 space-y-4 z-50">
+        <template x-for="notification in notifications" :key="notification.id">
+            <div x-show="notification.show"
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="transform translate-x-full opacity-0"
+                x-transition:enter-end="transform translate-x-0 opacity-100"
+                x-transition:leave="transition ease-in duration-200"
+                x-transition:leave-start="transform translate-x-0 opacity-100"
+                x-transition:leave-end="transform translate-x-full opacity-0"
+                class="bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center space-x-3">
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span x-text="notification.message"></span>
+            </div>
+        </template>
+    </div>
+
+
+
+
+    <!-- Pagination -->
+    <div class="mt-6">
+        {{ $coupons->links() }}
+    </div>
+    </div>
     </div>
 
     @push('scripts')

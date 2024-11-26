@@ -8,58 +8,46 @@ use Illuminate\Support\Facades\Auth;
 
 class RedirectIfAuthenticatedWithRole
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
-    public function handle(Request $request, Closure $next)
-    {
-        if (Auth::check()) {
-            $user = Auth::user();
 
-            // Check if the user is inactive
-            if ($user->is_active == 0) {
+public function handle(Request $request, Closure $next){
+    if (Auth::check()) {$user = Auth::user();
+
+            // Check if the user is active
+            if (!$user->is_active) {
                 Auth::logout(); // Log out the inactive user
-                return redirect()->route('login')->withErrors(['error' => 'Your account is inactive. Please contact support.']);
+                return redirect()->route('login')->withErrors([
+                    'account_inactive' => 'Your account is inactive. Please contact support.',
+                ]);
             }
 
-            $userRoleId = $user->role_id;
+            // Check the user role and restrict routes accordingly
+            $userRole = $user->role;
 
-            // Define role-based default route redirections
-            $roleRedirects = [
-                2 => 'dashboard',      // Admin role
-                3 => 'welcome',        // User role
-                4 => 'manager.home',
-            ];
+            if ($userRole === 'admin') { // Admin Role
+                // Allow only admin routes
+                if (
+                    !$request->routeIs('dashboard*') &&
+                    !$request->routeIs('users.*') &&
+                    !$request->routeIs('orders.*') &&
+                    !$request->routeIs('products.*') &&
+                    !$request->routeIs('categories.*') &&
+                    !$request->routeIs('discounts.*') &&
+                    !$request->routeIs('coupons.*') &&
+                    !$request->routeIs('reviews.*') &&
+                    !$request->routeIs('profile.*')
+                ) {
+                    return redirect()->route('dashboard');
+                }
+            }
 
-            // Get the default route for the user's role
-            $defaultRoute = $roleRedirects[$userRoleId] ?? null;
-
-            if ($defaultRoute) {
-                // Redirect if the user tries to access an unauthorized route
-                if (!$request->routeIs($defaultRoute) && !$this->isAuthorizedRoute($userRoleId, $request)) {
-                    return redirect()->route($defaultRoute);
+            if ($userRole === 'user') { // Customer Role
+                // Allow only the welcome page
+                if (!$request->routeIs('home')) {
+                    return redirect()->route('home.index');
                 }
             }
         }
 
         return $next($request);
-    }
-
-    /**
-     * Check if the current route is authorized for the user's role.
-     */
-    private function isAuthorizedRoute(int $roleId, Request $request): bool
-    {
-        // Define role-based accessible routes
-        $authorizedRoutes = [
-            2 => ['dashboard', 'users.index', 'orders.index'], // Admin routes
-            3 => ['welcome'],                                  // User routes
-            4 => ['manager.home', 'manager.reports'],
-        ];
-
-        return isset($authorizedRoutes[$roleId]) &&
-            $request->routeIs(...$authorizedRoutes[$roleId]);
     }
 }

@@ -1,4 +1,6 @@
 <?php
+
+
 namespace App\Http\Controllers;
 
 use App\Models\Discount;
@@ -6,11 +8,50 @@ use Illuminate\Http\Request;
 
 class DiscountController extends Controller
 {
-    public function index()
-{
-    $discounts = Discount::all();  // You can use pagination if you have many discounts: ->paginate(10)
-    return view('admin.discounts.index', compact('discounts'));
-}
+    public function index(Request $request)  // Add the $request parameter
+    {
+        $query = Discount::query();
+
+        // Search functionality
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where('code', 'like', "%{$search}%")
+                  ->orWhere('discount_type', 'like', "%{$search}%");
+        }
+
+        // Filter by discount type
+        if ($request->filled('type')) {
+            $query->where('discount_type', $request->input('type'));
+        }
+
+        // Filter by minimum discount value
+        if ($request->filled('min_value')) {
+            $query->where('discount_value', '>=', $request->input('min_value'));
+        }
+
+        // Filter by date range
+        if ($request->filled('start_date')) {
+            $query->whereDate('created_at', '>=', $request->input('start_date'));
+        }
+
+        if ($request->filled('end_date')) {
+            $query->whereDate('created_at', '<=', $request->input('end_date'));
+        }
+
+        // Sorting
+        $sortField = $request->input('sort', 'created_at');
+        $sortDirection = $request->input('direction', 'desc');
+        $query->orderBy($sortField, $sortDirection);
+
+        // Pagination
+        $perPage = $request->input('per_page', 10);
+        $discounts = $query->paginate($perPage);
+
+        // Preserve query parameters in pagination links
+        $discounts->appends($request->all());
+
+        return view('admin.discounts.index', compact('discounts'));
+    }
 
     public function create()
     {
@@ -34,7 +75,7 @@ class DiscountController extends Controller
 
     public function edit(Discount $discount)
     {
-        return view('discounts.edit', compact('discount'));
+        return view('admin.discounts.edit', compact('discount'));
     }
 
     public function update(Request $request, Discount $discount)
@@ -49,6 +90,6 @@ class DiscountController extends Controller
 
         $discount->update($validated);
 
-        return redirect()->route('admin.discounts.index')->with('success', 'Discount updated successfully.');
+        return redirect()->route('discounts.index')->with('success', 'Discount updated successfully.');
     }
 }
