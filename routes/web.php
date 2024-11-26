@@ -20,8 +20,7 @@ Route::get('/dashboard/download-report', [DashboardController::class, 'downloadR
 
 Route::get('/home', [HomeController::class, 'index'])->name('home.index');
 
-
-
+Route::patch('/discounts/{discount}/toggle', [DiscountController::class, 'toggle'])->name('discounts.toggle');
 /*
 |----------------------------------------------------------------------
 | Public Routes
@@ -40,7 +39,7 @@ Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])-
 | Authentication Required Routes
 |----------------------------------------------------------------------
 */
-Route::middleware(['auth' , 'auth.role'])->group(function () {
+Route::middleware(['auth', 'auth.role'])->group(function () {
     // Profile Routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -70,7 +69,6 @@ Route::middleware(['auth' , 'auth.role'])->group(function () {
         Route::get('/orders/export', [OrderController::class, 'export'])->name('orders.export');
         Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
         Route::get('/orders/export', [OrderController::class, 'exportOrders'])->name('orders.export');
-
     });
 });
 
@@ -115,7 +113,6 @@ Route::middleware(['auth', 'auth.role'])->group(function () {
             Route::get('/{coupon}/edit', [CouponController::class, 'edit'])->name('coupons.edit');
             Route::put('/{coupon}', [CouponController::class, 'update'])->name('coupons.update');
             Route::patch('/{coupon}/toggle-status', [CouponController::class, 'toggleStatus'])->name('coupons.toggle-status');
-
         });
 
         // Discount Management

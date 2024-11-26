@@ -1,7 +1,7 @@
 <x-guest-layout>
-    <div class="nav-buttons">
+<div class="nav-buttons">
+        <a href="/home" class="nav-btn">Home</a>
     </div>
-
     <button id="theme-toggle" class="theme-toggle">
         🌞
     </button>
@@ -52,6 +52,12 @@
                 <x-primary-button class="btn btn-primary">
                     Log in
                 </x-primary-button>
+
+                @if (Route::has('register'))
+                    <a href="{{ route('register') }}" class="btn btn-secondary">
+                        Register
+                    </a>
+                @endif
             </div>
 
             @if (Route::has('password.request'))

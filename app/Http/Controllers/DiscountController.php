@@ -44,7 +44,7 @@ class DiscountController extends Controller
         $query->orderBy($sortField, $sortDirection);
 
         // Pagination
-        $perPage = $request->input('per_page', 10);
+        $perPage = $request->input('per_page', 5);
         $discounts = $query->paginate($perPage);
 
         // Preserve query parameters in pagination links
@@ -77,7 +77,11 @@ class DiscountController extends Controller
     {
         return view('admin.discounts.edit', compact('discount'));
     }
-
+    public function toggle(Discount $discount)
+    {
+        $discount->update(['is_active' => !$discount->is_active]);
+        return back()->with('success', 'Discount status updated successfully.');
+    }
     public function update(Request $request, Discount $discount)
     {
         $validated = $request->validate([
