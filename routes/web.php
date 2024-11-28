@@ -42,7 +42,7 @@ Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])-
 Route::middleware(['auth', 'auth.role'])->group(function () {
     // Profile Routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::patch('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Review Routes

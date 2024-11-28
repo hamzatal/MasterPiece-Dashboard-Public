@@ -62,9 +62,7 @@
                                     </th>
                                     <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                         <div class="flex items-center justify-end">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                                                <path d="M5 4a1 1 0 00-2 0v7.268a2 2 0 000 1.464V16a1 1 0 102 0v-1.268a2 2 0 001-1.732V5a1 1 0 00-1-1zm10 0a1 1 0 00-2 0v7.268a2 2 0 000 1.464V16a1 1 0 102 0v-1.268a2 2 0 001-1.732V5a1 1 0 00-1-1z" />
-                                            </svg>
+
                                             Actions
                                         </div>
                                     </th>
@@ -97,6 +95,8 @@
                                                 </svg>
                                                 Show
                                             </a>
+
+                                            @if(auth()->user()->role === 'super_admin' || (auth()->user()->role === 'admin' && $user->role === 'user'))
                                             <a href="{{ route('users.edit', $user) }}" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full shadow-sm text-green-600 bg-green-100 hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-300">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
                                                     <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
@@ -104,6 +104,9 @@
                                                 </svg>
                                                 Edit
                                             </a>
+                                            @endif
+
+                                            @if(auth()->user()->role === 'super_admin')
                                             <form action="{{ route('users.destroy', $user) }}" method="POST" class="inline">
                                                 @csrf
                                                 @method('DELETE')
@@ -114,7 +117,9 @@
                                                     Delete
                                                 </button>
                                             </form>
+                                            @endif
 
+                                            @if(auth()->user()->role === 'super_admin' || auth()->user()->role === 'admin')
                                             <form action="{{ route('users.toggleActive', $user) }}" method="POST" class="inline">
                                                 @csrf
                                                 @method('PATCH')
@@ -125,6 +130,7 @@
                                                     {{ $user->is_active ? 'Deactivate' : 'Activate' }}
                                                 </button>
                                             </form>
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>
