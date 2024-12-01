@@ -27,12 +27,15 @@ Route::patch('/discounts/{discount}/toggle', [DiscountController::class, 'toggle
 |----------------------------------------------------------------------
 */
 Route::resource('contacts', ContactController::class);
-
+Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store'); // Create category
 Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
 Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
-Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
 Route::get('categories/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
 Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update'); // Update category
+Route::resource('categories', CategoryController::class)->except(['show']);
+Route::patch('/categories/{category}/toggle-status', [CategoryController::class, 'toggleStatus'])->name('categories.toggle-status');
+
 
 /*
 |----------------------------------------------------------------------
@@ -59,7 +62,6 @@ Route::middleware(['auth', 'auth.role'])->group(function () {
         Route::get('/', [OrderController::class, 'index'])->name('orders.index');
         Route::get('/search', [OrderController::class, 'search'])->name('orders.search');
         Route::get('/export', [OrderController::class, 'export'])->name('orders.export');
-        Route::get('/create', [OrderController::class, 'create'])->name('orders.create');
         Route::get('/{order}', [OrderController::class, 'view'])->name('orders.view');
         Route::get('/{order}/edit', [OrderController::class, 'edit'])->name('orders.edit');
         Route::patch('/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.update-status');

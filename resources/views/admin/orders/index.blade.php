@@ -31,63 +31,85 @@
                     Export Orders
                 </a>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-6">
+
+                <!-- Total Orders -->
+                <div class="bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-lg shadow-lg p-6 transform hover:scale-105 transition duration-300">
                     <div class="flex items-center">
-                        <div class="p-3 bg-blue-100 dark:bg-blue-900 rounded-full">
-                            <svg class="h-6 w-6 text-blue-600 dark:text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="p-3 bg-white bg-opacity-20 rounded-full">
+                            <svg class="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                             </svg>
                         </div>
                         <div class="ml-4">
-                            <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Orders</h3>
-                            <p class="text-lg font-semibold text-gray-900 dark:text-gray-200">{{ $statistics['totalOrders'] }}</p>
+                            <h3 class="text-sm font-medium opacity-80">Total Orders</h3>
+                            <p class="text-2xl font-bold">{{ $statistics['totalOrders'] }}</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+                <!-- Complete Orders -->
+                <div class="bg-gradient-to-r from-green-500 to-green-700 text-white rounded-lg shadow-lg p-6 transform hover:scale-105 transition duration-300">
                     <div class="flex items-center">
-                        <div class="p-3 bg-green-100 dark:bg-green-900 rounded-full">
-                            <svg class="h-6 w-6 text-green-600 dark:text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="p-3 bg-white bg-opacity-20 rounded-full">
+                            <svg class="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                         </div>
                         <div class="ml-4">
-                            <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Complete Orders</h3>
-                            <p class="text-lg font-semibold text-gray-900 dark:text-gray-200">{{ $statistics['completedOrders'] }}</p>
+                            <h3 class="text-sm font-medium opacity-80">Complete Orders</h3>
+                            <p class="text-2xl font-bold">{{ $statistics['deliveredOrders'] }}</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+                <!-- Quick Stats -->
+                <div class="bg-gradient-to-r from-gray-500 to-gray-700 text-white rounded-lg shadow-lg p-6 transform hover:scale-105 transition duration-300">
+                    <h3 class="text-sm font-medium mb-4 opacity-80">Quick Stats</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-xs opacity-70">Filtered Orders</p>
+                            <p class="text-xl font-bold">{{ $orders->total() ?? 0 }}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs opacity-70">Total Value</p>
+                            <p class="text-xl font-bold">${{ number_format($orders->sum('total') ?? 0, 2) }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pending/Process Orders -->
+                <div class="bg-gradient-to-r from-yellow-500 to-yellow-700 text-white rounded-lg shadow-lg p-6 transform hover:scale-105 transition duration-300">
                     <div class="flex items-center">
-                        <div class="p-3 bg-yellow-100 dark:bg-yellow-900 rounded-full">
-                            <svg class="h-6 w-6 text-yellow-600 dark:text-yellow-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="p-3 bg-white bg-opacity-20 rounded-full">
+                            <svg class="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                         </div>
                         <div class="ml-4">
-                            <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Pend-Process Orders</h3>
-                            <p class="text-lg font-semibold text-gray-900 dark:text-gray-200">{{ $statistics['pendingOrders'] }}</p>
+                            <h3 class="text-sm font-medium opacity-80">Pending Orders</h3>
+                            <p class="text-2xl font-bold">{{ $statistics['pendingOrders'] }}</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+                <!-- Cancelled Orders -->
+                <div class="bg-gradient-to-r from-red-500 to-red-700 text-white rounded-lg shadow-lg p-6 transform hover:scale-105 transition duration-300">
                     <div class="flex items-center">
-                        <div class="p-3 bg-red-100 dark:bg-red-900 rounded-full">
-                            <svg class="h-6 w-6 text-red-600 dark:text-red-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="p-3 bg-white bg-opacity-20 rounded-full">
+                            <svg class="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                             </svg>
                         </div>
                         <div class="ml-4">
-                            <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Cancelled Orders</h3>
-                            <p class="text-lg font-semibold text-gray-900 dark:text-gray-200">{{ $statistics['cancelledOrders'] }}</p>
+                            <h3 class="text-sm font-medium opacity-80">Cancelled Orders</h3>
+                            <p class="text-2xl font-bold">{{ $statistics['cancelledOrders'] }}</p>
                         </div>
                     </div>
                 </div>
+
             </div>
+
 
             <div class="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
                 <form action="{{ route('orders.index') }}" method="GET" class="space-y-6">
@@ -166,22 +188,7 @@
                             </select>
                         </div>
 
-                        <!-- Quick Stats -->
-                        <div class="lg:col-span-1 md:col-span-2 lg:col-start-3">
-                            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
-                                <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Quick Stats</h3>
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400">Filtered Orders</p>
-                                        <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ $orders->total() ?? 0 }}</p>
-                                    </div>
-                                    <div>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400">Total Value</p>
-                                        <p class="text-lg font-semibold text-gray-900 dark:text-white">${{ number_format($orders->sum('total') ?? 0, 2) }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+
                     </div>
 
                     <!-- Custom Date Range -->

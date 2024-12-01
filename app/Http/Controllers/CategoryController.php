@@ -4,64 +4,106 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class CategoryController extends Controller
 {
+    // Display all categories
     public function index(Request $request)
-{
-    $query = $request->input('search'); // Get the search term
-    $categories = Category::when($query, function ($queryBuilder) use ($query) {
-        return $queryBuilder->where('name', 'like', '%' . $query . '%');
-    })->paginate(5);  // Paginate with 12 items per page
-
-    return view('admin.categories.index', compact('categories'));
-}
-
-    public function store(Request $request)
     {
-        // Validate the incoming data
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string|max:1000',
-        ]);
+        $search = $request->input('search');
+        $status = $request->input('status');
 
-        // Create the new category and store it in the database
-        $category = new Category();
-        $category->name = $request->name;
-        $category->description = $request->description;
-        $category->save();
+        $categories = Category::query()
+            ->when($search, fn($query) => $query->where('name', 'like', "%{$search}%")
+                ->orWhere('description', 'like', "%{$search}%"))
+            ->when($status, fn($query) => $query->where('status', $status))
+            ->orderBy('id', 'asc')
+            ->paginate(10);
 
-        // Redirect back with a success message
-        return redirect()->route('categories.index')->with('success', 'Category created successfully!');
+        return view('admin.categories.index', compact('categories'));
     }
+
+    // Toggle Category Status
+    public function toggleStatus($id)
+    {
+        $category = Category::findOrFail($id);
+        $category->update(['status' => $category->status === 'active' ? 'inactive' : 'active']);
+
+        return redirect()->route('categories.index')->with('success', 'Category status updated successfully!');
+    }
+
+
+    // Show form to create a category
     public function create()
     {
-        // Return the view for creating a category
         return view('admin.categories.create');
     }
-    public function update(Request $request, Category $category)
+
+    // Store a new category in the database
+    public function store(Request $request)
     {
-        // Validate the incoming data
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'description' => 'nullable|string|max:1000',
+            'description' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:50000',
         ]);
 
-        // Update the category with the new data
-        $category->update($request->only('name', 'description'));
+        $imagePath = $request->file('image') ? $request->file('image')->store('categories', 'public') : null;
 
-        // Redirect back to the categories index page with a success message
-        return redirect()->route('categories.index')->with('success', 'Category updated successfully.');
+        Category::create([
+            'name' => $validated['name'],
+            'description' => $validated['description'],
+            'image' => $imagePath,
+        ]);
+
+        return redirect()->route('categories.index')->with('success', 'Category created successfully!');
     }
 
-    public function edit(Category $category)
+    // Show form to edit a category
+    public function edit($id)
     {
-        // Return the view for editing the category, passing the category data
+        $category = Category::findOrFail($id);
         return view('admin.categories.edit', compact('category'));
     }
+
+    // Update a category in the database
+    public function update(Request $request, Category $category)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        if ($request->file('image')) {
+            // Delete the old image if it exists
+            if ($category->image) {
+                Storage::disk('public')->delete($category->image);
+            }
+            $imagePath = $request->file('image')->store('categories', 'public');
+        } else {
+            $imagePath = $category->image;
+        }
+
+        $category->update([
+            'name' => $validated['name'],
+            'description' => $validated['description'],
+            'image' => $imagePath,
+        ]);
+
+        return redirect()->route('categories.index')->with('success', 'Category updated successfully!');
+    }
+
+    // Delete a category
     public function destroy(Category $category)
     {
+        if ($category->image) {
+            Storage::disk('public')->delete($category->image);
+        }
+
         $category->delete();
-        return redirect()->back()->with('success', 'Category deleted successfully.');
+
+        return redirect()->route('categories.index')->with('success', 'Category deleted successfully!');
     }
 }
