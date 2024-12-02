@@ -23,8 +23,20 @@ class Product extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
     public function orders()
     {
         return $this->hasMany(Order::class);
+    }
+    // In Product model
+    public function discounts()
+    {
+        return $this->hasMany(Discount::class);
+    }
+    public function scopeTopSelling($query, $limit = 1)
+    {
+        return $query->withCount('orders')
+            ->orderBy('orders_count', 'desc')
+            ->limit($limit);
     }
 }

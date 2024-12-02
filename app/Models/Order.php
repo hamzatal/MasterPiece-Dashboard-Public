@@ -28,15 +28,14 @@ class Order extends Model
     {
         return $this->hasMany(OrderItem::class);
     }
-
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
     // Scopes
     public function scopeRecent($query)
     {
         return $query->orderBy('created_at', 'desc');
-    }
-    public function orders()
-    {
-        return $this->hasMany(Order::class);
     }
 
     public function scopeByStatus($query, $status)
@@ -48,10 +47,6 @@ class Order extends Model
     public function getFormattedTotalAttribute()
     {
         return '$' . number_format($this->total, 2);
-    }
-    public function user()
-    {
-        return $this->belongsTo(User::class);
     }
 
     public function getStatusColorAttribute()

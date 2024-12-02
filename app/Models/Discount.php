@@ -9,14 +9,38 @@ class Discount extends Model
 {
     use HasFactory;
 
-    // Define which attributes are mass-assignable
     protected $fillable = [
-        'code',
-        'discount_type',
-        'discount_value',
-        'min_order_value',
-        'expiry_date',
+        'product_id',
+        'percentage',
+        'startdate',
+        'enddate',
+        'is_active'
     ];
 
-    // Optionally, you can add additional logic, such as mutators or accessors
+    // Relationship with Product model
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
+
+    // Scopes for active and inactive discounts
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
+    public function scopeInactive($query)
+    {
+        return $query->where('is_active', false);
+    }
+
+    public function isExpired()
+    {
+        return $this->enddate < now();
+    }
+
+    public function calculateDiscountedPrice()
+    {
+        return $this->product->price - ($this->product->price * ($this->percentage / 100));
+    }
 }

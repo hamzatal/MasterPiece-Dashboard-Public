@@ -20,18 +20,7 @@
         }
     }">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-                {{-- Add New Category Button --}}
-                <div class="flex justify-end mb-4">
-                <a href="{{ route('categories.create') }}" class="inline-flex items-center px-6 py-3
-                    bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700
-                    text-white font-bold rounded-xl shadow-xl transform hover:scale-105
-                    transition-all duration-300 ease-in-out space-x-3 group">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 group-hover:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span>{{ __('Add New Category') }}</span>
-                </a>
-            </div>
+
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                 {{-- Search Bar --}}
@@ -56,24 +45,21 @@
                         </div>
                     </div>
                 </div>
-
+                {{-- Add New Category Button --}}
+                <div class="flex justify-end mb-0">
+                    <a href="{{ route('categories.create') }}" class="inline-flex items-center px-6 py-3
+                    bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700
+                    text-white font-bold rounded-xl shadow-xl transform hover:scale-105
+                    transition-all duration-300 ease-in-out space-x-3 group">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 group-hover:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>{{ __('Add New Category') }}</span>
+                    </a>
+                </div>
                 {{-- Per Page Selector --}}
                 <div class="col-span-1">
-                    <label for="per_page" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        {{ __('Per Page') }}
-                    </label>
-                    <select
-                        id="per_page"
-                        x-model="perPage"
-                        @change="submitFilters()"
-                        class="w-full px-4 py-3 bg-white dark:bg-gray-800 border-0 rounded-xl
-                        text-gray-900 dark:text-white shadow-lg focus:ring-2 focus:ring-blue-500
-                        transition-all duration-300 ease-in-out">
-                        <option value="10">10</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                    </select>
+
                 </div>
             </div>
 
@@ -100,15 +86,15 @@
                                 <td class="px-6 py-4 text-gray-600 dark:text-gray-300">{{ $category->description }}</td>
                                 <td class="px-6 py-4">
                                     <img src="{{ asset('storage/' . $category->image) }}"
-                                         alt="{{ $category->name }}"
-                                         class="w-20 h-20 object-cover rounded-xl shadow-md
+                                        alt="{{ $category->name }}"
+                                        class="w-20 h-20 object-cover rounded-xl shadow-md
                                          transform hover:scale-110 transition duration-300">
                                 </td>
 
                                 <td class="px-6 py-4">
                                     <div class="flex justify-center space-x-3">
                                         <a href="{{ route('categories.edit', $category->id) }}"
-                                           class="text-blue-600 hover:text-blue-800 dark:text-blue-400
+                                            class="text-blue-600 hover:text-blue-800 dark:text-blue-400
                                            dark:hover:text-blue-600 transition duration-300
                                            transform hover:scale-125 group">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 group-hover:rotate-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -116,13 +102,13 @@
                                             </svg>
                                         </a>
                                         <form action="{{ route('categories.destroy', $category->id) }}"
-                                              method="POST"
-                                              onsubmit="return confirm('{{ __('Are you sure you want to delete this category?') }}')"
-                                              class="inline">
+                                            method="POST"
+                                            onsubmit="return confirm('{{ __('Are you sure you want to delete this category?') }}')"
+                                            class="inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"
-                                                    class="text-red-600 hover:text-red-800 dark:text-red-400
+                                                class="text-red-600 hover:text-red-800 dark:text-red-400
                                                     dark:hover:text-red-600 transition duration-300
                                                     transform hover:scale-125 group">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 group-hover:rotate-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">

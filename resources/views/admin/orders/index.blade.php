@@ -31,165 +31,172 @@
                     Export Orders
                 </a>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-6">
-
-                <!-- Total Orders -->
-                <div class="bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-lg shadow-lg p-6 transform hover:scale-105 transition duration-300">
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4 mb-6">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 hover:scale-105 transition-transform duration-300">
                     <div class="flex items-center">
-                        <div class="p-3 bg-white bg-opacity-20 rounded-full">
-                            <svg class="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="p-3 bg-blue-100 dark:bg-blue-900 rounded-full">
+                            <svg class="h-6 w-6 text-blue-600 dark:text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                             </svg>
                         </div>
                         <div class="ml-4">
-                            <h3 class="text-sm font-medium opacity-80">Total Orders</h3>
-                            <p class="text-2xl font-bold">{{ $statistics['totalOrders'] }}</p>
+                            <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Orders</h3>
+                            <p class="text-lg font-semibold text-gray-900 dark:text-gray-200">{{ $statistics['totalOrders'] }}</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Complete Orders -->
-                <div class="bg-gradient-to-r from-green-500 to-green-700 text-white rounded-lg shadow-lg p-6 transform hover:scale-105 transition duration-300">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 hover:scale-105 transition-transform duration-300">
                     <div class="flex items-center">
-                        <div class="p-3 bg-white bg-opacity-20 rounded-full">
-                            <svg class="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="p-3 bg-green-100 dark:bg-green-900 rounded-full">
+                            <svg class="h-6 w-6 text-green-600 dark:text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                         </div>
                         <div class="ml-4">
-                            <h3 class="text-sm font-medium opacity-80">Complete Orders</h3>
-                            <p class="text-2xl font-bold">{{ $statistics['deliveredOrders'] }}</p>
+                            <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Complete Orders</h3>
+                            <p class="text-lg font-semibold text-gray-900 dark:text-gray-200">{{ $statistics['completedOrders'] }}</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Quick Stats -->
-                <div class="bg-gradient-to-r from-gray-500 to-gray-700 text-white rounded-lg shadow-lg p-6 transform hover:scale-105 transition duration-300">
-                    <h3 class="text-sm font-medium mb-4 opacity-80">Quick Stats</h3>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <p class="text-xs opacity-70">Filtered Orders</p>
-                            <p class="text-xl font-bold">{{ $orders->total() ?? 0 }}</p>
-                        </div>
-                        <div>
-                            <p class="text-xs opacity-70">Total Value</p>
-                            <p class="text-xl font-bold">${{ number_format($orders->sum('total') ?? 0, 2) }}</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Pending/Process Orders -->
-                <div class="bg-gradient-to-r from-yellow-500 to-yellow-700 text-white rounded-lg shadow-lg p-6 transform hover:scale-105 transition duration-300">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 hover:scale-105 transition-transform duration-300">
                     <div class="flex items-center">
-                        <div class="p-3 bg-white bg-opacity-20 rounded-full">
-                            <svg class="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="p-3 bg-yellow-100 dark:bg-yellow-900 rounded-full">
+                            <svg class="h-6 w-6 text-yellow-600 dark:text-yellow-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                         </div>
                         <div class="ml-4">
-                            <h3 class="text-sm font-medium opacity-80">Pending Orders</h3>
-                            <p class="text-2xl font-bold">{{ $statistics['pendingOrders'] }}</p>
+                            <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Pend-Process Orders</h3>
+                            <p class="text-lg font-semibold text-gray-900 dark:text-gray-200">{{ $statistics['pendingOrders'] }}</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Cancelled Orders -->
-                <div class="bg-gradient-to-r from-red-500 to-red-700 text-white rounded-lg shadow-lg p-6 transform hover:scale-105 transition duration-300">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 hover:scale-105 transition-transform duration-300">
                     <div class="flex items-center">
-                        <div class="p-3 bg-white bg-opacity-20 rounded-full">
-                            <svg class="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="p-3 bg-red-100 dark:bg-red-900 rounded-full">
+                            <svg class="h-6 w-6 text-red-600 dark:text-red-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                             </svg>
                         </div>
                         <div class="ml-4">
-                            <h3 class="text-sm font-medium opacity-80">Cancelled Orders</h3>
-                            <p class="text-2xl font-bold">{{ $statistics['cancelledOrders'] }}</p>
+                            <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Cancelled Orders</h3>
+                            <p class="text-lg font-semibold text-gray-900 dark:text-gray-200">{{ $statistics['cancelledOrders'] }}</p>
                         </div>
                     </div>
                 </div>
 
-            </div>
-
-
-            <div class="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
-                <form action="{{ route('orders.index') }}" method="GET" class="space-y-6">
-                    <!-- Search Bar -->
-                    <div class="relative">
-                        <label for="search" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                            Search Orders
-                        </label>
-                        <div class="relative">
-                            <input
-                                type="text"
-                                id="search"
-                                name="search"
-                                value="{{ request('search') }}"
-                                placeholder="Search by order ID, customer name, or product..."
-                                class="w-full pl-10 pr-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600
-                           rounded-lg text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-blue-500
-                           focus:border-blue-500 transition-colors duration-200 ease-in-out">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
-                                </svg>
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 hover:scale-105 transition-transform duration-300">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-gray-100 dark:bg-gray-700 rounded-full">
+                            <svg class="h-6 w-6 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                            </svg>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Quick Stats</h3>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">Filtered Orders</p>
+                                    <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ $orders->total() ?? 0 }}</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">Total Value</p>
+                                    <p class="text-lg font-semibold text-gray-900 dark:text-white">${{ number_format($orders->sum('total') ?? 0, 2) }}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Filters Grid -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <!-- Status Filter -->
-                        <div>
-                            <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                Order Status
-                            </label>
-                            <select
-                                id="status"
-                                name="status"
-                                x-data="{ status: '{{ request('status') }}' }"
-                                x-model="status"
-                                @change="$el.form.submit()"
-                                class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg
-                           text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                           transition-colors duration-200 ease-in-out">
-                                <option value="">All Statuses</option>
-                                @foreach(['pending', 'processing', 'shipped', 'delivered', 'cancelled'] as $status)
-                                <option
-                                    value="{{ $status }}"
-                                    @selected(request('status')==$status)>
-                                    {{ ucfirst($status) }}
-                                </option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <!-- Time Filter -->
-                        <div>
-                            <label for="time_filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                Time Period
-                            </label>
-                            <select
-                                id="time_filter"
-                                name="time_filter"
-                                x-data="{ time_filter: '{{ request('time_filter') }}' }"
-                                x-model="time_filter"
-                                @change="$el.form.submit()"
-                                class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg
-                           text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                           transition-colors duration-200 ease-in-out">
-                                <option value="">All Time</option>
-                                <option value="today" @selected(request('time_filter')=='today' )>Today</option>
-                                <option value="yesterday" @selected(request('time_filter')=='yesterday' )>Yesterday</option>
-                                <option value="this_week" @selected(request('time_filter')=='this_week' )>This Week</option>
-                                <option value="last_week" @selected(request('time_filter')=='last_week' )>Last Week</option>
-                                <option value="this_month" @selected(request('time_filter')=='this_month' )>This Month</option>
-                                <option value="last_month" @selected(request('time_filter')=='last_month' )>Last Month</option>
-                                <option value="custom" @selected(request('time_filter')=='custom' )>Custom Range</option>
-                            </select>
-                        </div>
+                </div>
+            </div>
+            <div class="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                <form action="{{ route('orders.index') }}" method="GET" class="space-y-6">
 
 
-                    </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <!-- Search Bar -->
+    <div class="md:col-span-2">
+        <label for="search" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <svg class="inline-block w-5 h-5 mr-2 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+            Search Orders
+        </label>
+        <div class="relative">
+            <input
+                type="text"
+                id="search"
+                name="search"
+                value="{{ request('search') }}"
+                placeholder="Search by order ID, customer name, or product..."
+                class="w-full pl-10 pr-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 ease-in-out">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters Container -->
+    <div class="grid grid-cols-2 gap-4">
+        <!-- Status Filter -->
+        <div>
+            <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <svg class="inline-block w-5 h-5 mr-2 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                </svg>
+                Status
+            </label>
+            <select
+                id="status"
+                name="status"
+                x-data="{ status: '{{ request('status') }}' }"
+                x-model="status"
+                @change="$el.form.submit()"
+                class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 ease-in-out">
+                <option value="">All Statuses</option>
+                @foreach(['pending', 'processing', 'shipped', 'delivered', 'cancelled'] as $status)
+                <option
+                    value="{{ $status }}"
+                    @selected(request('status')==$status)>
+                    {{ ucfirst($status) }}
+                </option>
+                @endforeach
+            </select>
+        </div>
+
+        <!-- Time Filter -->
+        <div>
+            <label for="time_filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <svg class="inline-block w-5 h-5 mr-2 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Time Period
+            </label>
+            <select
+                id="time_filter"
+                name="time_filter"
+                x-data="{ time_filter: '{{ request('time_filter') }}' }"
+                x-model="time_filter"
+                @change="$el.form.submit()"
+                class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 ease-in-out">
+                <option value="">All Time</option>
+                <option value="today" @selected(request('time_filter')=='today' )>Today</option>
+                <option value="yesterday" @selected(request('time_filter')=='yesterday' )>Yesterday</option>
+                <option value="this_week" @selected(request('time_filter')=='this_week' )>This Week</option>
+                <option value="last_week" @selected(request('time_filter')=='last_week' )>Last Week</option>
+                <option value="this_month" @selected(request('time_filter')=='this_month' )>This Month</option>
+                <option value="last_month" @selected(request('time_filter')=='last_month' )>Last Month</option>
+                <option value="custom" @selected(request('time_filter')=='custom' )>Custom Range</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+
 
                     <!-- Custom Date Range -->
                     <div x-data="{ showCustomDates: '{{ request('time_filter') }}' === 'custom' }"
@@ -200,6 +207,9 @@
                         x-transition:enter-end="opacity-100 transform scale-100">
                         <div>
                             <label for="date_from" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                <svg class="inline-block w-5 h-5 mr-2 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
                                 From Date
                             </label>
                             <input
@@ -207,12 +217,13 @@
                                 id="date_from"
                                 name="date_from"
                                 value="{{ request('date_from') }}"
-                                class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg
-                           text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                           transition-colors duration-200 ease-in-out">
+                                class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 ease-in-out">
                         </div>
                         <div>
                             <label for="date_to" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                <svg class="inline-block w-5 h-5 mr-2 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
                                 To Date
                             </label>
                             <input
@@ -220,9 +231,7 @@
                                 id="date_to"
                                 name="date_to"
                                 value="{{ request('date_to') }}"
-                                class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg
-                           text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                           transition-colors duration-200 ease-in-out">
+                                class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 ease-in-out">
                         </div>
                     </div>
 
@@ -234,8 +243,10 @@
                             x-transition>
                             <button
                                 type="submit"
-                                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg
-                           transition-colors duration-200 ease-in-out focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 ease-in-out focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                <svg class="inline-block w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
                                 Apply Date Range
                             </button>
                         </div>
@@ -243,8 +254,7 @@
                         <!-- Clear Filters Button (visible when any filter is active) -->
                         @if(request('status') || request('time_filter') || request('search'))
                         <a href="{{ route('orders.index') }}"
-                            class="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600
-                          text-gray-700 dark:text-gray-300 font-medium rounded-lg transition-colors duration-200 ease-in-out">
+                            class="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-medium rounded-lg transition-colors duration-200 ease-in-out">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                             </svg>
@@ -259,6 +269,9 @@
                     <thead class="bg-gray-50 dark:bg-gray-700">
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                <svg class="inline-block w-5 h-5 mr-2 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                </svg>
                                 Order ID
                             </th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">

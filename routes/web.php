@@ -15,7 +15,6 @@ use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
 
-
 Route::get('/dashboard/download-report', [DashboardController::class, 'downloadReport'])->name('dashboard.download-report');
 
 Route::get('/home', [HomeController::class, 'index'])->name('home.index');
@@ -117,11 +116,15 @@ Route::middleware(['auth', 'auth.role'])->group(function () {
             Route::patch('/{coupon}/toggle-status', [CouponController::class, 'toggleStatus'])->name('coupons.toggle-status');
         });
 
-        // Discount Management
-        Route::resource('discounts', DiscountController::class);
+        // Discount Routes
         Route::prefix('discounts')->group(function () {
-            Route::get('/{discount}/activate', [DiscountController::class, 'activate'])->name('discounts.activate');
-            Route::get('/{discount}/deactivate', [DiscountController::class, 'deactivate'])->name('discounts.deactivate');
+            Route::get('/', [DiscountController::class, 'index'])->name('discounts.index'); // View all reviews
+            Route::get('/create', [DiscountController::class, 'create'])->name('discounts.create'); // Add brands
+            Route::get('/edit/{discount}', [DiscountController::class, 'edit'])->name('discounts.edit'); // Edit brands
+            Route::post('/', [DiscountController::class, 'store'])->name('discounts.store'); // Create brands
+            Route::put('/{discount}', [DiscountController::class, 'update'])->name('discounts.update'); // Update brands
+            Route::post('/{discount}/toggle-status', [DiscountController::class, 'toggleStatus'])->name('discounts.toggleStatus');
+            Route::delete('/{discount}', [DiscountController::class, 'destroy'])->name('discounts.destroy'); // Delete brands
         });
 
         // Reports
