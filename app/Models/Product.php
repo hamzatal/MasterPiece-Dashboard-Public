@@ -16,7 +16,7 @@ class Product extends Model
         'category_id',
         'stock_quantity',
         'description',
-        'image_path'
+        'image'  // Changed from image_path to image
     ];
 
     public function category()

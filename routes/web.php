@@ -64,7 +64,7 @@ Route::middleware(['auth', 'auth.role'])->group(function () {
         Route::get('/{order}', [OrderController::class, 'view'])->name('orders.view');
         Route::get('/{order}/edit', [OrderController::class, 'edit'])->name('orders.edit');
         Route::patch('/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.update-status');
-        Route::put('/{order}', [OrderController::class, 'update'])->name('orders.update');
+        Route::post('/{order}', [OrderController::class, 'update'])->name('orders.update');
         Route::get('/order/{id}', [OrderController::class, 'view'])->name('order.view');
         Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
         Route::get('/orders/export', [OrderController::class, 'export'])->name('orders.export');

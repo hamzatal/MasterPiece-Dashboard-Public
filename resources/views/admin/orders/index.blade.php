@@ -115,86 +115,86 @@
                 <form action="{{ route('orders.index') }}" method="GET" class="space-y-6">
 
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-    <!-- Search Bar -->
-    <div class="md:col-span-2">
-        <label for="search" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            <svg class="inline-block w-5 h-5 mr-2 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-            </svg>
-            Search Orders
-        </label>
-        <div class="relative">
-            <input
-                type="text"
-                id="search"
-                name="search"
-                value="{{ request('search') }}"
-                placeholder="Search by order ID, customer name, or product..."
-                class="w-full pl-10 pr-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 ease-in-out">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
-                </svg>
-            </div>
-        </div>
-    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- Search Bar -->
+                        <div class="md:col-span-2">
+                            <label for="search" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                <svg class="inline-block w-5 h-5 mr-2 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                                Search Orders
+                            </label>
+                            <div class="relative">
+                                <input
+                                    type="text"
+                                    id="search"
+                                    name="search"
+                                    value="{{ request('search') }}"
+                                    placeholder="Search by order ID, customer name, or product..."
+                                    class="w-full pl-10 pr-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 ease-in-out">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
 
-    <!-- Filters Container -->
-    <div class="grid grid-cols-2 gap-4">
-        <!-- Status Filter -->
-        <div>
-            <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                <svg class="inline-block w-5 h-5 mr-2 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
-                </svg>
-                Status
-            </label>
-            <select
-                id="status"
-                name="status"
-                x-data="{ status: '{{ request('status') }}' }"
-                x-model="status"
-                @change="$el.form.submit()"
-                class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 ease-in-out">
-                <option value="">All Statuses</option>
-                @foreach(['pending', 'processing', 'shipped', 'delivered', 'cancelled'] as $status)
-                <option
-                    value="{{ $status }}"
-                    @selected(request('status')==$status)>
-                    {{ ucfirst($status) }}
-                </option>
-                @endforeach
-            </select>
-        </div>
+                        <!-- Filters Container -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <!-- Status Filter -->
+                            <div>
+                                <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    <svg class="inline-block w-5 h-5 mr-2 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                                    </svg>
+                                    Status
+                                </label>
+                                <select
+                                    id="status"
+                                    name="status"
+                                    x-data="{ status: '{{ request('status') }}' }"
+                                    x-model="status"
+                                    @change="$el.form.submit()"
+                                    class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 ease-in-out">
+                                    <option value="">All Statuses</option>
+                                    @foreach(['pending', 'processing', 'shipped', 'delivered', 'cancelled'] as $status)
+                                    <option
+                                        value="{{ $status }}"
+                                        @selected(request('status')==$status)>
+                                        {{ ucfirst($status) }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
 
-        <!-- Time Filter -->
-        <div>
-            <label for="time_filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                <svg class="inline-block w-5 h-5 mr-2 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                Time Period
-            </label>
-            <select
-                id="time_filter"
-                name="time_filter"
-                x-data="{ time_filter: '{{ request('time_filter') }}' }"
-                x-model="time_filter"
-                @change="$el.form.submit()"
-                class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 ease-in-out">
-                <option value="">All Time</option>
-                <option value="today" @selected(request('time_filter')=='today' )>Today</option>
-                <option value="yesterday" @selected(request('time_filter')=='yesterday' )>Yesterday</option>
-                <option value="this_week" @selected(request('time_filter')=='this_week' )>This Week</option>
-                <option value="last_week" @selected(request('time_filter')=='last_week' )>Last Week</option>
-                <option value="this_month" @selected(request('time_filter')=='this_month' )>This Month</option>
-                <option value="last_month" @selected(request('time_filter')=='last_month' )>Last Month</option>
-                <option value="custom" @selected(request('time_filter')=='custom' )>Custom Range</option>
-            </select>
-        </div>
-    </div>
-</div>
+                            <!-- Time Filter -->
+                            <div>
+                                <label for="time_filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    <svg class="inline-block w-5 h-5 mr-2 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    Time Period
+                                </label>
+                                <select
+                                    id="time_filter"
+                                    name="time_filter"
+                                    x-data="{ time_filter: '{{ request('time_filter') }}' }"
+                                    x-model="time_filter"
+                                    @change="$el.form.submit()"
+                                    class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 ease-in-out">
+                                    <option value="">All Time</option>
+                                    <option value="today" @selected(request('time_filter')=='today' )>Today</option>
+                                    <option value="yesterday" @selected(request('time_filter')=='yesterday' )>Yesterday</option>
+                                    <option value="this_week" @selected(request('time_filter')=='this_week' )>This Week</option>
+                                    <option value="last_week" @selected(request('time_filter')=='last_week' )>Last Week</option>
+                                    <option value="this_month" @selected(request('time_filter')=='this_month' )>This Month</option>
+                                    <option value="last_month" @selected(request('time_filter')=='last_month' )>Last Month</option>
+                                    <option value="custom" @selected(request('time_filter')=='custom' )>Custom Range</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
 
 
 
@@ -350,13 +350,13 @@
                                             <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
                                         </svg>
                                     </a>
-                                    <a href="{{ route('orders.edit', $order) }}"
+                                    <!-- <a href="{{ route('orders.edit', $order) }}"
                                         class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-600 p-2 hover:bg-indigo-50 dark:hover:bg-indigo-900/50 rounded-full transition-colors"
                                         title="Edit Order">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                             <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
                                         </svg>
-                                    </a>
+                                    </a> -->
 
                                 </div>
                             </td>

@@ -25,7 +25,6 @@
                 <form action="{{ $order->exists ? route('orders.update', $order) : route('orders.store') }}" method="POST" class="p-6">
                     @csrf
                     @if($order->exists)
-                    @method('PUT')
                     @endif
 
                     <div class="grid grid-cols-1 gap-8 sm:grid-cols-2">
@@ -48,43 +47,29 @@
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                 </svg>
                                             </div>
-                                            <input type="text" name="customer_name" id="customer_name" value="{{ old('customer_name', $order->customer->name ?? '') }}"
+                                            <input type="text" name="name" id="name" value="{{ old('name', $order->user->name ?? '') }}"
                                                 class="pl-10 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                                         </div>
-                                        @error('customer_name')
+                                        @error('name')
                                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                         @enderror
                                     </div>
 
+
                                     <div>
-                                        <label for="customer_email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Customer Email</label>
-                                        <div class="mt-1 relative rounded-md shadow-sm">
-                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                                </svg>
-                                            </div>
-                                            <input type="email" name="customer_email" id="customer_email" value="{{ old('customer_email', $order->customer->email ?? '') }}"
-                                                class="pl-10 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                                        </div>
-                                        @error('customer_email')
-                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                        @enderror
-                                    </div>
-                                    <div>
-                                        <label for="customer_phone" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Customer Phone</label>
+                                        <label for="phone" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Customer Phone</label>
                                         <div class="mt-1 relative rounded-md shadow-sm">
                                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                                 <!-- Phone Icon -->
-                                              
+
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                                 </svg>
                                             </div>
-                                            <input type="tel" name="customer_phone" id="customer_phone" value="{{ old('customer_phone', $order->customer->phone ?? '') }}"
+                                            <input type="tel" name="phone" id="customer_phone" value="{{ old('phone', $order->user->phone ?? '') }}"
                                                 class="pl-10 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                                         </div>
-                                        @error('customer_phone')
+                                        @error('phone')
                                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                         @enderror
                                     </div>
@@ -117,6 +102,17 @@
                                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                         @enderror
                                     </div>
+<div>
+    <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Order Status</label>
+    <select name="status" id="status"
+        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+        <option value="pending" {{ old('status', $order->status ?? '') == 'pending' ? 'selected' : '' }}>Pending</option>
+        <option value="completed" {{ old('status', $order->status ?? '') == 'completed' ? 'selected' : '' }}>Completed</option>
+    </select>
+    @error('status')
+    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+    @enderror
+</div>
 
                                     <div>
                                         <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Status</label>

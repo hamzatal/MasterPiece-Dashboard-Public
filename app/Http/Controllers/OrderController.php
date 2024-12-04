@@ -10,11 +10,19 @@ use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\OrdersExport;
+use App\Models\Product;
 
 class OrderController extends Controller
 {
+    public function show($orderId)
+    {
+
+        $order = Order::with('shipping_address')->findOrFail($orderId);
+
+        return view('order.show', compact('order'));
+    }
     const ALLOWED_STATUSES = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
-    const ALLOWED_PAYMENT_METHODS = ['credit_card', 'paypal', 'bank_transfer'];
+    const ALLOWED_PAYMENT_METHODS = ['visa', 'paypal', 'cash'];
 
     /**
      * Display a listing of orders with statistics
@@ -49,76 +57,28 @@ class OrderController extends Controller
     {
         return view('admin.orders.edit', ['order' => new Order()]);
     }
-    public function filterOrders(Request $request)
-    {
-        $search = $request->input('search');
-        $status = $request->input('status');
-        $dateFilter = $request->input('date');
-
-        // Define the statuses array
-        $statuses = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
-
-        $orders = Order::query()
-            ->when($search, function ($query) use ($search) {
-                $query->where('id', 'like', "%{$search}%")
-                    ->orWhere('customer_name', 'like', "%{$search}%")
-                    ->orWhere('status', 'like', "%{$search}%");
-            })
-            ->when($status, function ($query) use ($status) {
-                $query->where('status', $status);
-            })
-            ->when($dateFilter, function ($query) use ($dateFilter) {
-                $date = now();
-                switch ($dateFilter) {
-                    case 'today':
-                        $query->whereDate('created_at', $date->toDateString());
-                        break;
-                    case 'this_week':
-                        $query->whereBetween('created_at', [$date->startOfWeek(), $date->endOfWeek()]);
-                        break;
-                    case 'this_month':
-                        $query->whereMonth('created_at', $date->month)
-                            ->whereYear('created_at', $date->year);
-                        break;
-                    case 'last_month':
-                        $query->whereMonth('created_at', $date->subMonth()->month)
-                            ->whereYear('created_at', $date->year);
-                        break;
-                }
-            })
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
-
-        return view('orders.index', compact('orders', 'statuses')); // Passing statuses to the view
-    }
-    /**
-     * Show specific order details
-     */
-    public function view($id)
-    {
-        $order = Order::with(['customer', 'orderItems'])->findOrFail($id);
-        return view('admin.orders.view', compact('order'));
-    }
 
     /**
      * Store a new order
      */
     public function store(Request $request)
     {
-        $validatedData = $this->validateOrderData($request);
+        dd($request);
 
+        $validatedData = $this->validateOrderData($request);
         try {
             DB::transaction(function () use ($validatedData) {
-                $customer = User::firstOrCreate(
-                    ['email' => $validatedData['customer_email']],
-                    ['name' => $validatedData['customer_name']]
+                $user = User::firstOrCreate(
+                    ['email' => $validatedData['email']],
+                    ['name' => $validatedData['name']]
                 );
 
                 Order::create([
-                    'customer_id' => $customer->id,
+                    'user_id' => $user->id,
                     'status' => $validatedData['status'],
                     'total' => $validatedData['total'],
-                    'payment_method' => $validatedData['payment_method'],
+                    'payment' => $validatedData['payment'],
+                    'payment_status' => $validatedData['payment_status'] ?? 'pending',
                     'notes' => $validatedData['notes']
                 ]);
             });
@@ -139,24 +99,16 @@ class OrderController extends Controller
      */
     public function update(Request $request, Order $order)
     {
+
         $validatedData = $this->validateOrderData($request);
-
         try {
-            DB::transaction(function () use ($validatedData, $order) {
-                $customer = User::updateOrCreate(
-                    ['email' => $validatedData['customer_email']],
-                    ['name' => $validatedData['customer_name']]
-                );
 
-                $order->update([
-                    'customer_id' => $customer->id,
-                    'status' => $validatedData['status'],
-                    'total' => $validatedData['total'],
-                    'payment_method' => $validatedData['payment_method'],
-                    'notes' => $validatedData['notes']
-                ]);
-            });
+            $order->status = $validatedData['status'];
+            $order->total = $validatedData['total'];
+            $order->payment = $validatedData['payment'];
+            $order->payment_status = $validatedData['payment_status'];
 
+            $order->save();
             return redirect()
                 ->route('orders.index')
                 ->with('success', 'Order updated successfully');
@@ -169,18 +121,35 @@ class OrderController extends Controller
     }
 
     /**
-     * Generate PDF invoice for order
+     * Show specific order details
      */
-    public function generateInvoice(Order $order)
+    public function view($id)
     {
-        $order->load('customer', 'orderItems');
-        $pdf = Pdf::loadView('orders.invoice', compact('order'));
-        return $pdf->download("invoice_{$order->id}.pdf");
+        $order = Order::with(['user', 'orderItems'])->findOrFail($id);
+        // $items = Product::where('id', $order->orderItems->pluck('product_id')->toArray())->findOrFail($id);
+
+        // dd($order);
+        return view('admin.orders.view', compact('order'));
     }
+
+    /**
+     * Edit existing order
+     */
     public function edit(Order $order)
     {
         return view('admin.orders.edit', compact('order'));
     }
+
+    /**
+     * Generate PDF invoice for order
+     */
+    public function generateInvoice(Order $order)
+    {
+        $order->load('user', 'orderItems');
+        $pdf = Pdf::loadView('orders.invoice', compact('order'));
+        return $pdf->download("invoice_{$order->id}.pdf");
+    }
+
     /**
      * Export orders to Excel
      */
@@ -199,7 +168,7 @@ class OrderController extends Controller
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
                 $q->where('id', 'LIKE', "%{$search}%")
-                    ->orWhereHas('customer', function ($q) use ($search) {
+                    ->orWhereHas('user', function ($q) use ($search) {
                         $q->where('name', 'LIKE', "%{$search}%")
                             ->orWhere('email', 'LIKE', "%{$search}%");
                     });
@@ -267,24 +236,41 @@ class OrderController extends Controller
         return [
             'totalUsers' => User::count(),
             'recentUsers' => User::orderBy('created_at', 'desc')->take(5)->get(),
-            'topCustomers' => User::withCount('orders')
+            'topUsers' => User::withCount('orders')
                 ->orderBy('orders_count', 'desc')
                 ->take(5)
                 ->get()
         ];
     }
+    // app/Http/Controllers/OrderController.php
+    public function updateStatus(Request $request, Order $order)
+    {
+        // Validate the incoming status
+        $validatedData = $request->validate([
+            'status' => 'required|in:pending,processing,shipped,delivered,cancelled'
+        ]);
 
+        // Update the order status
+        $order->update([
+            'status' => $validatedData['status']
+        ]);
+
+        // Optional: Add a flash message
+        return redirect()->back()->with('success', 'Order status updated successfully');
+    }
     /**
      * Validate order data
      */
     private function validateOrderData(Request $request)
     {
         return $request->validate([
-            'customer_name' => 'required|string|max:255',
-            'customer_email' => 'required|email|max:255',
+            'name' => 'required|string|max:255',
+
             'status' => 'required|in:' . implode(',', self::ALLOWED_STATUSES),
             'total' => 'required|numeric|min:0',
-            'payment_method' => 'required|in:' . implode(',', self::ALLOWED_PAYMENT_METHODS),
+            'payment' => 'required|in:' . implode(',', self::ALLOWED_PAYMENT_METHODS),
+            'payment_status' => 'nullable|in:paid,pending,failed',
+            'email' => 'required|email|max:255',
             'notes' => 'nullable|string|max:1000'
         ]);
     }

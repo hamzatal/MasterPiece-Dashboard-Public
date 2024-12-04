@@ -28,7 +28,7 @@
     <div class="py-12 bg-gray-50 dark:bg-gray-900">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-8">
             <!-- Modern Summary Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
                 @php
                 $summaryCards = [
                 [
@@ -55,7 +55,7 @@
                 ],
                 [
                 'title' => 'Total Revenue',
-                'value' => "$" . number_format($totalRevenue, 2),
+                'value' => "$" . number_format($totalRevenue),
                 'icon' => '
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />',
                 'color' => 'bg-indigo-100 text-indigo-600 dark:bg-indigo-900 dark:text-indigo-300'
@@ -111,14 +111,17 @@
                                         <td class="py-4 text-gray-800 dark:text-gray-200">${{ number_format($order->total_price, 2) }}</td>
                                         <td class="py-4">
                                             <span class="px-3 py-1 rounded-full text-xs font-medium
-                                                {{ $order->status == 'Completed' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' :
-                                                   ($order->status == 'Pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300') }}">
+                @if($order->status == 'Completed') bg-green-100 text-green-800 dark:bg-green-600 dark:text-white
+                @elseif($order->status == 'Pending') bg-yellow-200 text-yellow-800 dark:bg-yellow-500 dark:text-white
+                @else bg-red-200 text-red-800 dark:bg-red-600 dark:text-white
+                @endif">
                                                 {{ $order->status }}
                                             </span>
                                         </td>
                                     </tr>
                                     @endforeach
                                 </tbody>
+
                             </table>
                         </div>
                     </div>
@@ -150,7 +153,7 @@
                                     <tr class="border-b last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                         <td class="py-4 text-gray-800 dark:text-gray-200">{{ $product->product->name }}</td>
                                         <td class="py-4 text-gray-800 dark:text-gray-200">{{ $product->total_sold }}</td>
-                                        <td class="py-4 text-gray-800 dark:text-gray-200">${{ number_format($product->total_revenue, 2) }}</td>
+                                        <td class="py-4 text-gray-800 dark:text-gray-200">${{ number_format($product->total_revenue, 0) }}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>

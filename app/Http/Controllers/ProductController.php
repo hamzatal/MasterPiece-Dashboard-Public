@@ -24,27 +24,28 @@ class ProductController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:products,name',
             'price' => 'required|numeric|min:0',
-            'category' => 'required|string|max:100', // Changed from category_id
+            'category' => 'required|string|max:100',
             'stock_quantity' => 'nullable|integer|min:0',
             'description' => 'nullable|string|max:1000',
             'image' => 'nullable|image|max:2048|mimes:jpeg,png,jpg,gif'
         ]);
 
         try {
-            $product = new Product();
-            $product->name = $validated['name'];
-            $product->price = $validated['price'];
-            $product->category = $validated['category'];
-            $product->stock_quantity = $validated['stock_quantity'] ?? null;
-            $product->description = $validated['description'] ?? null;
+            $data = [
+                'name' => $validated['name'],
+                'price' => $validated['price'],
+                'category' => $validated['category'],
+                'stock_quantity' => $validated['stock_quantity'] ?? null,
+                'description' => $validated['description'] ?? null,
+            ];
 
             // Handle image upload
             if ($request->hasFile('image')) {
                 $imagePath = $request->file('image')->store('products', 'public');
-                $product->image_path = $imagePath;
+                $data['image'] = $imagePath; // Changed from image_path to image
             }
 
-            $product->save();
+            $product = Product::create($data);
 
             return redirect()->route('products.index')
                 ->with('success', "Product '{$product->name}' added successfully!");
@@ -54,10 +55,7 @@ class ProductController extends Controller
                 ->withInput();
         }
     }
-    public function show(Product $product)
-    {
-        return view('admin.products.show', compact('product'));
-    }
+
     public function update(Request $request, Product $product)
     {
         $validated = $request->validate([
@@ -70,16 +68,20 @@ class ProductController extends Controller
         ]);
 
         try {
-            // Remove old image if new one is uploaded
+            $data = $validated;
+
+            // Handle image upload
             if ($request->hasFile('image')) {
-                if ($product->image_path) {
-                    Storage::disk('public')->delete($product->image_path);
+                // Delete old image if exists
+                if ($product->image) {
+                    Storage::disk('public')->delete($product->image);
                 }
+
                 $imagePath = $request->file('image')->store('products', 'public');
-                $validated['image_path'] = $imagePath;
+                $data['image'] = $imagePath; // Changed from image_path to image
             }
 
-            $product->update($validated);
+            $product->update($data);
 
             return redirect()->route('products.index')
                 ->with('success', "Product '{$product->name}' updated successfully.");
@@ -94,8 +96,8 @@ class ProductController extends Controller
     {
         try {
             // Delete associated image
-            if ($product->image_path) {
-                Storage::disk('public')->delete($product->image_path);
+            if ($product->image) { // Changed from image_path to image
+                Storage::disk('public')->delete($product->image);
             }
 
             $productName = $product->name;
@@ -108,6 +110,12 @@ class ProductController extends Controller
                 ->with('error', 'Failed to delete product. Please try again.');
         }
     }
+
+    public function show(Product $product)
+    {
+        return view('admin.products.show', compact('product'));
+    }
+
 
     // Additional method to handle low stock alerts
     public function checkLowStock()

@@ -13,8 +13,8 @@ class Order extends Model
     protected $fillable = [
         'total',
         'status',
-        'payment_method',
-        'notes',
+        'payment_id',
+        'payment_status',
     ];
 
     protected $casts = [
@@ -23,14 +23,28 @@ class Order extends Model
         'updated_at' => 'datetime',
     ];
 
+    // Default values
+    protected $attributes = [
+        'status' => 'pending',
+        'payment_method' => 'credit_card',
+    ];
+
     // Relationships
-    public function orderItems(): HasMany
+    public function orderItems()
     {
-        return $this->hasMany(OrderItem::class);
+        return $this->belongsToMany(Product::class, 'order_items')->withPivot('quantity', 'price');
+    }
+    public function shipping_address()
+    {
+        return $this->hasOne(ShippingAddress::class);  // Adjust according to your relationship
     }
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
     }
     // Scopes
     public function scopeRecent($query)
@@ -60,5 +74,15 @@ class Order extends Model
         ];
 
         return $colors[$this->status] ?? 'gray';
+    }
+
+    // Events
+    protected static function booted()
+    {
+        static::creating(function ($order) {
+            if (empty($order->status)) {
+                $order->status = 'pending';
+            }
+        });
     }
 }
