@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class CategoryController extends Controller
@@ -11,28 +13,48 @@ class CategoryController extends Controller
     // Display all categories
     public function index(Request $request)
     {
+        $query = Category::query();
+
+        if ($request->has('status')) {
+            $query->where('status', $request->status);
+        }
         $search = $request->input('search');
         $status = $request->input('status');
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('id', 'like', "%{$search}%")
+                    ->orWhere('name', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
 
-        $categories = Category::query()
-            ->when($search, fn($query) => $query->where('name', 'like', "%{$search}%")
-                ->orWhere('description', 'like', "%{$search}%"))
-            ->when($status, fn($query) => $query->where('status', $status))
-            ->orderBy('id', 'asc')
-            ->paginate(10);
+        $categories = $query->paginate($request->input('per_page', 10));
 
         return view('admin.categories.index', compact('categories'));
     }
 
     // Toggle Category Status
-    public function toggleStatus($id)
+    public function toggle(Category $category)
     {
-        $category = Category::findOrFail($id);
-        $category->update(['status' => $category->status === 'active' ? 'inactive' : 'active']);
+        // Use a database transaction to ensure data integrity
+        DB::transaction(function () use ($category) {
+            // Toggle category status
+            $category->status = $category->status == 'active' ? 'inactive' : 'active';
+            $category->save();
+
+            // If deactivating, hide all products in this category
+            if ($category->status == 'inactive') {
+                Product::where('category_id', $category->id)->update(['status' => 'inactive']);
+            } else {
+                // Optionally, you might want to reactivate products
+                // This depends on your specific business logic
+                Product::where('category_id', $category->id)->update(['status' => 'active']);
+            }
+        });
 
         return redirect()->route('categories.index')->with('success', 'Category status updated successfully!');
     }
-
 
     // Show form to create a category
     public function create()

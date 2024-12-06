@@ -11,13 +11,14 @@ class Product extends Model
 
     protected $fillable = [
         'name',
-        'price',
-        'discount',
-        'category_id',
-        'stock_quantity',
         'description',
-        'image'  // Changed from image_path to image
+        'price',
+        'original_price',
+        'stock_quantity',
+        'category_id',
+        'image'
     ];
+
 
     public function category()
     {

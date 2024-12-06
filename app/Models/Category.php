@@ -4,23 +4,34 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Builder;
 
-class Category extends Authenticatable
+class Category extends Model
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasFactory;
 
     protected $fillable = [
         'name',
         'description',
         'image',
+        'status'
     ];
 
-    // Define the relationship to Product
+    // Relationship with products
     public function products()
     {
         return $this->hasMany(Product::class);
+    }
+
+    // Scope to filter active categories
+    public function scopeActive(Builder $query)
+    {
+        return $query->where('status', 'active');
+    }
+
+    // Scope to filter inactive categories
+    public function scopeInactive(Builder $query)
+    {
+        return $query->where('status', 'inactive');
     }
 }

@@ -15,6 +15,9 @@ use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
 
+
+
+
 Route::get('/dashboard/download-report', [DashboardController::class, 'downloadReport'])->name('dashboard.download-report');
 
 Route::get('/home', [HomeController::class, 'index'])->name('home.index');
@@ -33,8 +36,7 @@ Route::get('categories/{category}/edit', [CategoryController::class, 'edit'])->n
 Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update'); // Update category
 Route::resource('categories', CategoryController::class)->except(['show']);
-Route::patch('/categories/{category}/toggle-status', [CategoryController::class, 'toggleStatus'])->name('categories.toggle-status');
-
+Route::post('categories/{category}/toggle', [CategoryController::class, 'toggle'])->name('categories.toggle');
 
 /*
 |----------------------------------------------------------------------

@@ -11,38 +11,40 @@ class ProductController extends Controller
 {
     public function index()
     {
-        // Fetch products with eager loading and pagination
+        $categories = Category::all();
         $products = Product::with('category')
             ->latest()
             ->paginate(10);
 
-        return view('admin.products.index', compact('products'));
+        return view('admin.products.index', compact('products', 'categories'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:products,name',
+            'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
-            'category' => 'required|string|max:100',
+            'original_price' => 'nullable|numeric|min:0',
             'stock_quantity' => 'nullable|integer|min:0',
-            'description' => 'nullable|string|max:1000',
-            'image' => 'nullable|image|max:2048|mimes:jpeg,png,jpg,gif'
+            'category_id' => 'required|exists:categories,id',
+            'image' => 'nullable|image|max:2048|mimes:jpeg,png,jpg,gif',
         ]);
 
         try {
             $data = [
                 'name' => $validated['name'],
-                'price' => $validated['price'],
-                'category' => $validated['category'],
-                'stock_quantity' => $validated['stock_quantity'] ?? null,
                 'description' => $validated['description'] ?? null,
+                'price' => $validated['price'],
+                'original_price' => $validated['original_price'] ?? null,
+                'stock_quantity' => $validated['stock_quantity'] ?? null,
+                'category_id' => $validated['category_id'],
             ];
 
             // Handle image upload
             if ($request->hasFile('image')) {
                 $imagePath = $request->file('image')->store('products', 'public');
-                $data['image'] = $imagePath; // Changed from image_path to image
+                $data['image'] = $imagePath;
             }
 
             $product = Product::create($data);
@@ -55,16 +57,22 @@ class ProductController extends Controller
                 ->withInput();
         }
     }
+    public function edit(Product $product)
+    {
+        $categories = Category::all();
+        return view('admin.products.edit', compact('product', 'categories'));
+    }
 
     public function update(Request $request, Product $product)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:products,name,' . $product->id,
+            'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
-            'category' => 'required|string|max:100',
+            'original_price' => 'nullable|numeric|min:0',
             'stock_quantity' => 'nullable|integer|min:0',
-            'description' => 'nullable|string|max:1000',
-            'image' => 'nullable|image|max:2048|mimes:jpeg,png,jpg,gif'
+            'category_id' => 'required|exists:categories,id',
+            'image' => 'nullable|image|max:2048|mimes:jpeg,png,jpg,gif',
         ]);
 
         try {
@@ -78,7 +86,7 @@ class ProductController extends Controller
                 }
 
                 $imagePath = $request->file('image')->store('products', 'public');
-                $data['image'] = $imagePath; // Changed from image_path to image
+                $data['image'] = $imagePath;
             }
 
             $product->update($data);
@@ -96,7 +104,7 @@ class ProductController extends Controller
     {
         try {
             // Delete associated image
-            if ($product->image) { // Changed from image_path to image
+            if ($product->image) {
                 Storage::disk('public')->delete($product->image);
             }
 
@@ -115,7 +123,6 @@ class ProductController extends Controller
     {
         return view('admin.products.show', compact('product'));
     }
-
 
     // Additional method to handle low stock alerts
     public function checkLowStock()

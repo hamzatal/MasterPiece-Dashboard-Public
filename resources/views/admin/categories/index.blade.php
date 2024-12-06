@@ -93,29 +93,26 @@
 
                                 <td class="px-6 py-4">
                                     <div class="flex justify-center space-x-3">
-                                        <a href="{{ route('categories.edit', $category->id) }}"
-                                            class="text-blue-600 hover:text-blue-800 dark:text-blue-400
-                                           dark:hover:text-blue-600 transition duration-300
-                                           transform hover:scale-125 group">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 group-hover:rotate-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        <a href="{{ route('categories.edit', $category->id) }}" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full shadow-sm text-green-600 bg-green-100 hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-300">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                                <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
+                                                <path fill-rule="evenodd" d="M2 16V6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2z" clip-rule="evenodd" />
                                             </svg>
+                                            Edit
                                         </a>
-                                        <form action="{{ route('categories.destroy', $category->id) }}"
-                                            method="POST"
-                                            onsubmit="return confirm('{{ __('Are you sure you want to delete this category?') }}')"
-                                            class="inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit"
-                                                class="text-red-600 hover:text-red-800 dark:text-red-400
-                                                    dark:hover:text-red-600 transition duration-300
-                                                    transform hover:scale-125 group">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 group-hover:rotate-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                </svg>
-                                            </button>
-                                        </form>
+                                        <form action="{{ route('categories.toggle', $category->id) }}" method="POST" class="inline">
+    @csrf
+    @method('POST')
+    <button type="submit" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full shadow-sm
+        {{ $category->status == 'active' ? 'text-red-600 bg-red-100 hover:bg-red-200 focus:ring-red-500' : 'text-green-600 bg-green-100 hover:bg-green-200 focus:ring-green-500' }}
+        focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all duration-300">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z" clip-rule="evenodd" />
+        </svg>
+        {{ $category->status == 'active' ? 'Deactivate' : 'Activate' }}
+    </button>
+</form>
+
                                     </div>
                                 </td>
                             </tr>
