@@ -10,7 +10,7 @@
     <title>{{ config('app.name', 'CoderZ') }}</title>
 
     <!-- icon -->
-    <link rel="icon" type="image/x-icon" href="{{ asset('public/build/assets/images/braces.png') }}">
+    <link rel="icon" type="image/x-icon" href="{{ asset('braces.png') }}">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">

@@ -79,7 +79,18 @@
                 </div>
                 @endforeach
             </div>
-
+<!-- Recent Activities -->
+<div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm rounded-lg mt-8">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200">Recent Activities</h3>
+                        @foreach($recentActivities as $activity)
+                        <div class="border-b border-gray-200 dark:border-gray-700 py-3">
+                            <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $activity->description }}</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">{{ $activity->created_at->diffForHumans() }}</p>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
             <!-- Advanced Tables Section -->
             <div class="grid md:grid-cols-2 gap-8">
                 <!-- Recent Orders with Enhanced Design -->
@@ -237,11 +248,14 @@
                             Review Statistics
                         </h3>
                     </div>
+
                     <div class="p-6 grid grid-cols-2 gap-4">
+
                         <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4">
                             <p class="text-sm text-gray-600 dark:text-gray-400">Average Rating</p>
                             <p class="text-2xl font-bold text-yellow-600 dark:text-yellow-300">{{ number_format($averageRating, 2) }} / 5</p>
                         </div>
+
                         <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4">
                             <p class="text-sm text-gray-600 dark:text-gray-400">Total Reviews</p>
                             <p class="text-2xl font-bold text-blue-600 dark:text-blue-300">{{ $totalReviews }}</p>

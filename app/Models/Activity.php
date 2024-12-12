@@ -1,34 +1,40 @@
 <?php
-
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Activity extends Model
 {
-    use HasFactory;
+    // Consider adding $casts for type conversion if needed
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
 
     protected $fillable = [
         'user_id',
-        'order_id',
+        'activity_type',
         'description',
-        'type'
+        'type',
+        'subject_type',
+        'subject_id'
     ];
 
-    protected $attributes = [
-        'description' => 'No description available'
-    ];
-
-    public function user()
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class)->withDefault([
-            'name' => 'Deleted User'
-        ]);
+        return $this->belongsTo(User::class);
     }
 
-    public function order()
+    public function subject(): MorphTo
     {
-        return $this->belongsTo(Order::class)->withDefault();
+        return $this->morphTo();
+    }
+
+    // Optional: Add a local scope for recent activities
+    public function scopeRecent($query, $limit = 10)
+    {
+        return $query->orderBy('created_at', 'desc')->limit($limit);
     }
 }

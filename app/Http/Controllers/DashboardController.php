@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Activity;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Product;
@@ -49,6 +50,11 @@ class DashboardController extends Controller
         // Fetch review statistics
         $averageRating = Review::avg('rating');
         $totalReviews = Review::count();
+        // Get recent activities
+        $recentActivities = Activity::with('user')
+            ->latest()
+            ->take(5)
+            ->get();
 
         return view('admin.dashboard', compact(
             'totalCustomers',
@@ -60,7 +66,9 @@ class DashboardController extends Controller
             'lowStockProducts',
             'activeCoupons',
             'averageRating',
-            'totalReviews'
+            'totalReviews',
+            'recentActivities'
+
         ));
     }
 }
