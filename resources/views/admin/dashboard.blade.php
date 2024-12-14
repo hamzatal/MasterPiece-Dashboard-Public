@@ -79,18 +79,23 @@
                 </div>
                 @endforeach
             </div>
-<!-- Recent Activities -->
-<div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm rounded-lg mt-8">
-                    <div class="p-6">
-                        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200">Recent Activities</h3>
-                        @foreach($recentActivities as $activity)
-                        <div class="border-b border-gray-200 dark:border-gray-700 py-3">
-                            <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $activity->description }}</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">{{ $activity->created_at->diffForHumans() }}</p>
-                        </div>
-                        @endforeach
+            <!-- Recent Activities -->
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm rounded-lg mt-8">
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200">Recent Activities</h3>
+                    @foreach($recentActivities as $activity)
+                    <div class="border-b border-gray-200 dark:border-gray-700 py-3">
+                        <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $activity->description }}</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ $activity->created_at->diffForHumans() }}</p>
+                    </div>
+                    @endforeach
+
+                    <!-- Pagination Links -->
+                    <div class="mt-4">
+                        {{ $recentActivities->links('pagination::tailwind') }}
                     </div>
                 </div>
+            </div>
             <!-- Advanced Tables Section -->
             <div class="grid md:grid-cols-2 gap-8">
                 <!-- Recent Orders with Enhanced Design -->

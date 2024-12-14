@@ -16,11 +16,13 @@ class DashboardController extends Controller
 {
 
     public function index()
-    { // Fetch key metrics$totalCustomers = User::count();$totalProducts = Product::count();$totalOrders = Order::count();$totalRevenue = Order::sum('total_price');
+    {
+        // Fetch key metrics
         $totalCustomers = User::count();
         $totalProducts = Product::count();
         $totalOrders = Order::count();
         $totalRevenue = Order::sum('total_price');
+
         // Fetch recent orders
         $recentOrders = Order::with(['user'])
             ->orderBy('created_at', 'desc')
@@ -50,11 +52,11 @@ class DashboardController extends Controller
         // Fetch review statistics
         $averageRating = Review::avg('rating');
         $totalReviews = Review::count();
-        // Get recent activities
+
+        // Get recent activities with pagination
         $recentActivities = Activity::with('user')
             ->latest()
-            ->take(5)
-            ->get();
+            ->paginate(5); // Use paginate() instead of get()
 
         return view('admin.dashboard', compact(
             'totalCustomers',
@@ -68,7 +70,7 @@ class DashboardController extends Controller
             'averageRating',
             'totalReviews',
             'recentActivities'
-
         ));
     }
+
 }

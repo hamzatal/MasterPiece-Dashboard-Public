@@ -131,7 +131,7 @@
                 </a>
             </div>
             <div>
-                <img src="/api/placeholder/600/400" alt="Tech Gear" class="rounded-xl shadow-2xl">
+                <img src="/storage/products/t4.jpeg" alt="Tech Gear" class="rounded-xl shadow-2xl">
             </div>
         </section>
 
@@ -171,7 +171,7 @@
             <h2 class="text-3xl font-bold text-gray-900 text-center mb-8">Featured Products</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-                    <img src="/api/placeholder/400/300" alt="Product" class="w-full h-64 object-cover">
+                    <img src="/storage/products/so.jpg" alt="Product" class="w-full h-64 object-cover">
                     <div class="p-6">
                         <h3 class="font-bold text-xl mb-2 text-gray-900">Pro Developer Laptop</h3>
                         <p class="text-gray-600 mb-4">High-performance laptop for coding and design</p>
@@ -184,7 +184,7 @@
                     </div>
                 </div>
                 <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-                    <img src="/api/placeholder/400/300" alt="Product" class="w-full h-64 object-cover">
+                    <img src="/storage/products/t2.jpeg" alt="Product" class="w-full h-64 object-cover">
                     <div class="p-6">
                         <h3 class="font-bold text-xl mb-2 text-gray-900">Noise-Cancelling Headphones</h3>
                         <p class="text-gray-600 mb-4">Premium audio for work and play</p>
@@ -197,7 +197,7 @@
                     </div>
                 </div>
                 <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-                    <img src="/api/placeholder/400/300" alt="Product" class="w-full h-64 object-cover">
+                    <img src="/storage/products/t3.jpeg" alt="Product" class="w-full h-64 object-cover">
                     <div class="p-6">
                         <h3 class="font-bold text-xl mb-2 text-gray-900">Mechanical Keyboard</h3>
                         <p class="text-gray-600 mb-4">High-precision typing experience</p>
