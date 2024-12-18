@@ -17,19 +17,19 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
     <!-- Scripts -->
-    @vite(['resources/js/dashboard-sidebar.js', 'resources/css/app.css'])
+    @vite(['resources/js/dashboard-sidebar.js', 'resources/css/app.css', 'resources/css/pace.min.css','resources/css/bootstrap.min.css','resources/css/icons.css',' resources/css/appp.css', 'resources/js/app.js'])
 
 </head>
 
 <body class="font-sans antialiased">
     <div class="flex">
         <!-- Sidebar -->
-        @include('layouts.sidebar')
+        @include('layouts.admin.sidebar')
 
         <!-- Main Content -->
         <div id="main-content" class="flex-1 min-h-screen bg-gray-100 dark:bg-gray-900 transition-all duration-300">
             <!-- Navigation -->
-            @include('layouts.navigation')
+            @include('layouts.admin.navigation')
 
             <!-- Page Content -->
             <main>

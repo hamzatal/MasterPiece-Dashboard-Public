@@ -11,5 +11,5 @@ class HomeController extends Controller
     public function index(Request $request)  // Add the $request parameter
     {
 
-        return view('home.index');
+        return view('ecommerce.home');
     }}

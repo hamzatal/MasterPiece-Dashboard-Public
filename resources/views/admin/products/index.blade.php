@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-admin-app-layout>
     <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Header Section (Remains the same) -->
@@ -308,4 +308,4 @@
             animation: fadeInDown 0.3s ease-out;
         }
     </style>
-</x-app-layout>
+</x-admin-app-layout>

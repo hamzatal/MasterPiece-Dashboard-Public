@@ -1,5 +1,5 @@
 <!-- resources/views/discounts/index.blade.php -->
-<x-app-layout>
+<x-admin-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <div>
@@ -293,4 +293,4 @@
         });
     </script>
     @endpush
-</x-app-layout>
+</x-admin-app-layout>

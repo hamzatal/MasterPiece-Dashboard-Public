@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-admin-app-layout>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="bg-white shadow-xl rounded-lg overflow-hidden">
             <div class="p-6 bg-gray-50 border-b border-gray-200">
@@ -130,4 +130,4 @@
             </form>
         </div>
     </div>
-</x-app-layout>
+</x-admin-app-layout>

@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-admin-app-layout>
     <div class="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800 p-6">
         <div class="max-w-7xl mx-auto">
             <div class="bg-white dark:bg-gray-800 shadow-2xl rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
@@ -205,4 +205,4 @@
         </div>
     </div>
 
-</x-app-layout>
+</x-admin-app-layout>

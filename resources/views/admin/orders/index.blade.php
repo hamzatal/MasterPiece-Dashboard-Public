@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-admin-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <div>
@@ -625,4 +625,4 @@
             animation: slideIn 0.3s ease-out;
         }
     </style>
-</x-app-layout>
+</x-admin-app-layout>

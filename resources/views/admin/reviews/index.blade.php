@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-admin-app-layout>
     <x-slot name="header">
 
         <div class="flex justify-between items-center">
@@ -401,4 +401,4 @@
             }
         </script>
         @endpush
-</x-app-layout>
+</x-admin-app-layout>

@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-admin-app-layout>
     <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-12 px-4 sm:px-6 lg:px-8">
         <div class="max-w-2xl mx-auto bg-white dark:bg-gray-800 shadow-2xl rounded-3xl overflow-hidden border border-gray-200 dark:border-gray-700">
             <div class="px-6 py-8 bg-gradient-to-r from-blue-500 to-purple-600 relative">
@@ -207,4 +207,4 @@
             </form>
         </div>
     </div>
-</x-app-layout>
+</x-admin-app-layout>

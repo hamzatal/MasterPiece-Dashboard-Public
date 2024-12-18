@@ -40,6 +40,30 @@ Route::post('categories/{category}/toggle', [CategoryController::class, 'toggle'
 
 /*
 |----------------------------------------------------------------------
+| Ecommerce Routes
+|----------------------------------------------------------------------
+*/
+
+Route::group(['prefix' => 'products'], function () {
+    // Frontend product listing
+    Route::get('/', [ProductController::class, 'frontendIndex'])->name('home.products.index');
+
+    // Frontend product detail
+    Route::get('/{product:slug}', [ProductController::class, 'frontendShow'])->name('home.product.show');
+
+    // Product search
+    Route::get('/search', [ProductController::class, 'search'])->name('products.search');
+
+    // Category-based product filtering
+    Route::get('/category/{category:slug}', [ProductController::class, 'productsByCategory'])
+        ->name('products.by.category');
+});
+
+
+
+
+/*
+|----------------------------------------------------------------------
 | Authentication Required Routes
 |----------------------------------------------------------------------
 */

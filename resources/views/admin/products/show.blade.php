@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-admin-app-layout>
     <div class="container mx-auto px-4 py-8">
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6">
             <!-- Product Title -->
@@ -39,4 +39,4 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+</x-admin-app-layout>

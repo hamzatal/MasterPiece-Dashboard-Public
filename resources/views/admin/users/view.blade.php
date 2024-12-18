@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-admin-app-layout>
     <div class="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-100 dark:from-gray-900 dark:to-gray-800 p-6">
         <div class="max-w-4xl mx-auto">
             <div class="bg-white dark:bg-gray-800 shadow-2xl rounded-3xl overflow-hidden border border-gray-100 dark:border-gray-700">
@@ -114,7 +114,7 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+</x-admin-app-layout>
 <script>
     document.getElementById('userImageInput').addEventListener('change', function(event) {
         const file = event.target.files[0];

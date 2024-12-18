@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-admin-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center bg-gradient-to-r from-indigo-600 to-purple-600 p-4 rounded-xl shadow-lg">
             <div class="flex items-center space-x-4">
@@ -181,4 +181,4 @@
             }
         }
     </script>
-</x-app-layout>
+</x-admin-app-layout>
