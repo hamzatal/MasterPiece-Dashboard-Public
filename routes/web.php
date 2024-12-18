@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\AboutController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DiscountController;
@@ -11,12 +14,44 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\ContactUsController;
+use App\Http\Controllers\FaqController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\MyAccountController;
+use App\Http\Controllers\NotFoundController;
+use App\Http\Controllers\ProductDetailsController;
+use App\Http\Controllers\ProductGalleryController;
+use App\Http\Controllers\ProductLeftSidebarController;
+use App\Http\Controllers\ShopRightSidebarController;
+use App\Http\Controllers\WishlistController;
 use Illuminate\Support\Facades\Route;
 
+/*
+|----------------------------------------------------------------------
+| Ecommerce Routes
+|----------------------------------------------------------------------
+*/
 
+Route::get('/about-us', [AboutController::class, 'index']);
+Route::get('/cart', [CartController::class, 'index']);
+Route::get('/404', [NotFoundController::class, 'index']);
+Route::get('/checkout', [CheckoutController::class, 'index']);
+Route::get('/contact-us', [ContactUsController::class, 'index']);
+Route::get('/my-account', [MyAccountController::class, 'index']);
+Route::get('/product-details', [ProductDetailsController::class, 'index']);
+Route::get('/product-gallery', [ProductGalleryController::class, 'index']);
+Route::get('/product-left-sidebar', [ProductLeftSidebarController::class, 'index']);
+Route::get('/shop-right-sidebar', [ShopRightSidebarController::class, 'index']);
+Route::get('/wishlist', [WishlistController::class, 'index']);
+Route::get('/faq', [FaqController::class, 'index']);
+Route::get('/login', [LoginController::class, 'index']);
 
-
+/*
+|----------------------------------------------------------------------
+| Ecommerce Routes
+|----------------------------------------------------------------------
+*/
 
 Route::get('/dashboard/download-report', [DashboardController::class, 'downloadReport'])->name('dashboard.download-report');
 
