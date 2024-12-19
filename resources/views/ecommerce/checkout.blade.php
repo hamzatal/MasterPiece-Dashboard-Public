@@ -7,109 +7,72 @@
     </x-slot>
     <main class="main__content_wrapper">
         <form action="#">
-            <div class="checkout__content--step section__contact--information">
-                <div class="section__header checkout__section--header d-flex align-items-center justify-content-between mb-25">
-                    <h2 class="section__header--title h3">Contact information</h2>
-                    <p class="layout__flex--item">
-                        Already have an account?
-                        <a class="layout__flex--item__link" href="login.html">Log in</a>
-                    </p>
-                </div>
-                <div class="customer__information">
-                    <div class="checkout__email--phone mb-12">
-                        <label>
-                            <input class="checkout__input--field border-radius-5" placeholder="Email or mobile phone mumber" type="text">
-                        </label>
-                    </div>
-                    <div class="checkout__checkbox">
-                        <input class="checkout__checkbox--input" id="check1" type="checkbox">
-                        <span class="checkout__checkbox--checkmark"></span>
-                        <label class="checkout__checkbox--label" for="check1">
-                            Email me with news and offers</label>
+            <div class="checkout__content--step section__shipping--address pt-0">
+                <div class="section__header checkout__header--style3 position__relative mb-25">
+                    <span class="checkout__order--number">Order #0021</span>
+                    <h2 class="section__header--title h3">Thank you submission</h2>
+                    <div class="checkout__submission--icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="25.995" height="25.979" viewBox="0 0 512 512">
+                            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M416 128L192 384l-96-96" />
+                        </svg>
                     </div>
                 </div>
-            </div>
-            <div class="checkout__content--step section__shipping--address">
-                <div class="section__header mb-25">
-                    <h3 class="section__header--title">Shipping address</h3>
+                <div class="order__confirmed--area border-radius-5 mb-15">
+                    <h3 class="order__confirmed--title h4">Your order is confirmed</h3>
+                    <p class="order__confirmed--desc">You,ll receive a confirmation email with your order number shortly</p>
                 </div>
-                <div class="section__shipping--address__content">
-                    <div class="row">
-                        <div class="col-lg-6 mb-12">
-                            <div class="checkout__input--list ">
-                                <label>
-                                    <input class="checkout__input--field border-radius-5" placeholder="First name (optional)" type="text">
-                                </label>
+                <div class="customer__information--area border-radius-5">
+                    <h3 class="customer__information--title h4">Customer Information</h3>
+                    <div class="customer__information--inner d-flex">
+                        <div class="customer__information--list">
+                            <div class="customer__information--step">
+                                <h4 class="customer__information--subtitle h5">Contact information</h4>
+                                <ul>
+                                    <li><a class="customer__information--text__link" href="#">info42@gmail.com</a></li>
+                                </ul>
+                            </div>
+                            <div class="customer__information--step">
+                                <h4 class="customer__information--subtitle h5">Shipping address</h4>
+                                <ul>
+                                    <li><span class="customer__information--text">Amin</span></li>
+                                    <li><span class="customer__information--text">Rajging</span></li>
+                                    <li><span class="customer__information--text">Dhaka 12119</span></li>
+                                    <li><span class="customer__information--text">Bangladesh</span></li>
+                                </ul>
+                            </div>
+                            <div class="customer__information--step">
+                                <h4 class="customer__information--subtitle h5">Shipping method</h4>
+                                <ul>
+                                    <li><span class="customer__information--text">Amin</span></li>
+                                    <li><span class="customer__information--text">Rajging</span></li>
+                                    <li><span class="customer__information--text">Dhaka 12119</span></li>
+                                    <li><span class="customer__information--text">Bangladesh</span></li>
+                                </ul>
                             </div>
                         </div>
-                        <div class="col-lg-6 mb-12">
-                            <div class="checkout__input--list">
-                                <label>
-                                    <input class="checkout__input--field border-radius-5" placeholder="Last name" type="text">
-                                </label>
+                        <div class="customer__information--list">
+                            <div class="customer__information--step">
+                                <h4 class="customer__information--subtitle h5">Payment method</h4>
+                                <ul>
+                                    <li><span class="customer__information--text">ending With</span></li>
+                                </ul>
+                            </div>
+                            <div class="customer__information--step">
+                                <h4 class="customer__information--subtitle h5">Shipping method</h4>
+                                <ul>
+                                    <li><span class="customer__information--text">Amin</span></li>
+                                    <li><span class="customer__information--text">Rajging</span></li>
+                                    <li><span class="customer__information--text">Dhaka 12119</span></li>
+                                    <li><span class="customer__information--text">Bangladesh</span></li>
+                                </ul>
                             </div>
                         </div>
-                        <div class="col-12 mb-12">
-                            <div class="checkout__input--list">
-                                <label>
-                                    <input class="checkout__input--field border-radius-5" placeholder="Company (optional)" type="text">
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-12 mb-12">
-                            <div class="checkout__input--list">
-                                <label>
-                                    <input class="checkout__input--field border-radius-5" placeholder="Address1" type="text">
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-12 mb-12">
-                            <div class="checkout__input--list">
-                                <label>
-                                    <input class="checkout__input--field border-radius-5" placeholder="Apartment, suite, etc. (optional)" type="text">
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-12 mb-12">
-                            <div class="checkout__input--list">
-                                <label>
-                                    <input class="checkout__input--field border-radius-5" placeholder="City" type="text">
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-lg-6 mb-12">
-                            <div class="checkout__input--list checkout__input--select select">
-                                <label class="checkout__select--label" for="country">Country/region</label>
-                                <select class="checkout__input--select__field border-radius-5" id="country">
-                                    <option value="1">India</option>
-                                    <option value="2">United States</option>
-                                    <option value="3">Netherlands</option>
-                                    <option value="4">Afghanistan</option>
-                                    <option value="5">Islands</option>
-                                    <option value="6">Albania</option>
-                                    <option value="7">Antigua Barbuda</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-lg-6 mb-12">
-                            <div class="checkout__input--list">
-                                <label>
-                                    <input class="checkout__input--field border-radius-5" placeholder="Postal code" type="text">
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="checkout__checkbox">
-                        <input class="checkout__checkbox--input" id="check2" type="checkbox">
-                        <span class="checkout__checkbox--checkmark"></span>
-                        <label class="checkout__checkbox--label" for="check2">
-                            Save this information for next time</label>
                     </div>
                 </div>
             </div>
             <div class="checkout__content--step__footer d-flex align-items-center">
-                <a class="continue__shipping--btn primary__btn border-radius-5" href="checkout-2.html">Continue To Shipping</a>
-                <a class="previous__link--content" href="cart.html">Return to cart</a>
+                <a class="continue__shipping--btn primary__btn border-radius-5" href="/checkout">Pay now</a>
+                <a class="previous__link--content" href="/shop-right-sidebar">Return to shipping</a>
             </div>
         </form>
     </main>

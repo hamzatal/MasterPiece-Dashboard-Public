@@ -34,7 +34,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.7/dist/cdn.min.js"></script>
 
 
-    <link rel="shortcut icon" type="image/x-icon" href="{{asset('assets')}}/img/favicon.ico">
+    <link rel="shortcut icon" type="image" href="{{asset('assets')}}/img/logo/logo2.png">
 
     <!-- ======= All CSS Plugins here ======== -->
     <link rel="stylesheet" href="{{asset('assets')}}/css/plugins/swiper-bundle.min.css">
@@ -58,19 +58,24 @@
             <!-- Page Content -->
             <main>
                 <!-- Loading -->
-                 @include('layouts.ecommerce.loading')
+                @include('layouts.ecommerce.loading')
                 {{ $slot }}
+                <!-- shipping-section -->
+    @include('layouts.ecommerce.shipping-section')
             </main>
             <!-- Footer -->
             @include('layouts.ecommerce.footer')
+
         </div>
     </div>
 
     <!-- QuickView Wrapper -->
-     @include('layouts.ecommerce.quick-wrapper')
+    @include('layouts.ecommerce.quick-wrapper')
 
     <!-- Back to top button -->
-     @include('layouts.ecommerce.back-to-top')
+    @include('layouts.ecommerce.back-to-top')
+
+
 
     <!-- All Script JS Plugins here  -->
     <script src="{{asset('assets')}}/js/vendor/popper.js" defer="defer"></script>

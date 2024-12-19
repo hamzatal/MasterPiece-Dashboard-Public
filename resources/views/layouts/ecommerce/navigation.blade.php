@@ -1,5 +1,6 @@
     <!-- Start header area -->
     <header class="header__section">
+
         <div class="main__header header__sticky">
             <div class="container-fluid">
                 <div class="main__header--inner position__relative d-flex justify-content-between align-items-center">
@@ -18,6 +19,7 @@
                             </a>
                         </h1>
                     </div>
+
                     <div class="header__search--widget header__sticky--none d-none d-lg-block">
                         <form class="d-flex header__search--form" action="#">
                             <div class="header__search--box">
@@ -33,6 +35,7 @@
                             </div>
                         </form>
                     </div>
+
                     <div class="header__account header__sticky--none">
                         <ul class="d-flex">
                             <li class="header__account--items">
@@ -70,82 +73,33 @@
                             </li>
                         </ul>
                     </div>
+
+                    <!-- Button Bar -->
                     <div class="header__menu d-none header__sticky--block d-lg-block">
                         <nav class="header__menu--navigation">
-                            <ul class="d-flex">
-                                <li class="header__menu--items style2">
-                                    <a class="header__menu--link" href="/home">Home
-                                        <svg class="menu__arrowdown--icon" xmlns="http://www.w3.org/2000/svg" width="12" height="7.41" viewBox="0 0 12 7.41">
-                                            <path d="M16.59,8.59,12,13.17,7.41,8.59,6,10l6,6,6-6Z" transform="translate(-6 -8.59)" fill="currentColor" opacity="0.7" />
-                                        </svg>
-                                    </a>
+                            <nav class="header__menu--navigation">
+                                <ul class="d-flex">
+                                    <li class="header__menu--items style2"><a href="/home" class="header__menu--link">Home</a></li>
+                                    <li class="header__menu--items style2"><a href="/shop-right-sidebar" class="header__menu--link">Shop</a></li>
+                                    <li class="header__menu--items style2"><a href="/about-us" class="header__menu--link">About Us</a></li>
+                                    <li class="header__menu--items style2"><a href="/contact-us" class="header__menu--link">Contact Us</a></li>
 
-                                </li>
-                                <li class="header__menu--items mega__menu--items style2">
-                                    <a class="header__menu--link" href="/shop-right-sidebar">Shop
-                                        <svg class="menu__arrowdown--icon" xmlns="http://www.w3.org/2000/svg" width="12" height="7.41" viewBox="0 0 12 7.41">
-                                            <path d="M16.59,8.59,12,13.17,7.41,8.59,6,10l6,6,6-6Z" transform="translate(-6 -8.59)" fill="currentColor" opacity="0.7" />
-                                        </svg>
-                                    </a>
-                                    <ul class="header__mega--menu d-flex">
-                                        <li class="header__mega--menu__li">
-                                            <span class="header__mega--subtitle">Column One</span>
-                                            <ul class="header__mega--sub__menu">
-                                                <li class="header__mega--sub__menu_li"><a class="header__mega--sub__menu--title" href="/shop-right-sidebar">Shop</a></li>
-
-                                            </ul>
-                                        </li>
-                                        <li class="header__mega--menu__li">
-                                            <span class="header__mega--subtitle">Column Two</span>
-                                            <ul class="header__mega--sub__menu">
-                                                <li class="header__mega--sub__menu_li"><a class="header__mega--sub__menu--title" href="/product-details">Product Details</a></li>
-
-                                            </ul>
-                                        </li>
-                                        <li class="header__mega--menu__li">
-                                            <span class="header__mega--subtitle">Column Three</span>
-                                            <ul class="header__mega--sub__menu">
-                                                <li class="header__mega--sub__menu_li"><a class="header__mega--sub__menu--title" href="/my-account">My Account</a></li>
-
-                                            </ul>
-                                        </li>
-                                        <li class="header__mega--menu__li">
-                                            <span class="header__mega--subtitle">Column Four</span>
-                                            <ul class="header__mega--sub__menu">
-                                                <li class="header__mega--sub__menu_li"><a class="header__mega--sub__menu--title" href="/compare">Compare Pages</a></li>
-
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="header__menu--items style2">
-                                    <a class="header__menu--link" href="/about-us">About US </a>
-                                </li>
-
-                                <li class="header__menu--items style2 d-none d-xl-block">
-                                    <a class="header__menu--link" href="/shop-right-sidebar">Categories </a>
-                                </li>
-                                <li class="header__menu--items style2">
-                                    <a class="header__menu--link" href="#">Pages
-                                        <svg class="menu__arrowdown--icon" xmlns="http://www.w3.org/2000/svg" width="12" height="7.41" viewBox="0 0 12 7.41">
-                                            <path d="M16.59,8.59,12,13.17,7.41,8.59,6,10l6,6,6-6Z" transform="translate(-6 -8.59)" fill="currentColor" opacity="0.7" />
-                                        </svg>
-                                    </a>
-                                    <ul class="header__sub--menu">
-                                        <li class="header__sub--menu__items"><a href="/about-us" class="header__sub--menu__link">About Us</a></li>
-                                        <li class="header__sub--menu__items"><a href="/contact-us" class="header__sub--menu__link">Contact Us</a></li>
-                                        <li class="header__sub--menu__items"><a href="/cart" class="header__sub--menu__link">Cart Page</a></li>
-                                        <li class="header__sub--menu__items"><a href="/wishlist" class="header__sub--menu__link">Wishlist Page</a></li>
-                                        <li class="header__sub--menu__items"><a href="/login" class="header__sub--menu__link">Login Page</a></li>
-                                        <li class="header__sub--menu__items"><a href="/404" class="header__sub--menu__link">Error Page</a></li>
-                                    </ul>
-                                </li>
-                                <li class="header__menu--items style2">
-                                    <a class="header__menu--link " href="/contact-us">Contact US</a>
-                                </li>
-                            </ul>
+                                    @auth
+                                    <li class="header__menu--items style2">
+                                        <form id="logout-form" method="POST" action="{{ route('logout') }}" style="display: inline;">
+                                            @csrf
+                                            <button type="submit" class="header__menu--link" style="background: none; border: none; cursor: pointer; color:red;">
+                                                Logout
+                                            </button>
+                                        </form>
+                                    </li>
+                                    @endauth
+                                </ul>
+                            </nav>
                         </nav>
                     </div>
+                    <!-- End Button Bar -->
+
                     <div class="header__account header__account2 header__sticky--block">
                         <ul class="d-flex">
                             <li class="header__account--items header__account2--items  header__account--search__items d-none d-lg-block">
@@ -224,8 +178,6 @@
                                             <span class="header__mega--subtitle">Column Two</span>
                                             <ul class="header__mega--sub__menu">
                                                 <li class="header__mega--sub__menu_li"><a class="header__mega--sub__menu--title" href="/product-details">Product Details</a></li>
-                                                <li class="header__mega--sub__menu_li"><a class="header__mega--sub__menu--title" href="/product-video">Video Product</a></li>
-                                                <li class="header__mega--sub__menu_li"><a class="header__mega--sub__menu--title" href="/product-details">Variable Product</a></li>
                                                 <li class="header__mega--sub__menu_li"><a class="header__mega--sub__menu--title" href="/product-left-sidebar">Product Left Sidebar</a></li>
                                                 <li class="header__mega--sub__menu_li"><a class="header__mega--sub__menu--title" href="/product-gallery">Product Gallery</a></li>
                                             </ul>
@@ -258,8 +210,7 @@
                                         </svg>
                                     </a>
                                     <ul class="header__sub--menu">
-                                        <li class="header__sub--menu__items"><a href="/about-us" class="header__sub--menu__link">About Us</a></li>
-                                        <li class="header__sub--menu__items"><a href="/contact-us" class="header__sub--menu__link">Contact Us</a></li>
+
                                         <li class="header__sub--menu__items"><a href="/cart" class="header__sub--menu__link">Cart Page</a></li>
                                         <li class="header__sub--menu__items"><a href="/wishlist" class="header__sub--menu__link">Wishlist Page</a></li>
                                         <li class="header__sub--menu__items"><a href="/login" class="header__sub--menu__link">Login Page</a></li>
@@ -308,8 +259,6 @@
                                     <a href="#" class="offcanvas__sub_menu_item">Column Two</a>
                                     <ul class="offcanvas__sub_menu">
                                         <li class="offcanvas__sub_menu_li"><a class="offcanvas__sub_menu_item" href="/product-details">Product Details</a></li>
-                                        <li class="offcanvas__sub_menu_li"><a class="offcanvas__sub_menu_item" href="/product-video">Video Product</a></li>
-                                        <li class="offcanvas__sub_menu_li"><a class="offcanvas__sub_menu_item" href="/product-details">Variable Product</a></li>
                                         <li class="offcanvas__sub_menu_li"><a class="offcanvas__sub_menu_item" href="/product-left-sidebar">Product Left Sidebar</a></li>
                                         <li class="offcanvas__sub_menu_li"><a class="offcanvas__sub_menu_item" href="/product-gallery">Product Gallery</a></li>
                                     </ul>
@@ -318,7 +267,6 @@
                                     <a href="#" class="offcanvas__sub_menu_item">Column Three</a>
                                     <ul class="offcanvas__sub_menu">
                                         <li class="offcanvas__sub_menu_li"><a class="offcanvas__sub_menu_item" href="/my-account">My Account</a></li>
-                                        <li class="offcanvas__sub_menu_li"><a class="offcanvas__sub_menu_item" href="/my-account-2">My Account 2</a></li>
                                         <li class="offcanvas__sub_menu_li"><a class="offcanvas__sub_menu_item" href="/404">404 Page</a></li>
                                         <li class="offcanvas__sub_menu_li"><a class="offcanvas__sub_menu_item" href="/login">Login Page</a></li>
                                         <li class="offcanvas__sub_menu_li"><a class="offcanvas__sub_menu_item" href="/faq">Faq Page</a></li>
@@ -337,8 +285,7 @@
                         <li class="offcanvas__menu_li">
                             <a class="offcanvas__menu_item" href="#">Pages</a>
                             <ul class="offcanvas__sub_menu">
-                                <li class="offcanvas__sub_menu_li"><a href="/about-us" class="offcanvas__sub_menu_item">About Us</a></li>
-                                <li class="offcanvas__sub_menu_li"><a href="/contact-us" class="offcanvas__sub_menu_item">Contact Us</a></li>
+
                                 <li class="offcanvas__sub_menu_li"><a href="/cart" class="offcanvas__sub_menu_item">Cart Page</a></li>
                                 <li class="offcanvas__sub_menu_li"><a href="/wishlist" class="offcanvas__sub_menu_item">Wishlist Page</a></li>
                                 <li class="offcanvas__sub_menu_li"><a href="/login" class="offcanvas__sub_menu_item">Login Page</a></li>
@@ -564,6 +511,33 @@
             </button>
         </div>
         <!-- End search box area -->
+        <script>
+            // Function to check if user is logged in
+            function checkLoginStatus() {
+                const authToken = localStorage.getItem('authToken');
+                const logoutButton = document.getElementById('logoutButton');
 
+                if (authToken) {
+                    logoutButton.style.display = 'block';
+                } else {
+                    logoutButton.style.display = 'none';
+                }
+            }
+
+            // Function to handle logout
+            function handleLogout() {
+                // Clear authentication token
+                localStorage.removeItem('authToken');
+
+                // Hide logout button
+                document.getElementById('logoutButton').style.display = 'none';
+
+                // Redirect to login page
+                window.location.href = '/login';
+            }
+
+            // Check login status when page loads
+            document.addEventListener('DOMContentLoaded', checkLoginStatus);
+        </script>
     </header>
     <!-- End header area -->
