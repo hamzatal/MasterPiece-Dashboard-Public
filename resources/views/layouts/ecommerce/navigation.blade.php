@@ -1,6 +1,5 @@
     <!-- Start header area -->
     <header class="header__section">
-
         <div class="main__header header__sticky">
             <div class="container-fluid">
                 <div class="main__header--inner position__relative d-flex justify-content-between align-items-center">
@@ -13,7 +12,11 @@
                         </a>
                     </div>
                     <div class="main__logo">
-                        <h1 class="main__logo--title"><a class="main__logo--link" href="/home"><img class="main__logo--img" src="assets/img/logo/nav-log.png" alt="logo-img"></a></h1>
+                        <h1 class="main__logo--title">
+                            <a class="main__logo--link" href="/home">
+                                <img class="main__logo--img" src="assets/img/logo/dev.png" alt="logo-img" width="200" height="200">
+                            </a>
+                        </h1>
                     </div>
                     <div class="header__search--widget header__sticky--none d-none d-lg-block">
                         <form class="d-flex header__search--form" action="#">
@@ -138,7 +141,7 @@
                                     </ul>
                                 </li>
                                 <li class="header__menu--items style2">
-                                    <a class="header__menu--link " href="/contact-us">Contact </a>
+                                    <a class="header__menu--link " href="/contact-us">Contact US</a>
                                 </li>
                             </ul>
                         </nav>
@@ -190,6 +193,7 @@
                 </div>
             </div>
         </div>
+
         <div class="header__bottom">
             <div class="container-fluid">
                 <div class="header__bottom--inner position__relative d-none d-lg-flex justify-content-between align-items-center">
@@ -198,9 +202,7 @@
                             <ul class="d-flex">
                                 <li class="header__menu--items">
                                     <a class="header__menu--link" href="/home">Home
-                                        <svg class="menu__arrowdown--icon" xmlns="http://www.w3.org/2000/svg" width="12" height="7.41" viewBox="0 0 12 7.41">
-                                            <path d="M16.59,8.59,12,13.17,7.41,8.59,6,10l6,6,6-6Z" transform="translate(-6 -8.59)" fill="currentColor" opacity="0.7" />
-                                        </svg>
+
                                     </a>
 
                                 </li>
@@ -244,9 +246,7 @@
                                         </li>
                                     </ul>
                                 </li>
-                                <li class="header__menu--items">
-                                    <a class="header__menu--link" href="/about-us">About US </a>
-                                </li>
+
 
                                 <li class="header__menu--items d-none d-xl-block">
                                     <a class="header__menu--link" href="/shop-right-sidebar">Categories </a>
@@ -267,7 +267,10 @@
                                     </ul>
                                 </li>
                                 <li class="header__menu--items">
-                                    <a class="header__menu--link" href="/contact-us">Contact </a>
+                                    <a class="header__menu--link" href="/about-us">About US </a>
+                                </li>
+                                <li class="header__menu--items">
+                                    <a class="header__menu--link" href="/contact-us">Contact US </a>
                                 </li>
                             </ul>
                         </nav>
@@ -343,7 +346,7 @@
                             </ul>
                         </li>
                         <li class="offcanvas__menu_li"><a class="offcanvas__menu_item" href="/about-us">About</a></li>
-                        <li class="offcanvas__menu_li"><a class="offcanvas__menu_item" href="/contact-us">Contact</a></li>
+                        <li class="offcanvas__menu_li"><a class="offcanvas__menu_item" href="/contact-us">Contact US</a></li>
                     </ul>
                     <div class="offcanvas__account--items">
                         <a class="offcanvas__account--items__btn d-flex align-items-center" href="/login">

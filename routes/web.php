@@ -1,30 +1,37 @@
 <?php
 
-use App\Http\Controllers\AboutController;
-use App\Http\Controllers\CartController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\CheckoutController;
-use App\Http\Controllers\CouponController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\DiscountController;
-use App\Http\Controllers\OrderController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ReportController;
-use App\Http\Controllers\ReviewController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\ContactController;
-use App\Http\Controllers\ContactUsController;
-use App\Http\Controllers\FaqController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\LoginController;
-use App\Http\Controllers\MyAccountController;
-use App\Http\Controllers\NotFoundController;
-use App\Http\Controllers\ProductDetailsController;
-use App\Http\Controllers\ProductGalleryController;
-use App\Http\Controllers\ProductLeftSidebarController;
-use App\Http\Controllers\ShopRightSidebarController;
-use App\Http\Controllers\WishlistController;
+
+use App\Http\Controllers\Dashboard\CategoryController;
+use App\Http\Controllers\Dashboard\CouponController;
+use App\Http\Controllers\Dashboard\DashboardController;
+use App\Http\Controllers\Dashboard\DiscountController;
+use App\Http\Controllers\Dashboard\OrderController;
+use App\Http\Controllers\Dashboard\ProductController;
+use App\Http\Controllers\Dashboard\ProfileController;
+use App\Http\Controllers\Dashboard\ReportController;
+use App\Http\Controllers\Dashboard\ReviewController;
+use App\Http\Controllers\Dashboard\UserController;
+use App\Http\Controllers\Dashboard\ContactController;
+use App\Http\Controllers\Dashboard\LoginController;
+/*
+|----------------------------------------------------------------------
+| Controller
+|----------------------------------------------------------------------
+*/
+
+use App\Http\Controllers\Site\AboutController;
+use App\Http\Controllers\Site\CartController;
+use App\Http\Controllers\Site\CheckoutController;
+use App\Http\Controllers\Site\ContactUsController;
+use App\Http\Controllers\Site\FaqController;
+use App\Http\Controllers\Site\HomeController;
+use App\Http\Controllers\Site\MyAccountController;
+use App\Http\Controllers\Site\NotFoundController;
+use App\Http\Controllers\Site\ProductDetailsController;
+use App\Http\Controllers\Site\ProductGalleryController;
+use App\Http\Controllers\Site\ProductLeftSidebarController;
+use App\Http\Controllers\Site\ShopRightSidebarController;
+use App\Http\Controllers\Site\WishlistController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -38,6 +45,7 @@ Route::get('/cart', [CartController::class, 'index']);
 Route::get('/404', [NotFoundController::class, 'index']);
 Route::get('/checkout', [CheckoutController::class, 'index']);
 Route::get('/contact-us', [ContactUsController::class, 'index']);
+Route::post('/contact-us', [ContactUsController::class, 'store'])->name('contact-us.store');
 Route::get('/my-account', [MyAccountController::class, 'index']);
 Route::get('/product-details', [ProductDetailsController::class, 'index']);
 Route::get('/product-gallery', [ProductGalleryController::class, 'index']);
@@ -46,6 +54,7 @@ Route::get('/shop-right-sidebar', [ShopRightSidebarController::class, 'index']);
 Route::get('/wishlist', [WishlistController::class, 'index']);
 Route::get('/faq', [FaqController::class, 'index']);
 Route::get('/login', [LoginController::class, 'index']);
+Route::post('/contact/store', [ContactUsController::class, 'store'])->name('contact.store');
 
 /*
 |----------------------------------------------------------------------
@@ -57,21 +66,21 @@ Route::get('/dashboard/download-report', [DashboardController::class, 'downloadR
 
 Route::get('/home', [HomeController::class, 'index'])->name('home.index');
 
-Route::patch('/discounts/{discount}/toggle', [DiscountController::class, 'toggle'])->name('discounts.toggle');
+Route::patch('/dashboard/discounts/{discount}/toggle', [DiscountController::class, 'toggle'])->name('discounts.toggle');
 /*
 |----------------------------------------------------------------------
 | Public Routes
 |----------------------------------------------------------------------
 */
 Route::resource('contacts', ContactController::class);
-Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store'); // Create category
-Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
-Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
-Route::get('categories/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
-Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
-Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update'); // Update category
-Route::resource('categories', CategoryController::class)->except(['show']);
-Route::post('categories/{category}/toggle', [CategoryController::class, 'toggle'])->name('categories.toggle');
+Route::post('/dashboard/categories', [CategoryController::class, 'store'])->name('categories.store'); // Create category
+Route::get('/dashboard/categories', [CategoryController::class, 'index'])->name('categories.index');
+Route::get('/dashboard/categories/create', [CategoryController::class, 'create'])->name('categories.create');
+Route::get('/dashboard/categories/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
+Route::delete('/dashboard/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+Route::put('/dashboard/categories/{category}', [CategoryController::class, 'update'])->name('categories.update'); // Update category
+Route::resource('/dashboard/categories', CategoryController::class)->except(['show']);
+Route::post('/dashboard/categories/{category}/toggle', [CategoryController::class, 'toggle'])->name('categories.toggle');
 
 /*
 |----------------------------------------------------------------------
@@ -141,7 +150,7 @@ Route::middleware(['auth', 'auth.role'])->group(function () {
 */
 Route::middleware(['auth', 'auth.role'])->group(function () {
     // Dashboard
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::prefix('dashboard')->group(function () {
         // User Management

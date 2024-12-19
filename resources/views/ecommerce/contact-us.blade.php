@@ -1,5 +1,3 @@
-
-
 <x-ecommerce-app-layout>
 
     <x-slot name="header">
@@ -8,7 +6,7 @@
         </h2>
     </x-slot>
 
-<main class="main__content_wrapper">
+    <main class="main__content_wrapper">
 
         <!-- Start breadcrumb section -->
         <section class="breadcrumb__section breadcrumb__bg">
@@ -38,53 +36,58 @@
 
                     <div class="contact__form">
                         <h3 class="contact__form--title mb-40">Contact Me</h3>
-                        <form class="contact__form--inner" action="#">
+                        <form class="contact__form--inner" action="{{ route('contact.store') }}" method="POST">
+                            @csrf
                             <div class="row">
                                 <div class="col-lg-6 col-md-6">
                                     <div class="contact__form--list mb-20">
-                                        <label class="contact__form--label" for="input1">First Name <span class="contact__form--label__star">*</span></label>
-                                        <input class="contact__form--input" name="firstname" id="input1" placeholder="Your First Name" type="text">
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 col-md-6">
-                                    <div class="contact__form--list mb-20">
-                                        <label class="contact__form--label" for="input2">Last Name <span class="contact__form--label__star">*</span></label>
-                                        <input class="contact__form--input" name="lastname" id="input2" placeholder="Your Last Name" type="text">
+                                        <label class="contact__form--label" for="input1">Name <span class="contact__form--label__star">*</span></label>
+                                        <input class="contact__form--input" name="name" id="input1" placeholder="Your Name" type="text" required>
                                     </div>
                                 </div>
                                 <div class="col-lg-6 col-md-6">
                                     <div class="contact__form--list mb-20">
                                         <label class="contact__form--label" for="input3">Phone Number <span class="contact__form--label__star">*</span></label>
-                                        <input class="contact__form--input" name="number" id="input3" placeholder="Phone number" type="text">
+                                        <input class="contact__form--input" name="phone" id="input3" placeholder="Phone number" type="text">
                                     </div>
                                 </div>
                                 <div class="col-lg-6 col-md-6">
                                     <div class="contact__form--list mb-20">
                                         <label class="contact__form--label" for="input4">Email <span class="contact__form--label__star">*</span></label>
-                                        <input class="contact__form--input" name="email" id="input4" placeholder="Email" type="email">
+                                        <input class="contact__form--input" name="email" id="input4" placeholder="Email" type="email" required>
                                     </div>
                                 </div>
+                                <div class="col-lg-6 col-md-6">
+                                    <div class="contact__form--list mb-20">
+                                        <label class="contact__form--label" for="input6">Subject <span class="contact__form--label__star">*</span></label>
+                                        <input class="contact__form--input" name="subject" id="input6" placeholder="Subject" type="text" required>
+                                    </div>
+                                </div>
+
+
+
                                 <div class="col-12">
                                     <div class="contact__form--list mb-15">
                                         <label class="contact__form--label" for="input5">Write Your Message <span class="contact__form--label__star">*</span></label>
-                                        <textarea class="contact__form--textarea" name="message" id="input5" placeholder="Write Your Message"></textarea>
+                                        <textarea class="contact__form--textarea" name="message" id="input5" placeholder="Write Your Message" required></textarea>
                                     </div>
                                 </div>
                             </div>
                             <button class="contact__form--btn primary__btn" type="submit">Submit Now</button>
                         </form>
                     </div>
+
                     <div class="contact__info border-radius-5">
                         <div class="contact__info--items">
                             <h3 class="contact__info--content__title text-white mb-15">Contact Us</h3>
                             <div class="contact__info--items__inner d-flex">
                                 <div class="contact__info--icon">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="31.568" height="31.128" viewBox="0 0 31.568 31.128">
-                                        <path id="ic_phone_forwarded_24px" d="M26.676,16.564l7.892-7.782L26.676,1V5.669H20.362v6.226h6.314Zm3.157,7a18.162,18.162,0,0,1-5.635-.887,1.627,1.627,0,0,0-1.61.374l-3.472,3.424a23.585,23.585,0,0,1-10.4-10.257l3.472-3.44a1.48,1.48,0,0,0,.395-1.556,17.457,17.457,0,0,1-.9-5.556A1.572,1.572,0,0,0,10.1,4.113H4.578A1.572,1.572,0,0,0,3,5.669,26.645,26.645,0,0,0,29.832,32.128a1.572,1.572,0,0,0,1.578-1.556V25.124A1.572,1.572,0,0,0,29.832,23.568Z" transform="translate(-3 -1)" fill="currentColor"/>
+                                        <path id="ic_phone_forwarded_24px" d="M26.676,16.564l7.892-7.782L26.676,1V5.669H20.362v6.226h6.314Zm3.157,7a18.162,18.162,0,0,1-5.635-.887,1.627,1.627,0,0,0-1.61.374l-3.472,3.424a23.585,23.585,0,0,1-10.4-10.257l3.472-3.44a1.48,1.48,0,0,0,.395-1.556,17.457,17.457,0,0,1-.9-5.556A1.572,1.572,0,0,0,10.1,4.113H4.578A1.572,1.572,0,0,0,3,5.669,26.645,26.645,0,0,0,29.832,32.128a1.572,1.572,0,0,0,1.578-1.556V25.124A1.572,1.572,0,0,0,29.832,23.568Z" transform="translate(-3 -1)" fill="currentColor" />
                                     </svg>
                                 </div>
                                 <div class="contact__info--content">
-                                    <p class="contact__info--content__desc text-white">Change the design through a range <br> <a href="tel:+01234-567890">+01234-567890</a> <a href="tel:++01234-5688765">+01234-5688765</a>   </p>
+                                    <p class="contact__info--content__desc text-white">Change the design through a range <br> <a href="tel:+01234-567890">+01234-567890</a> <a href="tel:++01234-5688765">+01234-5688765</a> </p>
                                 </div>
                             </div>
                         </div>
@@ -93,7 +96,7 @@
                             <div class="contact__info--items__inner d-flex">
                                 <div class="contact__info--icon">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="31.57" height="31.13" viewBox="0 0 31.57 31.13">
-                                        <path id="ic_email_24px" d="M30.413,4H5.157C3.421,4,2.016,5.751,2.016,7.891L2,31.239c0,2.14,1.421,3.891,3.157,3.891H30.413c1.736,0,3.157-1.751,3.157-3.891V7.891C33.57,5.751,32.149,4,30.413,4Zm0,7.783L17.785,21.511,5.157,11.783V7.891l12.628,9.728L30.413,7.891Z" transform="translate(-2 -4)" fill="currentColor"/>
+                                        <path id="ic_email_24px" d="M30.413,4H5.157C3.421,4,2.016,5.751,2.016,7.891L2,31.239c0,2.14,1.421,3.891,3.157,3.891H30.413c1.736,0,3.157-1.751,3.157-3.891V7.891C33.57,5.751,32.149,4,30.413,4Zm0,7.783L17.785,21.511,5.157,11.783V7.891l12.628,9.728L30.413,7.891Z" transform="translate(-2 -4)" fill="currentColor" />
                                     </svg>
                                 </div>
                                 <div class="contact__info--content">
@@ -106,11 +109,11 @@
                             <div class="contact__info--items__inner d-flex">
                                 <div class="contact__info--icon">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="31.57" height="31.13" viewBox="0 0 31.57 31.13">
-                                        <path id="ic_account_balance_24px" d="M5.323,14.341V24.718h4.985V14.341Zm9.969,0V24.718h4.985V14.341ZM2,32.13H33.57V27.683H2ZM25.262,14.341V24.718h4.985V14.341ZM17.785,1,2,8.412v2.965H33.57V8.412Z" transform="translate(-2 -1)" fill="currentColor"/>
+                                        <path id="ic_account_balance_24px" d="M5.323,14.341V24.718h4.985V14.341Zm9.969,0V24.718h4.985V14.341ZM2,32.13H33.57V27.683H2ZM25.262,14.341V24.718h4.985V14.341ZM17.785,1,2,8.412v2.965H33.57V8.412Z" transform="translate(-2 -1)" fill="currentColor" />
                                     </svg>
                                 </div>
                                 <div class="contact__info--content">
-                                    <p class="contact__info--content__desc text-white">  123 Stree New York City ,
+                                    <p class="contact__info--content__desc text-white"> 123 Stree New York City ,
                                         United States Of America
                                         NY 750065.</p>
                                 </div>
@@ -138,7 +141,7 @@
                                 <li class="contact__info--social__list">
                                     <a class="contact__info--social__icon" target="_blank" href="https://www.instagram.com/">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16.497" height="16.492" viewBox="0 0 19.497 19.492">
-                                            <path  data-name="Icon awesome-instagram" d="M9.747,6.24a5,5,0,1,0,5,5A4.99,4.99,0,0,0,9.747,6.24Zm0,8.247A3.249,3.249,0,1,1,13,11.238a3.255,3.255,0,0,1-3.249,3.249Zm6.368-8.451A1.166,1.166,0,1,1,14.949,4.87,1.163,1.163,0,0,1,16.115,6.036Zm3.31,1.183A5.769,5.769,0,0,0,17.85,3.135,5.807,5.807,0,0,0,13.766,1.56c-1.609-.091-6.433-.091-8.042,0A5.8,5.8,0,0,0,1.64,3.13,5.788,5.788,0,0,0,.065,7.215c-.091,1.609-.091,6.433,0,8.042A5.769,5.769,0,0,0,1.64,19.341a5.814,5.814,0,0,0,4.084,1.575c1.609.091,6.433.091,8.042,0a5.769,5.769,0,0,0,4.084-1.575,5.807,5.807,0,0,0,1.575-4.084c.091-1.609.091-6.429,0-8.038Zm-2.079,9.765a3.289,3.289,0,0,1-1.853,1.853c-1.283.509-4.328.391-5.746.391S5.28,19.341,4,18.837a3.289,3.289,0,0,1-1.853-1.853c-.509-1.283-.391-4.328-.391-5.746s-.113-4.467.391-5.746A3.289,3.289,0,0,1,4,3.639c1.283-.509,4.328-.391,5.746-.391s4.467-.113,5.746.391a3.289,3.289,0,0,1,1.853,1.853c.509,1.283.391,4.328.391,5.746S17.855,15.705,17.346,16.984Z" transform="translate(0.004 -1.492)" fill="currentColor"/>
+                                            <path data-name="Icon awesome-instagram" d="M9.747,6.24a5,5,0,1,0,5,5A4.99,4.99,0,0,0,9.747,6.24Zm0,8.247A3.249,3.249,0,1,1,13,11.238a3.255,3.255,0,0,1-3.249,3.249Zm6.368-8.451A1.166,1.166,0,1,1,14.949,4.87,1.163,1.163,0,0,1,16.115,6.036Zm3.31,1.183A5.769,5.769,0,0,0,17.85,3.135,5.807,5.807,0,0,0,13.766,1.56c-1.609-.091-6.433-.091-8.042,0A5.8,5.8,0,0,0,1.64,3.13,5.788,5.788,0,0,0,.065,7.215c-.091,1.609-.091,6.433,0,8.042A5.769,5.769,0,0,0,1.64,19.341a5.814,5.814,0,0,0,4.084,1.575c1.609.091,6.433.091,8.042,0a5.769,5.769,0,0,0,4.084-1.575,5.807,5.807,0,0,0,1.575-4.084c.091-1.609.091-6.429,0-8.038Zm-2.079,9.765a3.289,3.289,0,0,1-1.853,1.853c-1.283.509-4.328.391-5.746.391S5.28,19.341,4,18.837a3.289,3.289,0,0,1-1.853-1.853c-.509-1.283-.391-4.328-.391-5.746s-.113-4.467.391-5.746A3.289,3.289,0,0,1,4,3.639c1.283-.509,4.328-.391,5.746-.391s4.467-.113,5.746.391a3.289,3.289,0,0,1,1.853,1.853c.509,1.283.391,4.328.391,5.746S17.855,15.705,17.346,16.984Z" transform="translate(0.004 -1.492)" fill="currentColor" />
                                         </svg>
                                         <span class="visually-hidden">Instagram</span>
                                     </a>
@@ -165,8 +168,8 @@
         </div>
         <!-- End contact map area -->
 
-         <!-- Start brand logo section -->
-         <div class="brand__logo--section bg__secondary section--padding">
+        <!-- Start brand logo section -->
+        <div class="brand__logo--section bg__secondary section--padding">
             <div class="container-fluid">
                 <div class="row row-cols-1">
                     <div class="col">
@@ -238,6 +241,283 @@
         </section>
         <!-- End shipping section -->
 
-    </main>
+
+
+        <!-- HTML for the card alerts container -->
+        <div id="cardAlertContainer" class="card-alert-container"></div>
+
+        <style>
+            .card-alert-container {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 9999;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .card-alert {
+                width: 300px;
+                padding: 16px;
+                border-radius: 8px;
+                background: white;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                display: flex;
+                align-items: flex-start;
+                gap: 12px;
+                animation: slideIn 0.3s ease-out;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .card-alert.success {
+                border-left: 4px solid #10B981;
+            }
+
+            .card-alert.error {
+                border-left: 4px solid #EF4444;
+            }
+
+            .card-alert.info {
+                border-left: 4px solid #3B82F6;
+            }
+
+            .card-alert.warning {
+                border-left: 4px solid #F59E0B;
+            }
+
+            .card-alert-icon {
+                flex-shrink: 0;
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 14px;
+            }
+
+            .card-alert.success .card-alert-icon {
+                background-color: #D1FAE5;
+                color: #059669;
+            }
+
+            .card-alert.error .card-alert-icon {
+                background-color: #FEE2E2;
+                color: #DC2626;
+            }
+
+            .card-alert.info .card-alert-icon {
+                background-color: #DBEAFE;
+                color: #2563EB;
+            }
+
+            .card-alert.warning .card-alert-icon {
+                background-color: #FEF3C7;
+                color: #D97706;
+            }
+
+            .card-alert-content {
+                flex-grow: 1;
+            }
+
+            .card-alert-title {
+                margin: 0 0 4px 0;
+                font-size: 16px;
+                font-weight: 600;
+                color: #1F2937;
+            }
+
+            .card-alert-message {
+                margin: 0;
+                font-size: 14px;
+                color: #6B7280;
+                line-height: 1.5;
+            }
+
+            .card-alert-close {
+                position: absolute;
+                top: 8px;
+                right: 8px;
+                background: none;
+                border: none;
+                color: #9CA3AF;
+                cursor: pointer;
+                padding: 4px;
+                border-radius: 4px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: background-color 0.2s;
+            }
+
+            .card-alert-close:hover {
+                background-color: #F3F4F6;
+            }
+
+            .card-alert-progress {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                height: 3px;
+                background: rgba(0, 0, 0, 0.1);
+                width: 100%;
+            }
+
+            .card-alert-progress-bar {
+                height: 100%;
+                width: 100%;
+                transform-origin: left;
+                animation: progress 5s linear;
+            }
+
+            .card-alert.success .card-alert-progress-bar {
+                background-color: #10B981;
+            }
+
+            .card-alert.error .card-alert-progress-bar {
+                background-color: #EF4444;
+            }
+
+            .card-alert.info .card-alert-progress-bar {
+                background-color: #3B82F6;
+            }
+
+            .card-alert.warning .card-alert-progress-bar {
+                background-color: #F59E0B;
+            }
+
+            @keyframes slideIn {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+
+            @keyframes slideOut {
+                from {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+
+                to {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+            }
+
+            @keyframes progress {
+                from {
+                    transform: scaleX(1);
+                }
+
+                to {
+                    transform: scaleX(0);
+                }
+            }
+        </style>
+
+        <script>
+            class CardAlert {
+                constructor() {
+                    this.container = document.getElementById('cardAlertContainer');
+                    if (!this.container) {
+                        this.container = document.createElement('div');
+                        this.container.id = 'cardAlertContainer';
+                        this.container.className = 'card-alert-container';
+                        document.body.appendChild(this.container);
+                    }
+                }
+
+                show(type, title, message, duration = 5000) {
+                    const alert = document.createElement('div');
+                    alert.className = `card-alert ${type}`;
+
+                    const icons = {
+                        success: '✓',
+                        error: '✕',
+                        info: 'ℹ',
+                        warning: '!'
+                    };
+
+                    alert.innerHTML = `
+            <div class="card-alert-icon">${icons[type] || 'ℹ'}</div>
+            <div class="card-alert-content">
+                <h4 class="card-alert-title">${title}</h4>
+                <p class="card-alert-message">${message}</p>
+            </div>
+            <button class="card-alert-close">✕</button>
+            <div class="card-alert-progress">
+                <div class="card-alert-progress-bar"></div>
+            </div>
+        `;
+
+                    this.container.appendChild(alert);
+
+                    const closeBtn = alert.querySelector('.card-alert-close');
+                    closeBtn.addEventListener('click', () => this.close(alert));
+
+                    // Auto close after duration
+                    setTimeout(() => {
+                        if (alert.parentNode) {
+                            this.close(alert);
+                        }
+                    }, duration);
+
+                    // Remove alert after animation
+                    alert.addEventListener('animationend', (e) => {
+                        if (e.animationName === 'slideOut') {
+                            alert.remove();
+                        }
+                    });
+                }
+
+                close(alert) {
+                    alert.style.animation = 'slideOut 0.3s ease-out forwards';
+                }
+            }
+
+            // Initialize the card alert system
+            const cardAlert = new CardAlert();
+
+            // Modify your form submission code
+            document.addEventListener('DOMContentLoaded', function() {
+                const form = document.querySelector('.contact__form--inner');
+
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const formData = new FormData(form);
+
+                    fetch("{{ route('contact.store') }}", {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                cardAlert.show('success', 'Success!', 'Your message has been sent successfully.');
+                                form.reset();
+                            } else {
+                                cardAlert.show('error', 'Error!', 'Failed to send message. Please try again.');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            cardAlert.show('error', 'Error!', 'An error occurred while sending the message.');
+                        });
+                });
+            });
+        </script>
+
+
 
 </x-ecommerce-app-layout>

@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Dashboard;
 
+use App\Http\Controllers\Controller;
 use App\Models\Order;  // Adjust this if you're using a different model, such as 'Sale'
 use Illuminate\Http\Request;
 
