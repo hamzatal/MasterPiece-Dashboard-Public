@@ -14,18 +14,12 @@ class ProductController extends Controller
     public function index()
     {
         $categories = Category::all();
-
         $products = Product::with('category')
-            ->where(function ($query) {
-                $query->whereNull('original_price')
-                    ->orWhereColumn('new_price', '>=', 'original_price');
-            })
             ->latest()
             ->paginate(10);
 
         return view('admin.products.index', compact('products', 'categories'));
     }
-
 
     public function store(Request $request)
     {
@@ -39,18 +33,20 @@ class ProductController extends Controller
             'image' => 'nullable|image|max:2048|mimes:jpeg,png,jpg,gif',
             'is_on_sale' => 'nullable|boolean',
             'discount_percentage' => 'nullable|numeric|min:0|max:100',
+        ], [
+            'price.required' => 'The price field is required.',
+            'stock_quantity.min' => 'The stock quantity must be at least 0.',
+            'image.mimes' => 'The image must be a file of type: jpeg, png, jpg, gif.',
         ]);
-        if($validated['discount_percentage'] != null){
-            $newPrice = $validated['price'] * (1 - $validated['discount_percentage'] / 100);
-            $is_active = 1;
-        }else{
-            $newPrice = null;
-            $is_active = 0;
-        }
-        // dd($validated);
 
         try {
-            // Determine if there is a discount and calculate the new price
+            $newPrice = $validated['price'];
+            $is_active = 0;
+
+            if (isset($validated['discount_percentage'])) {
+                $newPrice = $validated['price'] * (1 - $validated['discount_percentage'] / 100);
+                $is_active = 1;
+            }
 
             $data = [
                 'name' => $validated['name'],
@@ -62,7 +58,7 @@ class ProductController extends Controller
                 'discount_percentage' => $validated['discount_percentage'],
                 'is_discount_active' => $is_active,
             ];
-            // dd($data);
+
             // Handle image upload
             if ($request->hasFile('image')) {
                 $imagePath = $request->file('image')->store('products', 'public');
@@ -70,7 +66,7 @@ class ProductController extends Controller
             }
 
             $product = Product::create($data);
-            $newPrice = $validated['price'];
+
             if ($validated['discount_percentage'] != null) {
                 $product_discount = Product_discount::create([
                     'product_id' => $product->id,
@@ -78,7 +74,6 @@ class ProductController extends Controller
                     'start_date' => now(),
                     'is_active' => 1
                 ]);
-                $product_discount->save();
             }
 
             return redirect()->route('products.index')
@@ -108,13 +103,19 @@ class ProductController extends Controller
             'image' => 'nullable|image|max:2048|mimes:jpeg,png,jpg,gif',
             'is_on_sale' => 'nullable|boolean',
             'discount_percentage' => 'nullable|numeric|min:0|max:100',
+        ], [
+            'price.required' => 'The price field is required.',
+            'stock_quantity.min' => 'The stock quantity must be at least 0.',
+            'image.mimes' => 'The image must be a file of type: jpeg, png, jpg, gif.',
         ]);
 
         try {
-            // Determine if there is a discount and calculate the new price
             $newPrice = $validated['price'];
-            if (isset($validated['is_on_sale']) && $validated['is_on_sale'] && isset($validated['discount_percentage'])) {
-                $newPrice = $validated['price'] - (($validated['price'] * $validated['discount_percentage']) / 100);
+            $is_active = 0;
+
+            if (isset($validated['discount_percentage'])) {
+                $newPrice = $validated['price'] * (1 - $validated['discount_percentage'] / 100);
+                $is_active = 1;
             }
 
             $data = $validated;

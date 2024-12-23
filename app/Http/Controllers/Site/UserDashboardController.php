@@ -79,7 +79,7 @@ class UserDashboardController extends Controller
             $user->password = Hash::make($validated['new_password']);
         }
 
-        $user->sav();
+        $user->save();
 
         return back()->with('success', 'Profile updated successfully.');
     }

@@ -185,15 +185,16 @@
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Price</label>
                                 <div class="relative">
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <span class="text-gray-500 dark:text-gray-400">$</span>
+                                        <span class="text-gray-500 dark:text-gray-400">JD</span>
                                     </div>
                                     <input
                                         type="number"
-                                        step="0.01"
+                                        step="0.001"
                                         name="price"
-                                        class="pl-7 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
-                                        placeholder="0.00">
+                                        class="pl-8 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
+                                        placeholder="0.000">
                                 </div>
+
                                 <p class="text-xs text-red-500 mt-1" x-text="errors.price" x-show="errors.price"></p>
                             </div>
 
@@ -270,7 +271,6 @@
                     </div>
                 </form>
             </div>
-
             <!-- Enhanced Products Table -->
             <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700">
                 <div class="overflow-x-auto">
@@ -308,10 +308,10 @@
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="space-y-1">
-                                        <span class="text-gray-900 dark:text-white font-medium">${{ number_format($product->new_price, 2) }}</span>
+                                        <span class="text-gray-900 dark:text-white font-medium">JD {{ number_format($product->new_price, 3) }}</span>
                                         @if($product->discount_percentage > 0)
                                         <div class="flex items-center space-x-2">
-                                            <span class="text-xs text-gray-500 line-through">${{ number_format($product->price, 2) }}</span>
+                                            <span class="text-xs text-gray-500 line-through">JD {{ number_format($product->new_price, 3) }}</span>
                                             <span class="text-xs text-green-500">-{{ $product->discount_percentage }}%</span>
                                         </div>
                                         @endif
@@ -319,20 +319,20 @@
                                 </td>
                                 <td class="px-6 py-4">
                                     <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium
-                                        {{ $product->category->name == 'Electronics' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' :
-                                           ($product->category->name == 'Clothing' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200' :
-                                           'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300') }}">
+                            {{ $product->category->name == 'Electronics' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' :
+                               ($product->category->name == 'Clothing' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200' :
+                               'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300') }}">
                                         {{ $product->category->name }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="flex items-center">
                                         <span class="w-2 h-2 rounded-full mr-2
-                                            {{ $product->stock_quantity > 10 ? 'bg-green-500' :
-                                               ($product->stock_quantity > 0 ? 'bg-yellow-500' : 'bg-red-500') }}">
+                                {{ $product->stock_quantity > 10 ? 'bg-green-500' :
+                                   ($product->stock_quantity > 0 ? 'bg-yellow-500' : 'bg-red-500') }}">
                                         </span>
                                         <span class="font-medium {{ $product->stock_quantity > 10 ? 'text-green-600 dark:text-green-400' :
-                                               ($product->stock_quantity > 0 ? 'text-yellow-600 dark:text-yellow-400' : 'text-red-600 dark:text-red-400') }}">
+                                   ($product->stock_quantity > 0 ? 'text-yellow-600 dark:text-yellow-400' : 'text-red-600 dark:text-red-400') }}">
                                             {{ $product->stock_quantity }}
                                         </span>
                                         @if($product->stock_quantity == 0)

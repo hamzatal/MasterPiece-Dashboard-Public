@@ -51,240 +51,627 @@
     <!-- End banner section -->
 
     <!-- Start New product section -->
-    <section class="product__section section--padding pt-0">
-        <div class="container-fluid">
-            <div class="section__heading text-center mb-35">
-                <h2 class="section__heading--maintitle">New Products</h2>
-            </div>
+    <section class="sp-section">
+        <div class="sp-container">
+            <h2 class="sp-title">New Products</h2>
 
-            <div class="tab_content">
-                <div id="featured" class="tab_pane active show">
-                    <div class="product__section--inner">
-                        <div class="row row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-2 mb--n30">
-                            @foreach($products as $product)
-                            <div class="col mb-30">
-                                <div class="product__items card">
-                                    <!-- Thumbnail Section -->
-                                    <div class="product__items--thumbnail">
-                                        <a class="product__items--link" href="{{ route('products.show', $product->id) }}">
-                                            @if($product->image)
-                                            <img class="product__items--img product__primary--img"
-                                                src="{{ Storage::url($product->image) }}"
-                                                alt="{{ $product->name }}">
-                                            @else
-                                            <img class="product__items--img product__primary--img"
-                                                src="assets/img/product/default.png"
-                                                alt="default-product-image">
-                                            @endif
-                                        </a>
-                                        <!-- Sale Badge -->
-                                        @if($product->is_discount_active && $product->discount_percentage)
-                                        <div class="product__badge">
-                                            <span class="product__badge--items sale">Sale - {{ $product->discount_percentage }}%</span>
-                                        </div>
-                                        @endif
-                                        <!-- New Product Badge -->
-                                        @if(now()->diffInDays($product->created_at) <= 30)
-                                            <div class="product__badge">
-                                            <span class="product__badge--items new">New</span>
-                                    </div>
-                                    @endif
-                                </div>
-
-                                <!-- Content Section -->
-                                <div class="product__items--content card-body">
-                                    <span class="product__items--content__subtitle">
-                                        Category: {{ $product->category->name ?? 'Uncategorized' }}
-                                    </span>
-                                    <h3 class="product__items--content__title h4">
-                                        <a href="{{ route('products.show', $product->id) }}">
-                                            {{ htmlspecialchars($product->name) }}
-                                        </a>
-                                    </h3>
-                                    <div class="product__items--price">
-                                        <span class="current__price">
-                                            {{$product->new_price}}
-                                        </span>
-                                        <span class="price__divided"></span>
-                                        <span class="old__price">
-                                            ${{ number_format($product->original_price, 2) }}
-                                        </span>
-                                    </div>
-
-                                    <!-- Action Buttons -->
-                                    <ul class="product__items--action d-flex">
-                                        <li class="product__items--action__list">
-                                            <form action="{{ route('cart.add') }}" method="POST">
-                                                @csrf
-                                                <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                                <button type="submit"
-                                                    class="product__items--action__btn add__to--cart">
-                                                    <svg class="product__items--action__btn--svg"
-                                                        xmlns="http://www.w3.org/2000/svg" width="22.51"
-                                                        height="20.443" viewBox="0 0 14.706 13.534">
-                                                        <g transform="translate(0 0)">
-                                                            <path d="M4.738,472.271h7.814a.434.434,0,0,0,.414-.328l1.723-6.316a.466.466,0,0,0-.071-.4.424.424,0,0,0-.344-.179H3.745L3.437,463.6a.435.435,0,0,0-.421-.353H.431a.451.451,0,0,0,0,.9h2.24c.054.257,1.474,6.946,1.555,7.33a1.36,1.36,0,0,0-.779,1.242,1.326,1.326,0,0,0,1.293,1.354h7.812a.452.452,0,0,0,0-.9H4.74a.451.451,0,0,1,0-.9Zm8.966-6.317-1.477,5.414H5.085l-1.149-5.414Z"
-                                                                transform="translate(0 -463.248)" fill="currentColor"></path>
-                                                            <path d="M5.5,478.8a1.294,1.294,0,1,0,1.293-1.353A1.325,1.325,0,0,0,5.5,478.8Zm1.293-.451a.452.452,0,1,1-.431.451A.442.442,0,0,1,6.793,478.352Z"
-                                                                transform="translate(-1.191 -466.622)" fill="currentColor"></path>
-                                                        </g>
-                                                    </svg>
-                                                    <span class="add__to--cart__text"> + Add to cart</span>
-                                                </button>
-                                            </form>
-                                        </li>
-                                        <li class="product__items--action__list">
-                                            <a class="product__items--action__btn"
-                                                href="{{ route('wishlist.add', $product->id) }}">
-                                                <svg class="product__items--action__btn--svg"
-                                                    xmlns="http://www.w3.org/2000/svg" width="25.51" height="23.443"
-                                                    viewBox="0 0 512 512">
-                                                    <path
-                                                        d="M352.92 80C288 80 256 144 256 144s-32-64-96.92-64c-52.76 0-94.54 44.14-95.08 96.81-1.1 109.33 86.73 187.08 183 252.42a16 16 0 0018 0c96.26-65.34 184.09-143.09 183-252.42-.54-52.67-42.32-96.81-95.08-96.81z"
-                                                        fill="none" stroke="currentColor" stroke-linecap="round"
-                                                        stroke-linejoin="round" stroke-width="32"></path>
-                                                </svg>
-                                                <span class="visually-hidden">Wishlist</span>
-                                            </a>
-                                        </li>
-                                        <li class="product__items--action__list">
-                                            <a class="product__items--action__btn"
-                                                href="{{ route('products.show', $product->id) }}">
-                                                <svg class="product__items--action__btn--svg"
-                                                    xmlns="http://www.w3.org/2000/svg" width="25.51" height="23.443"
-                                                    viewBox="0 0 512 512">
-                                                    <path
-                                                        d="M255.66 112c-77.94 0-157.89 45.11-220.83 135.33a16 16 000-.27C82.92 340.8 161.8 400 255.66 400c92.84 0 173.34-59.38 221.79-135.25a16.14 16.14 0 000-17.47C428.89 172.28 347.8 112 255.66 112z"
-                                                        fill="none" stroke="currentColor" stroke-linecap="round"
-                                                        stroke-linejoin="round" stroke-width="32" />
-                                                    <circle cx="256" cy="256" r="80" fill="none"
-                                                        stroke="currentColor" stroke-miterlimit="10"
-                                                        stroke-width="32" />
-                                                </svg>
-                                                <span class="visually-hidden">Quick View</span>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        @endforeach
-                    </div>
-                    <div class="pagination justify-content-center mt-4">
-                        @if($products->hasPages())
-                        {{ $products->links() }}
-                        @else
-                        <p>No products to display.</p>
+            <div class="sp-grid">
+                @foreach($products as $product)
+                <div class="sp-card">
+                    <!-- Image Container -->
+                    <div class="sp-image-wrap">
+                        <a href="{{ route('products.show', $product->id) }}">
+                            @if($product->image)
+                            <img src="{{ Storage::url($product->image) }}" alt="{{ $product->name }}" class="sp-image">
+                            @else
+                            <img src="assets/img/product/default.png" alt="default-product-image" class="sp-image">
+                            @endif
+                        </a>
+                        @if($product->is_discount_active && $product->discount_percentage)
+                        <span class="sp-tag sp-tag-sale">{{ $product->discount_percentage }}% OFF</span>
                         @endif
+                        @if(now()->diffInDays($product->created_at) <= 30)
+                            <span class="sp-tag sp-tag-new">NEW</span>
+                            @endif
                     </div>
-                </div>
-            </div>
-        </div>
-        </div>
-    </section>
 
+                    <!-- Content -->
+                    <div class="sp-content">
+                        <span class="sp-category">{{ $product->category->name ?? 'Uncategorized' }}</span>
+                        <h3 class="sp-name">
+                            <a href="{{ route('products.show', $product->id) }}">{{ htmlspecialchars($product->name) }}</a>
+                        </h3>
 
-    <!-- End product section -->
+                        <!-- Price -->
+                        <div class="sp-price">
+                            @if ($product->is_discount_active)
+                            <span class="sp-current-price">${{ number_format($product->new_price, 2) }}</span>
+                            <span class="sp-old-price">${{ number_format($product->original_price, 2) }}</span>
+                            @else
+                            <span class="sp-current-price">${{ number_format($product->original_price, 2) }}</span>
+                            @endif
+                        </div>
 
-    <!-- Start product section Sale -->
-    <section class="product__section section--padding pt-0">
-        <div class="container-fluid">
-            <div class="section__heading text-center mb-50">
-                <h2 class="section__heading--maintitle">Sale</h2>
-            </div>
-            <div class="product__section--inner product__swiper--activation swiper">
-                <div class="tab_content">
-                    <div id="featured" class="tab_pane active show">
-                        <div class="product__section--inner">
-                            <div class="row row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-2 mb--n30">
-                                @foreach($products as $product)
-                                @if($product->is_discount_active)
-                                <div class="col mb-30">
-                                    <div class="product__items card"> <!-- Card wrapper -->
-                                        <div class="product__items--thumbnail">
-                                            <a class="product__items--link" href="{{ route('products.show', $product->id) }}">
-                                                @if($product->image)
-                                                <img class="product__items--img product__primary--img"
-                                                    src="{{ Storage::url($product->image) }}"
-                                                    alt="{{ $product->name }}">
-                                                @else
-                                                <img class="product__items--img product__primary--img"
-                                                    src="assets/img/product/default.png"
-                                                    alt="default-product-image">
-                                                @endif
-                                            </a>
-                                            @if($product->original_price && $product->price < $product->original_price)
-                                                <div class="product__badge">
-                                                    <span class="product__badge--items sale">Sale</span>
-                                                </div>
-                                                @endif
-                                        </div>
-
-                                        <div class="product__items--content card-body"> <!-- Card content -->
-                                            <span class="product__items--content__subtitle">Category: {{ $product->category->name }}</span>
-                                            <h3 class="product__items--content__title h4">
-                                                <a href="{{ route('products.show', $product->id) }}">{{ $product->name }}</a>
-                                            </h3>
-                                            <div class="product__items--price">
-                                                <span class="current__price">${{ number_format($product->new_price, 2) }}</span>
-                                                @if($product->original_price)
-                                                <span class="price__divided"></span>
-                                                <span class="old__price">${{ number_format($product->original_price, 2) }}</span>
-                                                @endif
-                                            </div>
-
-                                            <ul class="product__items--action d-flex">
-                                                <li class="product__items--action__list">
-                                                    <form action="{{ route('cart.add') }}" method="POST">
-                                                        @csrf
-                                                        <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                                        <button type="submit" class="product__items--action__btn add__to--cart">
-                                                            <svg class="product__items--action__btn--svg" xmlns="http://www.w3.org/2000/svg" width="22.51" height="20.443" viewBox="0 0 14.706 13.534">
-                                                                <g transform="translate(0 0)">
-                                                                    <path d="M4.738,472.271h7.814a.434.434,0,0,0,.414-.328l1.723-6.316a.466.466,0,0,0-.071-.4.424.424,0,0,0-.344-.179H3.745L3.437,463.6a.435.435,0,0,0-.421-.353H.431a.451.451,0,0,0,0,.9h2.24c.054.257,1.474,6.946,1.555,7.33a1.36,1.36,0,0,0-.779,1.242,1.326,1.326,0,0,0,1.293,1.354h7.812a.452.452,0,0,0,0-.9H4.74a.451.451,0,0,1,0-.9Zm8.966-6.317-1.477,5.414H5.085l-1.149-5.414Z" transform="translate(0 -463.248)" fill="currentColor"></path>
-                                                                    <path d="M5.5,478.8a1.294,1.294,0,1,0,1.293-1.353A1.325,1.325,0,0,0,5.5,478.8Zm1.293-.451a.452.452,0,1,1-.431.451A.442.442,0,0,1,6.793,478.352Z" transform="translate(-1.191 -466.622)" fill="currentColor"></path>
-                                                                    <path d="M13.273,478.8a1.294,1.294,0,1,0,1.293-1.353A1.325,1.325,0,0,0,13.273,478.8Zm1.293-.451a.452.452,0,1,1-.431.451A.442.442,0,0,1,14.566,478.352Z" transform="translate(-2.875 -466.622)" fill="currentColor"></path>
-                                                                </g>
-                                                            </svg>
-                                                            <span class="add__to--cart__text"> + Add to cart</span>
-                                                        </button>
-                                                    </form>
-                                                </li>
-                                                <li class="product__items--action__list">
-                                                    <a class="product__items--action__btn" href="{{ route('wishlist.add', $product->id) }}">
-                                                        <svg class="product__items--action__btn--svg" xmlns="http://www.w3.org/2000/svg" width="25.51" height="23.443" viewBox="0 0 512 512">
-                                                            <path d="M352.92 80C288 80 256 144 256 144s-32-64-96.92-64c-52.76 0-94.54 44.14-95.08 96.81-1.1 109.33 86.73 187.08 183 252.42a16 16 0 0018 0c96.26-65.34 184.09-143.09 183-252.42-.54-52.67-42.32-96.81-95.08-96.81z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"></path>
-                                                        </svg>
-                                                        <span class="visually-hidden">Wishlist</span>
-                                                    </a>
-                                                </li>
-                                                <li class="product__items--action__list">
-                                                    <a class="product__items--action__btn" href="{{ route('products.show', $product->id) }}">
-                                                        <svg class="product__items--action__btn--svg" xmlns="http://www.w3.org/2000/svg" width="25.51" height="23.443" viewBox="0 0 512 512">
-                                                            <path d="M255.66 112c-77.94 0-157.89 45.11-220.83 135.33a16 16 000-.27C82.92 340.8 161.8 400 255.66 400c92.84 0 173.34-59.38 221.79-135.25a16.14 16.14 0 000-17.47C428.89 172.28 347.8 112 255.66 112z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" />
-                                                            <circle cx="256" cy="256" r="80" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32" />
-                                                        </svg>
-                                                        <span class="visually-hidden">Quick View</span>
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                                @endif
-                                @endforeach
-                            </div>
-                            <div class="pagination justify-content-center mt-4">
-                                {{ $products->links() }}
-                            </div>
+                        <!-- Actions -->
+                        <div class="sp-actions">
+                            <form action="{{ route('cart.add') }}" method="POST" class="sp-form">
+                                @csrf
+                                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                <button type="submit" class="sp-button sp-button-cart">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M9 20a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"></path>
+                                        <path d="M20 20a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"></path>
+                                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                                    </svg>
+                                    Add
+                                </button>
+                            </form>
+                            <a href="{{ route('wishlist.add', $product->id) }}" class="sp-icon-button" title="Add to Wishlist">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                </svg>
+                            </a>
+                            <a href="{{ route('products.show', $product->id) }}" class="sp-icon-button" title="Quick View">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </a>
                         </div>
                     </div>
                 </div>
+                @endforeach
+            </div>
+
+            <!-- Pagination -->
+            <div class="sp-pagination">
+                @if($products->hasPages())
+                {{ $products->links() }}
+                @else
+                <p>No products to display.</p>
+                @endif
             </div>
         </div>
     </section>
+
+    <style>
+        .sp-section {
+            padding: 60px 0;
+            background-color: #ffffff;
+        }
+
+        .sp-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .sp-title {
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 40px;
+            color: #1a1a1a;
+            font-weight: 700;
+            position: relative;
+        }
+
+        .sp-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 3px;
+            background: #3b82f6;
+            border-radius: 2px;
+        }
+
+        .sp-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .sp-card {
+            background: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.25s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        .sp-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .sp-image-wrap {
+            position: relative;
+            padding-top: 100%;
+            background: #f5f5f5;
+        }
+
+        .sp-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .sp-card:hover .sp-image {
+            transform: scale(1.05);
+        }
+
+        .sp-tag {
+            position: absolute;
+            padding: 2px 7px;
+            border-radius: 5px;
+            font-size: 10px;
+            font-weight: 600;
+            z-index: 1;
+        }
+
+        .sp-tag-sale {
+            background: #ef4444;
+            color: white;
+            top: 10px;
+            left: 10px;
+        }
+
+        .sp-tag-new {
+            background: #10b981;
+            color: white;
+            top: 10px;
+            right: 10px;
+        }
+
+        .sp-content {
+            padding: 15px;
+        }
+
+        .sp-category {
+            font-size: 11px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .sp-name {
+            font-size: 14px;
+            margin: 0 0 10px;
+            line-height: 1.3;
+        }
+
+        .sp-name a {
+            color: #1a1a1a;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .sp-name a:hover {
+            color: #3b82f6;
+        }
+
+        .sp-price {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .sp-current-price {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .sp-old-price {
+            font-size: 13px;
+            color: #9ca3af;
+            text-decoration: line-through;
+        }
+
+        .sp-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sp-form {
+            flex: 1;
+        }
+
+        .sp-button {
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .sp-button-cart {
+            background: #01206e;
+            color: white;
+            padding: 8px 12px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .sp-button-cart:hover {
+            background: rgb(18, 62, 158);
+        }
+
+        .sp-icon-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            background: #f3f4f6;
+            color: #4b5563;
+            transition: all 0.2s ease;
+        }
+
+        .sp-icon-button:hover {
+            background: #01206e;
+            color: white;
+        }
+
+        .sp-pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .sp-section {
+                padding: 40px 0;
+            }
+
+            .sp-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 15px;
+            }
+
+            .sp-content {
+                padding: 12px;
+            }
+
+            .sp-name {
+                font-size: 13px;
+            }
+
+            .sp-current-price {
+                font-size: 14px;
+            }
+
+            .sp-button-cart {
+                padding: 6px 10px;
+            }
+
+            .sp-icon-button {
+                width: 28px;
+                height: 28px;
+            }
+        }
+    </style>
     <!-- End product section -->
 
+    <!-- Start Sale Section -->
+    <section class="sale-section">
+        <div class="sale-container">
+            <h2 class="sale-title">Sale Products</h2>
+
+            <div class="sale-grid">
+                @foreach($products as $product)
+                @if($product->is_discount_active)
+                <div class="sale-card">
+                    <!-- Image Container -->
+                    <div class="sale-image-wrap">
+                        <a href="{{ route('products.show', $product->id) }}">
+                            @if($product->image)
+                            <img src="{{ Storage::url($product->image) }}" alt="{{ $product->name }}" class="sale-image">
+                            @else
+                            <img src="assets/img/product/default.png" alt="default-product-image" class="sale-image">
+                            @endif
+                        </a>
+                        @if($product->original_price && $product->price < $product->original_price)
+                            <span class="sale-tag sale-tag-sale">{{ $product->discount_percentage }}% OFF</span>
+                            @endif
+                    </div>
+
+                    <!-- Content -->
+                    <div class="sale-content">
+                        <span class="sale-category">{{ $product->category->name }}</span>
+                        <h3 class="sale-name">
+                            <a href="{{ route('products.show', $product->id) }}">{{ $product->name }}</a>
+                        </h3>
+
+                        <div class="sale-price">
+                            <span class="sale-current-price">${{ number_format($product->new_price, 2) }}</span>
+                            @if($product->original_price)
+                            <span class="sale-old-price">${{ number_format($product->original_price, 2) }}</span>
+                            @endif
+                        </div>
+
+                        <div class="sale-actions">
+                            <form action="{{ route('cart.add') }}" method="POST" class="sale-form">
+                                @csrf
+                                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                <button type="submit" class="sale-button sale-button-cart">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M9 20a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"></path>
+                                        <path d="M20 20a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"></path>
+                                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                                    </svg>
+                                    Add
+                                </button>
+                            </form>
+                            <a href="{{ route('wishlist.add', $product->id) }}" class="sale-icon-button" title="Add to Wishlist">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                </svg>
+                            </a>
+                            <a href="{{ route('products.show', $product->id) }}" class="sale-icon-button" title="Quick View">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                @endif
+                @endforeach
+            </div>
+
+            <div class="sale-pagination">
+                {{ $products->links() }}
+            </div>
+        </div>
+    </section>
+
+    <style>
+        .sale-section {
+            padding: 60px 0;
+            background-color: #ffffff;
+        }
+
+        .sale-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .sale-title {
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 40px;
+            color: #1a1a1a;
+            font-weight: 700;
+            position: relative;
+        }
+
+        .sale-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 3px;
+            background: #01206e;
+            border-radius: 2px;
+        }
+
+        .sale-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .sale-card {
+            background: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.25s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        .sale-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .sale-image-wrap {
+            position: relative;
+            padding-top: 100%;
+            background: #f5f5f5;
+        }
+
+        .sale-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .sale-card:hover .sale-image {
+            transform: scale(1.05);
+        }
+
+        .sale-tag {
+            position: absolute;
+            padding: 2px 7px;
+            border-radius: 5px;
+            font-size: 10px;
+            font-weight: 600;
+            z-index: 1;
+        }
+
+        .sale-tag-sale {
+            background: #ef4444;
+            color: white;
+            top: 10px;
+            left: 10px;
+        }
+
+        .sale-content {
+            padding: 15px;
+        }
+
+        .sale-category {
+            font-size: 11px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .sale-name {
+            font-size: 14px;
+            margin: 0 0 10px;
+            line-height: 1.3;
+        }
+
+        .sale-name a {
+            color: #1a1a1a;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .sale-name a:hover {
+            color: #01206e;
+        }
+
+        .sale-price {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .sale-current-price {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .sale-old-price {
+            font-size: 13px;
+            color: #9ca3af;
+            text-decoration: line-through;
+        }
+
+        .sale-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sale-form {
+            flex: 1;
+        }
+
+        .sale-button {
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .sale-button-cart {
+            background: #01206e;
+            color: white;
+            padding: 8px 12px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .sale-button-cart:hover {
+            background: rgb(18, 66, 170);
+        }
+
+        .sale-icon-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            background: #f3f4f6;
+            color: #4b5563;
+            transition: all 0.2s ease;
+        }
+
+        .sale-icon-button:hover {
+            background: #01206e;
+            color: white;
+        }
+
+        .sale-pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .sale-section {
+                padding: 40px 0;
+            }
+
+            .sale-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 15px;
+            }
+
+            .sale-content {
+                padding: 12px;
+            }
+
+            .sale-name {
+                font-size: 13px;
+            }
+
+            .sale-current-price {
+                font-size: 14px;
+            }
+
+            .sale-button-cart {
+                padding: 6px 10px;
+            }
+
+            .sale-icon-button {
+                width: 28px;
+                height: 28px;
+            }
+        }
+    </style>
+    <!-- End Sale Section -->
     <!-- Start banner section -->
     <section class="banner__section section--padding pt-0">
         <div class="container-fluid">
