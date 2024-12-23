@@ -5,15 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Discount extends Model
+class Product_discount extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'product_id',
-        'percentage',
-        'startdate',
-        'enddate',
+        'discount_percentage',
+        'start_date',
+        'end_date',
         'is_active'
     ];
 

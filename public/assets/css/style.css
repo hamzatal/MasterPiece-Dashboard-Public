@@ -1690,10 +1690,7 @@ body.overlay__active::before {
     -webkit-animation-name: fadeInUp;
     animation-name: fadeInUp;
 }
-.section--padding {
-    padding-top: 6rem;
-    padding-bottom: 6rem;
-}
+
 .hero__video--section {
     position: relative;
     width: 100%;

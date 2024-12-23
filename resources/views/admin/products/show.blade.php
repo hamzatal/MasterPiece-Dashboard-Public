@@ -14,7 +14,7 @@
                 <!-- Price -->
                 <div class="flex items-center text-gray-700 dark:text-gray-300">
                     <i class="fas fa-dollar-sign text-green-500 mr-2"></i>
-                    <span>Price: ${{ number_format($product->price ?? 0, 2) }}</span>
+                    <span>Price: ${{ number_format($product->new_price ?? 0, 2) }}</span>
                 </div>
 
                 <!-- Category -->

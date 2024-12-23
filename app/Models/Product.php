@@ -12,9 +12,11 @@ class Product extends Model
     protected $fillable = [
         'name',
         'description',
-        'price',
+        'new_price',
         'original_price',
         'stock_quantity',
+        'discount_percentage',
+        'is_discount_active',
         'category_id',
         'image'
     ];
@@ -32,7 +34,7 @@ class Product extends Model
     // In Product model
     public function discounts()
     {
-        return $this->hasMany(Discount::class);
+        return $this->hasMany(Product_discount::class);
     }
     public function scopeTopSelling($query, $limit = 1)
     {

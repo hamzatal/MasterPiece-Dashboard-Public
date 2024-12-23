@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
-use App\Models\Discount;
+use App\Models\Product_discount;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -14,8 +14,8 @@ class DiscountController extends Controller
     {
         $search = $request->input('search');
 
-        // Fetch the discounts, along with their related products
-        $discounts = Discount::query()
+        // Fetch discounts with their related products
+        $discounts = Product_discount::query()
             ->with('product')
             ->when($search, function ($query) use ($search) {
                 $query->whereHas('product', function ($query) use ($search) {
@@ -24,28 +24,13 @@ class DiscountController extends Controller
             })
             ->paginate(10);
 
-        // Check if any discount has expired and update its status
-        foreach ($discounts as $discount) {
-            if (now()->greaterThanOrEqualTo($discount->enddate) && $discount->is_active) {
-                $product = $discount->product;
-
-                // Revert product price to its original price
-                if ($product->original_price) {
-                    $product->update(['price' => $product->original_price]);
-                }
-
-                // Automatically deactivate the discount
-                $discount->update(['is_active' => false]);
-            }
-        }
-
         return view('admin.discounts.index', compact('discounts'));
     }
 
     // Show form to create a new discount
     public function create()
     {
-        $products = Product::all(); // Fetch all products for the dropdown
+        $products = Product::all(); // Fetch all products for dropdown
         return view('admin.discounts.create', compact('products'));
     }
 
@@ -60,36 +45,32 @@ class DiscountController extends Controller
             'is_active' => 'boolean',
         ]);
 
-        $discount = Discount::create($validated);
+        try {
+            $discount = Product_discount::create($validated);
 
-        // Calculate the discounted price
-        $product = $discount->product;
+            // Update product price
+            $product = $discount->product;
+            $discountedPrice = $product->original_price * (1 - ($discount->percentage / 100));
+            $product->update(['price' => $discountedPrice]);
 
-        // Check and store the original price if not already set
-        if (!$product->original_price) {
-            $product->original_price = $product->price; // Assume `original_price` exists in `products` table
-            $product->save();
+            return redirect()->route('discounts.index')->with('success', 'Discount created successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to create discount.')->withInput();
         }
-
-        $discountedPrice = $product->original_price - ($product->original_price * ($discount->percentage / 100));
-        $product->update(['price' => $discountedPrice]);
-
-        return redirect()->route('discounts.index')->with('success', 'Discount created successfully!');
     }
 
     // Show form to edit a discount
     public function edit($id)
     {
-        $discount = Discount::findOrFail($id);
-        $products = Product::all(); // Fetch all products for the dropdown
-
+        $discount = Product_discount::findOrFail($id);
+        $products = Product::all(); // Fetch all products for dropdown
         return view('admin.discounts.edit', compact('discount', 'products'));
     }
 
-    // Update a discount
+    // Update an existing discount
     public function update(Request $request, $id)
     {
-        $discount = Discount::findOrFail($id);
+        $discount = Product_discount::findOrFail($id);
 
         $validated = $request->validate([
             'product_id' => 'required|exists:products,id',
@@ -99,78 +80,38 @@ class DiscountController extends Controller
             'is_active' => 'boolean',
         ]);
 
-        $product = $discount->product;
+        try {
+            $discount->update($validated);
 
-        // Only update product price if the discount is active and not expired
-        if ($discount->is_active && now()->lessThanOrEqualTo($discount->enddate)) {
-            // Revert the product price to the original price
-            if ($product->original_price) {
-                $product->price = $product->original_price;
-                $product->save();
-            }
-
-            // Recalculate the new discounted price
-            $discountedPrice = $product->original_price - ($product->original_price * ($validated['percentage'] / 100));
-
-            // Update the product price
+            // Update product price
+            $product = $discount->product;
+            $discountedPrice = $product->original_price * (1 - ($discount->percentage / 100));
             $product->update(['price' => $discountedPrice]);
+
+            return redirect()->route('discounts.index')->with('success', 'Discount updated successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to update discount.')->withInput();
         }
-
-        // Update the discount details regardless
-        $discount->update($validated);
-
-        return redirect()->route('discounts.index')->with('success', 'Discount updated successfully!');
     }
-
 
     // Delete a discount
     public function destroy($id)
     {
-        $discount = Discount::findOrFail($id);
-        $product = $discount->product;
+        $discount = Product_discount::findOrFail($id);
 
-        // Restore original price
-        if ($product->original_price) {
-            $product->update(['price' => $product->original_price]);
-        }
+        try {
+            $product = $discount->product;
 
-        $discount->delete();
-
-        return redirect()->route('discounts.index')->with('success', 'Discount deleted successfully!');
-    }
-
-    // Toggle discount status (activate/deactivate)
-    public function toggleStatus($id)
-    {
-        $discount = Discount::findOrFail($id);
-        $product = $discount->product;
-
-        // Check if the discount has expired
-        if (now()->greaterThanOrEqualTo($discount->enddate)) {
-            return redirect()->route('discounts.index')
-                ->with('error', 'This discount has expired and cannot be reactivated.');
-        }
-
-        if ($discount->is_active) {
-            // Restore original price
-            if ($product->original_price) {
+            // Revert to the original price if necessary
+            if ($product->original_price && $discount->is_active) {
                 $product->update(['price' => $product->original_price]);
             }
-        } else {
-            // Apply discounted price
-            $discountedPrice = $product->original_price - ($product->original_price * ($discount->percentage / 100));
-            $product->update(['price' => $discountedPrice]);
+
+            $discount->delete();
+
+            return redirect()->route('discounts.index')->with('success', 'Discount deleted successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to delete discount.');
         }
-
-        $discount->update(['is_active' => !$discount->is_active]);
-
-        return redirect()->route('discounts.index')->with('success', 'Discount status updated successfully!');
-    }
-
-    // Show a single discount details
-    public function show($id)
-    {
-        $discount = Discount::with('product')->findOrFail($id);
-        return view('admin.discounts.show', compact('discount'));
     }
 }

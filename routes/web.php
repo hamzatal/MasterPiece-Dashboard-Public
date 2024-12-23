@@ -13,6 +13,7 @@ use App\Http\Controllers\Dashboard\ReviewController;
 use App\Http\Controllers\Dashboard\UserController;
 use App\Http\Controllers\Dashboard\ContactController;
 use App\Http\Controllers\Dashboard\LoginController;
+use App\Http\Controllers\Dashboard\UserDashboardController;
 /*
 |----------------------------------------------------------------------
 | Controller
@@ -25,14 +26,56 @@ use App\Http\Controllers\Site\CheckoutController;
 use App\Http\Controllers\Site\ContactUsController;
 use App\Http\Controllers\Site\FaqController;
 use App\Http\Controllers\Site\HomeController;
-use App\Http\Controllers\Site\MyAccountController;
+use App\Http\Controllers\Site\AccountController;
 use App\Http\Controllers\Site\NotFoundController;
 use App\Http\Controllers\Site\ProductDetailsController;
 use App\Http\Controllers\Site\ProductGalleryController;
 use App\Http\Controllers\Site\ProductLeftSidebarController;
-use App\Http\Controllers\Site\ShopRightSidebarController;
+use App\Http\Controllers\Site\ShopController;
 use App\Http\Controllers\Site\WishlistController;
 use Illuminate\Support\Facades\Route;
+
+
+
+
+/*
+|----------------------------------------------------------------------
+| TEST
+|----------------------------------------------------------------------
+*/
+
+Route::middleware('auth')->group(function () {
+    Route::get('/account', [AccountController::class, 'index'])->name('account.index');  // عرض حساب المستخدم
+    Route::get('/account/edit', [AccountController::class, 'edit'])->name('account.edit');  // عرض صفحة تعديل الملف الشخصي
+    Route::put('/account', [AccountController::class, 'update'])->name('account.update');  // تحديث البيانات
+});
+
+
+// Route to add items to the cart
+Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+
+// Route to view the cart
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+
+Route::get('/wishlist/add/{productId}', [WishlistController::class, 'add'])->name('wishlist.add');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [UserDashboardController::class, 'dashboard'])->name('user.dashboard');
+    Route::put('/profile/update', [UserDashboardController::class, 'updateProfile'])->name('user.profile.update');
+    Route::delete('/wishlist/{product}', [UserDashboardController::class, 'removeFromWishlist'])->name('wishlist.remove');
+    Route::patch('/cart/{cart}', [UserDashboardController::class, 'updateCartQuantity'])->name('cart.update');
+    Route::delete('/cart/{cart}', [UserDashboardController::class, 'removeFromCart'])->name('cart.remove');
+});
+/*
+|----------------------------------------------------------------------
+| TEST
+|----------------------------------------------------------------------
+*/
+
+
+
+
+
 
 /*
 |----------------------------------------------------------------------
@@ -46,11 +89,11 @@ Route::get('/404', [NotFoundController::class, 'index']);
 Route::get('/checkout', [CheckoutController::class, 'index']);
 Route::get('/contact-us', [ContactUsController::class, 'index']);
 Route::post('/contact-us', [ContactUsController::class, 'store'])->name('contact-us.store');
-Route::get('/my-account', [MyAccountController::class, 'index']);
+Route::get('/my-account', [AccountController::class, 'index']);
 Route::get('/product-details', [ProductDetailsController::class, 'index']);
 Route::get('/product-gallery', [ProductGalleryController::class, 'index']);
 Route::get('/product-left-sidebar', [ProductLeftSidebarController::class, 'index']);
-Route::get('/shop-right-sidebar', [ShopRightSidebarController::class, 'index']);
+Route::get('/shop', [ShopController::class, 'index']);
 Route::get('/wishlist', [WishlistController::class, 'index']);
 Route::get('/faq', [FaqController::class, 'index']);
 Route::get('/login', [LoginController::class, 'index']);
@@ -61,6 +104,7 @@ Route::post('/contact/store', [ContactUsController::class, 'store'])->name('cont
 | Ecommerce Routes
 |----------------------------------------------------------------------
 */
+Route::get('/', [App\Http\Controllers\Site\HomeController::class, 'index'])->name('home');
 
 Route::get('/dashboard/download-report', [DashboardController::class, 'downloadReport'])->name('dashboard.download-report');
 

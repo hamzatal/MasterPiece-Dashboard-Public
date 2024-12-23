@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Faker\Provider\ar_EG\Payment;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -11,8 +12,10 @@ class Order extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'total',
+        'user_id',
+        'order_number',
         'status',
+        'total',
         'payment_id',
         'payment_status',
     ];
@@ -30,22 +33,31 @@ class Order extends Model
     ];
 
     // Relationships
+    public function items()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
     public function orderItems()
     {
         return $this->belongsToMany(Product::class, 'order_items')->withPivot('quantity', 'price');
     }
-    public function shipping_address()
+
+    public function shippingAddress()
     {
-        return $this->hasOne(ShippingAddress::class);  // Adjust according to your relationship
+        return $this->hasOne(ShippingAddress::class);
     }
+
     public function user()
     {
         return $this->belongsTo(User::class);
     }
-    public function customer()
+
+    public function payment()
     {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo(Payment::class);
     }
+
     // Scopes
     public function scopeRecent($query)
     {
@@ -80,9 +92,7 @@ class Order extends Model
     protected static function booted()
     {
         static::creating(function ($order) {
-            if (empty($order->status)) {
-                $order->status = 'pending';
-            }
+            $order->status = $order->status ?? 'pending';
         });
     }
 }

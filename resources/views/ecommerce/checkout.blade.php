@@ -72,7 +72,7 @@
             </div>
             <div class="checkout__content--step__footer d-flex align-items-center">
                 <a class="continue__shipping--btn primary__btn border-radius-5" href="/checkout">Pay now</a>
-                <a class="previous__link--content" href="/shop-right-sidebar">Return to shipping</a>
+                <a class="previous__link--content" href="/shop">Return to shipping</a>
             </div>
         </form>
     </main>

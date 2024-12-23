@@ -42,7 +42,7 @@ public function handle(Request $request, Closure $next){
 
             if ($userRole === 'user') { // Customer Role
                 // Allow only the welcome page
-                if (!$request->routeIs('home')) {
+                if (!$request->routeIs('home')&& !$request->routeIs('profile.*')) {
                     return redirect()->route('home.index');
                 }
             }

@@ -87,7 +87,7 @@
                             type="number"
                             name="price"
                             id="price"
-                            value="{{ old('price', $product->price) }}"
+                            value="{{ old('new_price', $product->new_price) }}"
                             step="0.01"
                             placeholder="Enter price"
                             required
