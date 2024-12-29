@@ -3,19 +3,19 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
     <div class="flex items-center justify-between px-9 py-4 border-b border-gray-200 dark:border-gray-700">
-    <a href="{{ route('dashboard') }}"
-       class="flex items-center space-x-1 text-2xl font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 transition-colors duration-300 group">
-        <div class="flex items-center">
-            <i class="fas fa-code text-3xl mr-3
+        <a href="{{ route('dashboard') }}"
+            class="flex items-center space-x-1 text-2xl font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 transition-colors duration-300 group">
+            <div class="flex items-center">
+                <i class="fas fa-code text-3xl mr-3
                       group-hover:animate-spin
                       group-hover:text-indigo-800
                       transition-all duration-500
                       dark:group-hover:text-indigo-300"></i>
-            <h1 class="text-2xl font-bold
+                <h1 class="text-2xl font-bold
                        group-hover:tracking-wider
                        transition-all duration-300">DevStore</h1>
-        </div>
-    </a>
+            </div>
+        </a>
         <!-- Close Button for Mobile (unchanged) -->
         <button id="closeSidebar" class="block lg:hidden text-gray-600 dark:text-gray-300 hover:text-red-500">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
@@ -138,6 +138,21 @@
             </svg>
             Contacts
             @if(request()->routeIs('contacts.*'))
+            <span class="absolute right-3 top-1/2 transform -translate-y-1/2 w-2 h-2 bg-indigo-600 dark:bg-indigo-400 rounded-full"></span>
+            @endif
+        </a>
+        <!-- banners -->
+        <a href="{{ route('banners.index') }}"
+            class="group flex items-center px-4 py-2 text-sm font-medium rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-900/20 text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all duration-300 ease-in-out {{ request()->routeIs('banners.*') ? 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 relative' : '' }}"
+            {{ request()->routeIs('banners.*') ? 'aria-current="page"' : '' }}>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 4H5a2 2 0 00-2 2v12a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 9h10M7 12h10M7 15h6" />
+                <circle cx="18" cy="15" r="2" stroke-width="2" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.5 16.5L22 19" />
+            </svg>
+            Banners
+            @if(request()->routeIs('banners.*'))
             <span class="absolute right-3 top-1/2 transform -translate-y-1/2 w-2 h-2 bg-indigo-600 dark:bg-indigo-400 rounded-full"></span>
             @endif
         </a>

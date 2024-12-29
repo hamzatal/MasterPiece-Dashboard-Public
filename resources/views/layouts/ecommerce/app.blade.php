@@ -33,7 +33,6 @@
     <!-- In your head section or before closing body tag -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.7/dist/cdn.min.js"></script>
 
-
     <link rel="shortcut icon" type="image" href="{{asset('assets')}}/img/logo/logo2.png">
 
     <!-- ======= All CSS Plugins here ======== -->
@@ -46,6 +45,12 @@
 
     <!-- Custom Style CSS -->
     <link rel="stylesheet" href="{{asset('assets')}}/css/style.css">
+    <link rel="stylesheet" href="{{asset('assets')}}/css/cart.css">
+    <link rel="stylesheet" href="{{asset('assets')}}/css/home.css">
+    <link rel="stylesheet" href="{{asset('assets')}}/css/checkout.css">
+    <link rel="stylesheet" href="{{asset(path: 'assets')}}/css/wishlist.css">
+    <link rel="stylesheet" href="{{asset('assets')}}/css/newproduct.css">
+    <link rel="stylesheet" href="{{asset('assets')}}/css/navbar.css">
 
 </head>
 
@@ -61,7 +66,7 @@
                 @include('layouts.ecommerce.loading')
                 {{ $slot }}
                 <!-- shipping-section -->
-    @include('layouts.ecommerce.shipping-section')
+                @include('layouts.ecommerce.shipping-section')
             </main>
             <!-- Footer -->
             @include('layouts.ecommerce.footer')
@@ -83,8 +88,18 @@
     <script src="{{asset('assets')}}/js/plugins/swiper-bundle.min.js"></script>
     <script src="{{asset('assets')}}/js/plugins/glightbox.min.js"></script>
 
-    <!-- Customscript js -->
+
+    <!-- Custom script js -->
     <script src="{{asset('assets')}}/js/script.js"></script>
+    <script src="{{asset('assets')}}/js/cart.js"></script>
+    <script src="{{asset('assets')}}/js/home.js"></script>
+    <script src="{{asset('assets')}}/js/checkout.js"></script>
+    <script src="{{asset('assets')}}/js/wishlist.js"></script>
+    <script src="{{asset('assets')}}/js/newproduct.js"></script>
+    <script src="{{asset('assets')}}/js/navbar.js"></script>
+    <script src="{{ asset('js/product-grid.js') }}"></script>
+
+
 </body>
 
 </html>

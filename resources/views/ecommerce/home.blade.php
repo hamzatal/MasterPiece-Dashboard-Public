@@ -3,26 +3,51 @@
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ ('Home') }}
         </h2>
+        <link rel="stylesheet" href="css/home.css">
+        <link rel="stylesheet" href="css/newproduct.js">
+        <link rel="javascript" href="js/home.js">
+
     </x-slot>
 
-    <!-- Start Video Banner Section -->
-    <section class="hero__video--section">
-        <div class="hero__video--inner">
-            <video autoplay muted loop playsinline class="hero__video--banner">
-                <source src="assets/videos/Hero.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-            <div class="hero__video--content">
-                <div class="container-fluid">
-                    <div class="row">
-
+    <!-- Start Banner Slider -->
+    <section class="banner-showcase">
+        <div class="banner-container">
+            <div class="banner-track">
+                @foreach($banners as $banner)
+                @if($banner->active && $banner->is_homepage === 'hero')
+                <div class="banner-slide">
+                    <div class="banner-media">
+                        <img src="{{ Storage::url($banner->image) }}" alt="{{ $banner->title }}" class="banner-image">
+                    </div>
+                    <div class="banner-overlay">
+                        <div class="banner-content">
+                            <h2 class="banner-heading">{{ $banner->title }}</h2>
+                            <p class="banner-text">{{ $banner->description }}</p>
+                            <a href="/shop" class="banner-cta">Explore Now</a>
+                        </div>
                     </div>
                 </div>
+                @endif
+                @endforeach
             </div>
+
+            <div class="banner-controls">
+                <button class="banner-arrow banner-prev" aria-label="Previous slide">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                </button>
+                <button class="banner-arrow banner-next" aria-label="Next slide">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="banner-indicators"></div>
         </div>
     </section>
-    <!-- End Video Banner Section -->
-
+    <!-- End Banner Slider -->
 
     <!-- Start banner section -->
     <section class="banner__section section--padding">
@@ -47,7 +72,6 @@
             </div>
         </div>
     </section>
-
     <!-- End banner section -->
 
     <!-- Start New product section -->
@@ -85,13 +109,12 @@
                         <!-- Price -->
                         <div class="sp-price">
                             @if ($product->is_discount_active)
-                            <span class="sp-current-price">${{ number_format($product->new_price, 2) }}</span>
-                            <span class="sp-old-price">${{ number_format($product->original_price, 2) }}</span>
+                            <span class="sp-old-price">JD {{ number_format($product->original_price, 2) }}</span>
+                            <span class="sp-current-price">JD {{ number_format($product->new_price, 2) }}</span>
                             @else
-                            <span class="sp-current-price">${{ number_format($product->original_price, 2) }}</span>
+                            <span class="sp-current-price">JD {{ number_format($product->original_price, 2) }}</span>
                             @endif
                         </div>
-
                         <!-- Actions -->
                         <div class="sp-actions">
                             <form action="{{ route('cart.add') }}" method="POST" class="sp-form">
@@ -106,11 +129,17 @@
                                     Add
                                 </button>
                             </form>
-                            <a href="{{ route('wishlist.add', $product->id) }}" class="sp-icon-button" title="Add to Wishlist">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                                </svg>
-                            </a>
+
+                            <form action="{{ route('wishlist.add', $product->id) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="sp-icon-button" title="Add to Wishlist">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                    </svg>
+                                </button>
+                            </form>
+
+
                             <a href="{{ route('products.show', $product->id) }}" class="sp-icon-button" title="Quick View">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"></path>
@@ -122,252 +151,18 @@
                 </div>
                 @endforeach
             </div>
-
             <!-- Pagination -->
             <div class="sp-pagination">
+                @if($products->count() > 0)
                 @if($products->hasPages())
                 {{ $products->links() }}
+                @endif
                 @else
                 <p>No products to display.</p>
                 @endif
             </div>
         </div>
     </section>
-
-    <style>
-        .sp-section {
-            padding: 60px 0;
-            background-color: #ffffff;
-        }
-
-        .sp-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 15px;
-        }
-
-        .sp-title {
-            text-align: center;
-            font-size: 28px;
-            margin-bottom: 40px;
-            color: #1a1a1a;
-            font-weight: 700;
-            position: relative;
-        }
-
-        .sp-title::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 40px;
-            height: 3px;
-            background: #3b82f6;
-            border-radius: 2px;
-        }
-
-        .sp-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 20px;
-            margin-bottom: 40px;
-        }
-
-        .sp-card {
-            background: #ffffff;
-            border-radius: 10px;
-            overflow: hidden;
-            transition: all 0.25s ease;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            position: relative;
-        }
-
-        .sp-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .sp-image-wrap {
-            position: relative;
-            padding-top: 100%;
-            background: #f5f5f5;
-        }
-
-        .sp-image {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s ease;
-        }
-
-        .sp-card:hover .sp-image {
-            transform: scale(1.05);
-        }
-
-        .sp-tag {
-            position: absolute;
-            padding: 2px 7px;
-            border-radius: 5px;
-            font-size: 10px;
-            font-weight: 600;
-            z-index: 1;
-        }
-
-        .sp-tag-sale {
-            background: #ef4444;
-            color: white;
-            top: 10px;
-            left: 10px;
-        }
-
-        .sp-tag-new {
-            background: #10b981;
-            color: white;
-            top: 10px;
-            right: 10px;
-        }
-
-        .sp-content {
-            padding: 15px;
-        }
-
-        .sp-category {
-            font-size: 11px;
-            color: #6b7280;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 5px;
-            display: block;
-        }
-
-        .sp-name {
-            font-size: 14px;
-            margin: 0 0 10px;
-            line-height: 1.3;
-        }
-
-        .sp-name a {
-            color: #1a1a1a;
-            text-decoration: none;
-            transition: color 0.2s ease;
-        }
-
-        .sp-name a:hover {
-            color: #3b82f6;
-        }
-
-        .sp-price {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-
-        .sp-current-price {
-            font-size: 16px;
-            font-weight: 700;
-            color: #1a1a1a;
-        }
-
-        .sp-old-price {
-            font-size: 13px;
-            color: #9ca3af;
-            text-decoration: line-through;
-        }
-
-        .sp-actions {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .sp-form {
-            flex: 1;
-        }
-
-        .sp-button {
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 600;
-            transition: all 0.2s ease;
-        }
-
-        .sp-button-cart {
-            background: #01206e;
-            color: white;
-            padding: 8px 12px;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        .sp-button-cart:hover {
-            background: rgb(18, 62, 158);
-        }
-
-        .sp-icon-button {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 32px;
-            height: 32px;
-            border-radius: 6px;
-            background: #f3f4f6;
-            color: #4b5563;
-            transition: all 0.2s ease;
-        }
-
-        .sp-icon-button:hover {
-            background: #01206e;
-            color: white;
-        }
-
-        .sp-pagination {
-            display: flex;
-            justify-content: center;
-            margin-top: 40px;
-        }
-
-        @media (max-width: 768px) {
-            .sp-section {
-                padding: 40px 0;
-            }
-
-            .sp-grid {
-                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-                gap: 15px;
-            }
-
-            .sp-content {
-                padding: 12px;
-            }
-
-            .sp-name {
-                font-size: 13px;
-            }
-
-            .sp-current-price {
-                font-size: 14px;
-            }
-
-            .sp-button-cart {
-                padding: 6px 10px;
-            }
-
-            .sp-icon-button {
-                width: 28px;
-                height: 28px;
-            }
-        }
-    </style>
     <!-- End product section -->
 
     <!-- Start Sale Section -->
@@ -443,261 +238,38 @@
             </div>
         </div>
     </section>
-
-    <style>
-        .sale-section {
-            padding: 60px 0;
-            background-color: #ffffff;
-        }
-
-        .sale-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 15px;
-        }
-
-        .sale-title {
-            text-align: center;
-            font-size: 28px;
-            margin-bottom: 40px;
-            color: #1a1a1a;
-            font-weight: 700;
-            position: relative;
-        }
-
-        .sale-title::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 40px;
-            height: 3px;
-            background: #01206e;
-            border-radius: 2px;
-        }
-
-        .sale-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 20px;
-            margin-bottom: 40px;
-        }
-
-        .sale-card {
-            background: #ffffff;
-            border-radius: 10px;
-            overflow: hidden;
-            transition: all 0.25s ease;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            position: relative;
-        }
-
-        .sale-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .sale-image-wrap {
-            position: relative;
-            padding-top: 100%;
-            background: #f5f5f5;
-        }
-
-        .sale-image {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s ease;
-        }
-
-        .sale-card:hover .sale-image {
-            transform: scale(1.05);
-        }
-
-        .sale-tag {
-            position: absolute;
-            padding: 2px 7px;
-            border-radius: 5px;
-            font-size: 10px;
-            font-weight: 600;
-            z-index: 1;
-        }
-
-        .sale-tag-sale {
-            background: #ef4444;
-            color: white;
-            top: 10px;
-            left: 10px;
-        }
-
-        .sale-content {
-            padding: 15px;
-        }
-
-        .sale-category {
-            font-size: 11px;
-            color: #6b7280;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 5px;
-            display: block;
-        }
-
-        .sale-name {
-            font-size: 14px;
-            margin: 0 0 10px;
-            line-height: 1.3;
-        }
-
-        .sale-name a {
-            color: #1a1a1a;
-            text-decoration: none;
-            transition: color 0.2s ease;
-        }
-
-        .sale-name a:hover {
-            color: #01206e;
-        }
-
-        .sale-price {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-
-        .sale-current-price {
-            font-size: 16px;
-            font-weight: 700;
-            color: #1a1a1a;
-        }
-
-        .sale-old-price {
-            font-size: 13px;
-            color: #9ca3af;
-            text-decoration: line-through;
-        }
-
-        .sale-actions {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .sale-form {
-            flex: 1;
-        }
-
-        .sale-button {
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 600;
-            transition: all 0.2s ease;
-        }
-
-        .sale-button-cart {
-            background: #01206e;
-            color: white;
-            padding: 8px 12px;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        .sale-button-cart:hover {
-            background: rgb(18, 66, 170);
-        }
-
-        .sale-icon-button {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 32px;
-            height: 32px;
-            border-radius: 6px;
-            background: #f3f4f6;
-            color: #4b5563;
-            transition: all 0.2s ease;
-        }
-
-        .sale-icon-button:hover {
-            background: #01206e;
-            color: white;
-        }
-
-        .sale-pagination {
-            display: flex;
-            justify-content: center;
-            margin-top: 40px;
-        }
-
-        @media (max-width: 768px) {
-            .sale-section {
-                padding: 40px 0;
-            }
-
-            .sale-grid {
-                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-                gap: 15px;
-            }
-
-            .sale-content {
-                padding: 12px;
-            }
-
-            .sale-name {
-                font-size: 13px;
-            }
-
-            .sale-current-price {
-                font-size: 14px;
-            }
-
-            .sale-button-cart {
-                padding: 6px 10px;
-            }
-
-            .sale-icon-button {
-                width: 28px;
-                height: 28px;
-            }
-        }
-    </style>
     <!-- End Sale Section -->
+
     <!-- Start banner section -->
     <section class="banner__section section--padding pt-0">
         <div class="container-fluid">
             <div class="row row-cols-md-2 row-cols-1 mb--n28">
+                @foreach ($banners as $banner)
+                @if ($banner->active && $banner->is_homepage === 'discounted_section')
                 <div class="col mb-28">
                     <div class="banner__items position__relative">
-                        <a class="banner__items--thumbnail " href="/shop"><img class="banner__items--thumbnail__img banner__img--max__height" src="assets/img/banner/banner5.png" alt="banner-img">
+                        <a class="banner__items--thumbnail" href="/shop">
+                            <!-- Updated image container -->
+                            <div class="banner__image-container">
+                                <img
+                                    class="banner__items--thumbnail__img banner__img--max__height"
+                                    src="{{ Storage::url($banner->image) }}"
+                                    alt="banner-img">
+                            </div>
                             <div class="banner__items--content">
-                                <span class="banner__items--content__subtitle d-none d-lg-block">Pick Your Items</span>
-                                <h2 class="banner__items--content__title h3">Up to 25% Off Order Now</h2>
-                                <span class="banner__items--content__link"><u>Shop now</u></span>
+                                <h2 class="banner__items--content__title h3 text-white-custom">{{ $banner->title }}</h2>
+                                <span class="banner__items--content__subtitle d-none d-lg-block text-white-custom">{{ $banner->description }}</span>
+                                <span class="primary__btn">Shop Now
+                                    <svg class="primary__btn--arrow__icon" xmlns="http://www.w3.org/2000/svg" width="20.2" height="12.2" viewBox="0 0 6.2 6.2">
+                                        <path d="M7.1,4l-.546.546L8.716,6.713H4v.775H8.716L6.554,9.654,7.1,10.2,9.233,8.067,10.2,7.1Z" transform="translate(-4 -4)" fill="currentColor"></path>
+                                    </svg>
+                                </span>
                             </div>
                         </a>
                     </div>
                 </div>
-                <div class="col mb-28">
-                    <div class="banner__items position__relative">
-                        <a class="banner__items--thumbnail " href="/shop"><img class="banner__items--thumbnail__img banner__img--max__height" src="assets/img/banner/banner6.png" alt="banner-img">
-                            <div class="banner__items--content">
-                                <span class="banner__items--content__subtitle d-none d-lg-block">Special offer</span>
-                                <h2 class="banner__items--content__title h3">Up to 35% Off Order Now</h2>
-                                <span class="banner__items--content__link"><u>Discover Now</u> </span>
-                            </div>
-                        </a>
-                    </div>
-                </div>
+                @endif
+                @endforeach
             </div>
         </div>
     </section>
@@ -761,156 +333,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="swiper-slide">
-                        <div class="testimonial__items text-center">
-                            <div class="testimonial__items--thumbnail">
-                                <img class="testimonial__items--thumbnail__img border-radius-50" src="assets/img/other/testimonial-thumb2.png" alt="testimonial-img">
-                            </div>
-                            <div class="testimonial__items--content">
-                                <h3 class="testimonial__items--title">Laura Johnson</h3>
-                                <span class="testimonial__items--subtitle">fashion</span>
-                                <p class="testimonial__items--desc">Lorem ipsum dolor sit amet, consectetur adipisicin elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim </p>
-                                <ul class="rating testimonial__rating d-flex justify-content-center">
-                                    <li class="rating__list">
-                                        <span class="rating__list--icon">
-                                            <svg class="rating__list--icon__svg" xmlns="http://www.w3.org/2000/svg" width="14.105" height="14.732" viewBox="0 0 10.105 9.732">
-                                                <path data-name="star - Copy" d="M9.837,3.5,6.73,3.039,5.338.179a.335.335,0,0,0-.571,0L3.375,3.039.268,3.5a.3.3,0,0,0-.178.514L2.347,6.242,1.813,9.4a.314.314,0,0,0,.464.316L5.052,8.232,7.827,9.712A.314.314,0,0,0,8.292,9.4L7.758,6.242l2.257-2.231A.3.3,0,0,0,9.837,3.5Z" transform="translate(0 -0.018)" fill="currentColor"></path>
-                                            </svg>
-                                        </span>
-                                    </li>
-                                    <li class="rating__list">
-                                        <span class="rating__list--icon">
-                                            <svg class="rating__list--icon__svg" xmlns="http://www.w3.org/2000/svg" width="14.105" height="14.732" viewBox="0 0 10.105 9.732">
-                                                <path data-name="star - Copy" d="M9.837,3.5,6.73,3.039,5.338.179a.335.335,0,0,0-.571,0L3.375,3.039.268,3.5a.3.3,0,0,0-.178.514L2.347,6.242,1.813,9.4a.314.314,0,0,0,.464.316L5.052,8.232,7.827,9.712A.314.314,0,0,0,8.292,9.4L7.758,6.242l2.257-2.231A.3.3,0,0,0,9.837,3.5Z" transform="translate(0 -0.018)" fill="currentColor"></path>
-                                            </svg>
-                                        </span>
-                                    </li>
-                                    <li class="rating__list">
-                                        <span class="rating__list--icon">
-                                            <svg class="rating__list--icon__svg" xmlns="http://www.w3.org/2000/svg" width="14.105" height="14.732" viewBox="0 0 10.105 9.732">
-                                                <path data-name="star - Copy" d="M9.837,3.5,6.73,3.039,5.338.179a.335.335,0,0,0-.571,0L3.375,3.039.268,3.5a.3.3,0,0,0-.178.514L2.347,6.242,1.813,9.4a.314.314,0,0,0,.464.316L5.052,8.232,7.827,9.712A.314.314,0,0,0,8.292,9.4L7.758,6.242l2.257-2.231A.3.3,0,0,0,9.837,3.5Z" transform="translate(0 -0.018)" fill="currentColor"></path>
-                                            </svg>
-                                        </span>
-                                    </li>
-                                    <li class="rating__list">
-                                        <span class="rating__list--icon">
-                                            <svg class="rating__list--icon__svg" xmlns="http://www.w3.org/2000/svg" width="14.105" height="14.732" viewBox="0 0 10.105 9.732">
-                                                <path data-name="star - Copy" d="M9.837,3.5,6.73,3.039,5.338.179a.335.335,0,0,0-.571,0L3.375,3.039.268,3.5a.3.3,0,0,0-.178.514L2.347,6.242,1.813,9.4a.314.314,0,0,0,.464.316L5.052,8.232,7.827,9.712A.314.314,0,0,0,8.292,9.4L7.758,6.242l2.257-2.231A.3.3,0,0,0,9.837,3.5Z" transform="translate(0 -0.018)" fill="currentColor"></path>
-                                            </svg>
-                                        </span>
-                                    </li>
-                                    <li class="rating__list">
-                                        <span class="rating__list--icon">
-                                            <svg class="rating__list--icon__svg" xmlns="http://www.w3.org/2000/svg" width="14.105" height="14.732" viewBox="0 0 10.105 9.732">
-                                                <path data-name="star - Copy" d="M9.837,3.5,6.73,3.039,5.338.179a.335.335,0,0,0-.571,0L3.375,3.039.268,3.5a.3.3,0,0,0-.178.514L2.347,6.242,1.813,9.4a.314.314,0,0,0,.464.316L5.052,8.232,7.827,9.712A.314.314,0,0,0,8.292,9.4L7.758,6.242l2.257-2.231A.3.3,0,0,0,9.837,3.5Z" transform="translate(0 -0.018)" fill="currentColor"></path>
-                                            </svg>
-                                        </span>
-                                    </li>
 
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div class="testimonial__items text-center">
-                            <div class="testimonial__items--thumbnail">
-                                <img class="testimonial__items--thumbnail__img border-radius-50" src="assets/img/other/testimonial-thumb3.png" alt="testimonial-img">
-                            </div>
-                            <div class="testimonial__items--content">
-                                <h3 class="testimonial__items--title">Richard Smith</h3>
-                                <span class="testimonial__items--subtitle">fashion</span>
-                                <p class="testimonial__items--desc">Lorem ipsum dolor sit amet, consectetur adipisicin elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim </p>
-                                <ul class="rating testimonial__rating d-flex justify-content-center">
-                                    <li class="rating__list">
-                                        <span class="rating__list--icon">
-                                            <svg class="rating__list--icon__svg" xmlns="http://www.w3.org/2000/svg" width="14.105" height="14.732" viewBox="0 0 10.105 9.732">
-                                                <path data-name="star - Copy" d="M9.837,3.5,6.73,3.039,5.338.179a.335.335,0,0,0-.571,0L3.375,3.039.268,3.5a.3.3,0,0,0-.178.514L2.347,6.242,1.813,9.4a.314.314,0,0,0,.464.316L5.052,8.232,7.827,9.712A.314.314,0,0,0,8.292,9.4L7.758,6.242l2.257-2.231A.3.3,0,0,0,9.837,3.5Z" transform="translate(0 -0.018)" fill="currentColor"></path>
-                                            </svg>
-                                        </span>
-                                    </li>
-                                    <li class="rating__list">
-                                        <span class="rating__list--icon">
-                                            <svg class="rating__list--icon__svg" xmlns="http://www.w3.org/2000/svg" width="14.105" height="14.732" viewBox="0 0 10.105 9.732">
-                                                <path data-name="star - Copy" d="M9.837,3.5,6.73,3.039,5.338.179a.335.335,0,0,0-.571,0L3.375,3.039.268,3.5a.3.3,0,0,0-.178.514L2.347,6.242,1.813,9.4a.314.314,0,0,0,.464.316L5.052,8.232,7.827,9.712A.314.314,0,0,0,8.292,9.4L7.758,6.242l2.257-2.231A.3.3,0,0,0,9.837,3.5Z" transform="translate(0 -0.018)" fill="currentColor"></path>
-                                            </svg>
-                                        </span>
-                                    </li>
-                                    <li class="rating__list">
-                                        <span class="rating__list--icon">
-                                            <svg class="rating__list--icon__svg" xmlns="http://www.w3.org/2000/svg" width="14.105" height="14.732" viewBox="0 0 10.105 9.732">
-                                                <path data-name="star - Copy" d="M9.837,3.5,6.73,3.039,5.338.179a.335.335,0,0,0-.571,0L3.375,3.039.268,3.5a.3.3,0,0,0-.178.514L2.347,6.242,1.813,9.4a.314.314,0,0,0,.464.316L5.052,8.232,7.827,9.712A.314.314,0,0,0,8.292,9.4L7.758,6.242l2.257-2.231A.3.3,0,0,0,9.837,3.5Z" transform="translate(0 -0.018)" fill="currentColor"></path>
-                                            </svg>
-                                        </span>
-                                    </li>
-                                    <li class="rating__list">
-                                        <span class="rating__list--icon">
-                                            <svg class="rating__list--icon__svg" xmlns="http://www.w3.org/2000/svg" width="14.105" height="14.732" viewBox="0 0 10.105 9.732">
-                                                <path data-name="star - Copy" d="M9.837,3.5,6.73,3.039,5.338.179a.335.335,0,0,0-.571,0L3.375,3.039.268,3.5a.3.3,0,0,0-.178.514L2.347,6.242,1.813,9.4a.314.314,0,0,0,.464.316L5.052,8.232,7.827,9.712A.314.314,0,0,0,8.292,9.4L7.758,6.242l2.257-2.231A.3.3,0,0,0,9.837,3.5Z" transform="translate(0 -0.018)" fill="currentColor"></path>
-                                            </svg>
-                                        </span>
-                                    </li>
-                                    <li class="rating__list">
-                                        <span class="rating__list--icon">
-                                            <svg class="rating__list--icon__svg" xmlns="http://www.w3.org/2000/svg" width="14.105" height="14.732" viewBox="0 0 10.105 9.732">
-                                                <path data-name="star - Copy" d="M9.837,3.5,6.73,3.039,5.338.179a.335.335,0,0,0-.571,0L3.375,3.039.268,3.5a.3.3,0,0,0-.178.514L2.347,6.242,1.813,9.4a.314.314,0,0,0,.464.316L5.052,8.232,7.827,9.712A.314.314,0,0,0,8.292,9.4L7.758,6.242l2.257-2.231A.3.3,0,0,0,9.837,3.5Z" transform="translate(0 -0.018)" fill="currentColor"></path>
-                                            </svg>
-                                        </span>
-                                    </li>
-
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div class="testimonial__items text-center">
-                            <div class="testimonial__items--thumbnail">
-                                <img class="testimonial__items--thumbnail__img border-radius-50" src="assets/img/other/testimonial-thumb1.png" alt="testimonial-img">
-                            </div>
-                            <div class="testimonial__items--content">
-                                <h3 class="testimonial__items--title">Nike Mardson</h3>
-                                <span class="testimonial__items--subtitle">fashion</span>
-                                <p class="testimonial__items--desc">Lorem ipsum dolor sit amet, consectetur adipisicin elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim </p>
-                                <ul class="rating testimonial__rating d-flex justify-content-center">
-                                    <li class="rating__list">
-                                        <span class="rating__list--icon">
-                                            <svg class="rating__list--icon__svg" xmlns="http://www.w3.org/2000/svg" width="14.105" height="14.732" viewBox="0 0 10.105 9.732">
-                                                <path data-name="star - Copy" d="M9.837,3.5,6.73,3.039,5.338.179a.335.335,0,0,0-.571,0L3.375,3.039.268,3.5a.3.3,0,0,0-.178.514L2.347,6.242,1.813,9.4a.314.314,0,0,0,.464.316L5.052,8.232,7.827,9.712A.314.314,0,0,0,8.292,9.4L7.758,6.242l2.257-2.231A.3.3,0,0,0,9.837,3.5Z" transform="translate(0 -0.018)" fill="currentColor"></path>
-                                            </svg>
-                                        </span>
-                                    </li>
-                                    <li class="rating__list">
-                                        <span class="rating__list--icon">
-                                            <svg class="rating__list--icon__svg" xmlns="http://www.w3.org/2000/svg" width="14.105" height="14.732" viewBox="0 0 10.105 9.732">
-                                                <path data-name="star - Copy" d="M9.837,3.5,6.73,3.039,5.338.179a.335.335,0,0,0-.571,0L3.375,3.039.268,3.5a.3.3,0,0,0-.178.514L2.347,6.242,1.813,9.4a.314.314,0,0,0,.464.316L5.052,8.232,7.827,9.712A.314.314,0,0,0,8.292,9.4L7.758,6.242l2.257-2.231A.3.3,0,0,0,9.837,3.5Z" transform="translate(0 -0.018)" fill="currentColor"></path>
-                                            </svg>
-                                        </span>
-                                    </li>
-                                    <li class="rating__list">
-                                        <span class="rating__list--icon">
-                                            <svg class="rating__list--icon__svg" xmlns="http://www.w3.org/2000/svg" width="14.105" height="14.732" viewBox="0 0 10.105 9.732">
-                                                <path data-name="star - Copy" d="M9.837,3.5,6.73,3.039,5.338.179a.335.335,0,0,0-.571,0L3.375,3.039.268,3.5a.3.3,0,0,0-.178.514L2.347,6.242,1.813,9.4a.314.314,0,0,0,.464.316L5.052,8.232,7.827,9.712A.314.314,0,0,0,8.292,9.4L7.758,6.242l2.257-2.231A.3.3,0,0,0,9.837,3.5Z" transform="translate(0 -0.018)" fill="currentColor"></path>
-                                            </svg>
-                                        </span>
-                                    </li>
-                                    <li class="rating__list">
-                                        <span class="rating__list--icon">
-                                            <svg class="rating__list--icon__svg" xmlns="http://www.w3.org/2000/svg" width="14.105" height="14.732" viewBox="0 0 10.105 9.732">
-                                                <path data-name="star - Copy" d="M9.837,3.5,6.73,3.039,5.338.179a.335.335,0,0,0-.571,0L3.375,3.039.268,3.5a.3.3,0,0,0-.178.514L2.347,6.242,1.813,9.4a.314.314,0,0,0,.464.316L5.052,8.232,7.827,9.712A.314.314,0,0,0,8.292,9.4L7.758,6.242l2.257-2.231A.3.3,0,0,0,9.837,3.5Z" transform="translate(0 -0.018)" fill="currentColor"></path>
-                                            </svg>
-                                        </span>
-                                    </li>
-                                    <li class="rating__list">
-                                        <span class="rating__list--icon">
-                                            <svg class="rating__list--icon__svg" xmlns="http://www.w3.org/2000/svg" width="14.105" height="14.732" viewBox="0 0 10.105 9.732">
-                                                <path data-name="star - Copy" d="M9.837,3.5,6.73,3.039,5.338.179a.335.335,0,0,0-.571,0L3.375,3.039.268,3.5a.3.3,0,0,0-.178.514L2.347,6.242,1.813,9.4a.314.314,0,0,0,.464.316L5.052,8.232,7.827,9.712A.314.314,0,0,0,8.292,9.4L7.758,6.242l2.257-2.231A.3.3,0,0,0,9.837,3.5Z" transform="translate(0 -0.018)" fill="currentColor"></path>
-                                            </svg>
-                                        </span>
-                                    </li>
-
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
                 </div>
                 <div class="testimonial__pagination swiper-pagination"></div>
             </div>
@@ -941,6 +364,10 @@
         </div>
     </section> -->
     <!-- End banner section -->
+
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
 
 
 </x-ecommerce-app-layout>

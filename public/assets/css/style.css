@@ -1694,7 +1694,7 @@ body.overlay__active::before {
 .hero__video--section {
     position: relative;
     width: 100%;
-    height: 80vh; /* Adjust as needed */
+    height: 88vh; /* Adjust as needed */
     overflow: hidden;
 }
 

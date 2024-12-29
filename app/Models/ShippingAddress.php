@@ -1,17 +1,17 @@
 <?php
-// app/Models/ShippingAddress.php
+
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class ShippingAddress extends Model
 {
-    // Specify the table name (if it differs from the default plural form)
-    protected $table = 'shipping_addresses';
+    use HasFactory;
 
-    // Define the fillable fields for mass assignment
     protected $fillable = [
         'user_id',
+        'order_id',
         'address_type',
         'street_address',
         'city',
@@ -21,15 +21,22 @@ class ShippingAddress extends Model
         'default_address',
     ];
 
-    // Define the inverse relationship with the Order model
-    public function order()
-    {
-        return $this->belongsTo(Order::class);  // A shipping address belongs to one order
-    }
+    protected $casts = [
+        'default_address' => 'boolean',
+    ];
 
-    // Define the relationship with the User model
     public function user()
     {
-        return $this->belongsTo(User::class);  // A shipping address belongs to one user
+        return $this->belongsTo(User::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function getFullAddressAttribute()
+    {
+        return "{$this->street_address}, {$this->city}, {$this->state} {$this->zip_code}, {$this->country}";
     }
 }
