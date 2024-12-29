@@ -1,222 +1,36 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap");
-@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css");
-
-.checkout-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
-    font-family: "Inter", sans-serif;
-}
-
-.checkout-header {
-    text-align: center;
-    margin-bottom: 3rem;
-}
-
-.checkout-header h1 {
-    font-size: 2.5rem;
-    color: #1a1a1a;
-    margin-bottom: 1.5rem;
-}
-
-.checkout-steps {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
-}
-
-.step {
-    font-size: 0.9rem;
-    color: #666;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-}
-
-.step.active {
-    background: #f0f7ff;
-    color: #2563eb;
-    font-weight: 500;
-}
-
-.step-divider {
-    width: 40px;
-    height: 1px;
-    background: #e5e7eb;
-}
-
-.checkout-grid {
-    display: grid;
-    grid-template-columns: 1.5fr 1fr;
-    gap: 2rem;
-}
-
-.checkout-details {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-}
-
-.form-section {
-    background: white;
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.form-section h2 {
-    font-size: 1.25rem;
-    color: #1a1a1a;
-    margin-bottom: 1.5rem;
-}
-
-.input-group {
-    position: relative;
-    margin-bottom: 1.5rem;
-}
-
-.input-group input {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: all 0.2s;
-}
-
-.input-group input:focus {
-    border-color: #2563eb;
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-}
-
-.input-group label {
-    position: absolute;
-    left: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #666;
-    transition: all 0.2s;
-    pointer-events: none;
-}
-
-.input-group input:focus ~ label,
-.input-group input:not(:placeholder-shown) ~ label {
-    top: 0;
-    font-size: 0.8rem;
-    background: white;
-    padding: 0 0.5rem;
-}
-
-.input-group-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-}
-
-.payment-options {
-    display: grid;
-    gap: 1rem;
-}
-
-.payment-option {
-    position: relative;
-    padding: 1rem;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-.payment-option input[type="radio"] {
-    position: absolute;
-    opacity: 0;
-}
-
-.payment-option label {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    cursor: pointer;
-}
-
-.payment-icon {
-    width: 40px;
-    height: 24px;
-    background: #f3f4f6;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.checkout__section {
+    padding: 2rem 0;
 }
 
 .order-summary {
-    position: sticky;
-    top: 2rem;
+    border: 1px solid #dee2e6;
 }
 
-.summary-card {
-    background: white;
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+.order-product-item {
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #dee2e6;
 }
 
-.summary-items {
-    margin: 1.5rem 0;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.summary-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: #666;
-}
-
-.summary-totals {
-    border-top: 1px solid #e5e7eb;
-    padding-top: 1.5rem;
-}
-
-.summary-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 0.75rem;
-    color: #666;
-}
-
-.summary-row.total {
-    color: #1a1a1a;
-    font-weight: 600;
-    font-size: 1.1rem;
-    margin-top: 1rem;
-}
-
-.btn-primary {
-    width: 100%;
-    padding: 1rem;
-    background: #2563eb;
-    color: white;
-    border: none;
-    border-radius: 8px;
+.checkout-form label {
     font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
 }
 
-.btn-primary:hover {
-    background: #1d4ed8;
+.alert {
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
 }
 
-@media (max-width: 768px) {
-    .checkout-grid {
-        grid-template-columns: 1fr;
-    }
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
 
-    .order-summary {
-        position: static;
-    }
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
 }

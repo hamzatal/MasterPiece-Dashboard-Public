@@ -4,7 +4,7 @@
             {{ ('Home') }}
         </h2>
         <link rel="stylesheet" href="css/home.css">
-        <link rel="stylesheet" href="css/newproduct.js">
+        <link rel="stylesheet" href="css/newproduct.css">
         <link rel="javascript" href="js/home.js">
 
     </x-slot>
