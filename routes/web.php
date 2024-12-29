@@ -39,19 +39,19 @@ use Illuminate\Support\Facades\Route;
 //!TEST
 
 
+
 //!END TEST
 
 
+Route::post('/cart/add/{product}', [CartController::class, 'addToCart'])->name('cart.add');
 
 
 //? Cart Routes
-Route::middleware(['auth'])->group(function () {
-    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-    Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add'); // Change to 'add'
-    Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update'); // Change to 'update'
-    Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove'); // Change to 'remove'
-    Route::post('/cart/apply-coupon', [CartController::class, 'applyCoupon'])->name('cart.applyCoupon');
-});
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
+Route::post('/cart/remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
+Route::post('/cart/update', [CartController::class, 'updateCart'])->name('cart.update');
+Route::post('/cart/clear', [CartController::class, 'clearCart'])->name('cart.clear');
 
 //? Checkout Routes
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
