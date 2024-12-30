@@ -14,15 +14,13 @@ class HomeController extends Controller
 {
     public function index(Request $request)
     {
-        $wishlistCount = Wishlist::where('user_id', Auth::id())->count();
+        $cartData = json_decode(request()->cookie('shopping_cart'), true) ?? ['items' => []];
+        $cartCount = array_sum(array_column($cartData['items'], 'quantity'));
 
-        // Fetch products from the database (with pagination, if needed)
-        $products = Product::with('category')->paginate(8); // Adjust pagination as required
-
-        // Fetch active banners from the database
+        $products = Product::with('category')->paginate(8);
         $banners = Banner::where('active', 1)->get();
+        $categories = Product::with('category')->get();
 
-        // Pass the banners and products to the view
-        return view('ecommerce.home', compact('products', 'wishlistCount', 'banners'));
+        return view('ecommerce.home', compact('products', 'cartCount', 'banners', 'categories'));
     }
 }

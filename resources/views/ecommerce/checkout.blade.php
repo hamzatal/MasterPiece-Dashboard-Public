@@ -7,76 +7,206 @@
         <link rel="javascript" href="js/checkout.js">
     </x-slot>
 
-    <main class="main__content_wrapper">
+    <main class="checkout__page">
+        <!-- Start breadcrumb section -->
+        <section class="breadcrumb__section breadcrumb__bg">
+            <div class="container">
+                <div class="row row-cols-1">
+                    <div class="col">
+                        <div class="breadcrumb__content text-center">
+                            <h1 class="breadcrumb__content--title text-white mb-25">Checkout</h1>
+                            <ul class="breadcrumb__content--menu d-flex justify-content-center">
+                                <li class="breadcrumb__content--menu__items"><a class="text-white" href="/home">Home</a></li>
+                                <li class="breadcrumb__content--menu__items"><span class="text-white">Checkout</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- End breadcrumb section -->
+
         <section class="checkout__section section--padding">
             <div class="container">
-                <div class="checkout__content">
-                    <div class="row">
-                        <!-- Order Summary -->
-                        <div class="col-lg-5 mb-4 mb-lg-0">
-                            <div class="order-summary p-4 bg-light rounded">
-                                <h3 class="mb-4">Order Summary</h3>
+                <form action="{{ route('checkout.store') }}" method="POST" id="checkoutForm">
+                    @csrf
+                    @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    @endif
 
-                                <!-- Products List -->
-                                <div class="order-products mb-4">
-                                    @foreach($products as $product)
-                                    <div class="order-product-item d-flex justify-content-between mb-3">
-                                        <div>
-                                            <h6>{{ $product['name'] }}</h6>
-                                            <small>Quantity: {{ $product['quantity'] }}</small>
-                                        </div>
-                                        <span>JD {{ number_format($product['total'], 2) }}</span>
+                    @if(session('error'))
+                    <div class="alert alert-danger">
+                        {{ session('error') }}
+                    </div>
+                    @endif
+
+                    <div class="row">
+                        <!-- Shipping Address -->
+                        <div class="col-md-6">
+                            <div class="checkout-form p-4">
+                                <div class="col-md-12 mb-4">
+                                    <div class="section-title">
+                                        <h3><i class="fas fa-user-circle me-2"></i>Personal Information</h3>
                                     </div>
-                                    @endforeach
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="name"><i class="fas fa-user me-2"></i>Full Name</label>
+                                                <input type="text" name="name" id="name" class="form-control" value="{{ auth()->user()->name }}" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="email"><i class="fas fa-envelope me-2"></i>Email</label>
+                                                <input type="email" name="email" id="email" class="form-control" value="{{ auth()->user()->email }}" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="phone"><i class="fas fa-phone me-2"></i>Phone Number</label>
+                                                <input type="tel" name="phone" id="phone" class="form-control" value="{{ auth()->user()->phone }}" required>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <!-- Order Totals -->
-                                <div class="order-totals">
-                                    <div class="d-flex justify-content-between mb-2">
-                                        <span>Subtotal:</span>
-                                        <span>JD {{ number_format($subtotal, 2) }}</span>
+                                <div class="col-md-12 mb-4">
+                                    <div class="section-title">
+                                        <h3><i class="fas fa-shipping-fast me-2"></i>Shipping Address</h3>
                                     </div>
-                                    <div class="d-flex justify-content-between mb-2">
-                                        <span>Discount:</span>
-                                        <span>JD {{ number_format($discount, 2) }}</span>
+                                    <div class="form-group">
+                                        <label for="address_type"><i class="fas fa-map-marker-alt me-2"></i>Address Type</label>
+                                        <select name="address_type" id="address_type" class="form-control" required>
+                                            <option value="home" {{ old('address_type') == 'home' ? 'selected' : '' }}>
+                                                <i class="fas fa-home"></i> Home
+                                            </option>
+                                            <option value="work" {{ old('address_type') == 'work' ? 'selected' : '' }}>
+                                                <i class="fas fa-building"></i> Work
+                                            </option>
+                                        </select>
                                     </div>
-                                    <div class="d-flex justify-content-between font-weight-bold">
-                                        <span>Total:</span>
-                                        <span>JD {{ number_format($total, 2) }}</span>
+
+                                    <div class="address-fields">
+                                        <div class="form-group">
+                                            <label for="street_address"><i class="fas fa-road me-2"></i>Street Address</label>
+                                            <input type="text" name="street_address" id="street_address" class="form-control" required>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="city"><i class="fas fa-city me-2"></i>City</label>
+                                                    <input type="text" name="city" id="city" class="form-control" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="state"><i class="fas fa-map me-2"></i>State</label>
+                                                    <input type="text" name="state" id="state" class="form-control" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="zip_code"><i class="fas fa-mail-bulk me-2"></i>Zip Code</label>
+                                                    <input type="text" name="zip_code" id="zip_code" class="form-control" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="country"><i class="fas fa-globe me-2"></i>Country</label>
+                                                    <input type="text" name="country" id="country" class="form-control" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group payment-method mt-4">
+                                        <div class="section-title">
+                                            <h3><i class="fas fa-credit-card me-2"></i>Payment Method</h3>
+                                        </div>
+                                        <div class="payment-options">
+                                            <!-- <label class="payment-option">
+                                                <input type="radio" name="payment_method" value="visa" required onclick="showPaymentModal('visa')">
+                                                <span class="payment-icon"><i class="fab fa-cc-visa"></i></span>
+                                                <span class="payment-label">Visa</span>
+                                            </label>
+                                            <label class="payment-option">
+                                                <input type="radio" name="payment_method" value="paypal" required onclick="showPaymentModal('paypal')">
+                                                <span class="payment-icon"><i class="fab fa-paypal"></i></span>
+                                                <span class="payment-label">PayPal</span>
+                                            </label> -->
+                                            <label class="payment-option">
+                                                <input type="radio" name="payment_method" value="cash" required>
+                                                <span class="payment-icon"><i class="fas fa-money-bill-wave"></i></span>
+                                                <span class="payment-label">Cash</span>
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Checkout Form -->
-                        <div class="col-lg-7">
-                            <form action="{{ route('place.order') }}" method="POST" class="checkout-form">
-                                @csrf
-                                <div class="form-group mb-3">
-                                    <label for="name">Full Name</label>
-                                    <input type="text" class="form-control" id="name" name="name" required>
+                        <!-- Order Summary -->
+                        <div class="col-md-6">
+                            <div class="order-summary p-4">
+                                <div class="section-title">
+                                    <h3><i class="fas fa-shopping-cart me-2"></i>Order Summary</h3>
                                 </div>
-
-                                <div class="form-group mb-3">
-                                    <label for="email">Email</label>
-                                    <input type="email" class="form-control" id="email" name="email" required>
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Product</th>
+                                                <th>Qty</th>
+                                                <th>Price</th>
+                                                <th>Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($products as $product)
+                                            <tr>
+                                                <td>{{ $product['name'] }}</td>
+                                                <td>{{ $product['quantity'] }}</td>
+                                                <td>JD {{ number_format($product['price'], 2) }}</td>
+                                                <td>JD {{ number_format($product['total'], 2) }}</td>
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
                                 </div>
-
-                                <div class="form-group mb-3">
-                                    <label for="phone">Phone</label>
-                                    <input type="tel" class="form-control" id="phone" name="phone" required>
+                                <div class="totals">
+                                    <div class="total-row">
+                                        <span>Subtotal:</span>
+                                        <span>JD {{ number_format($subtotal, 2) }}</span>
+                                    </div>
+                                    <div class="total-row">
+                                        <span>Discount:</span>
+                                        <span>JD {{ number_format($discount, 2) }}</span>
+                                    </div>
+                                    <div class="total-row grand-total">
+                                        <span>Total:</span>
+                                        <span>JD {{ number_format($total, 2) }}</span>
+                                    </div>
                                 </div>
-
-                                <div class="form-group mb-3">
-                                    <label for="address">Delivery Address</label>
-                                    <textarea class="form-control" id="address" name="address" rows="3" required></textarea>
-                                </div>
-
-                                <button type="submit" class="btn btn-primary w-100 py-3">Place Order</button>
-                            </form>
+                                <button type="submit" class="btn btn-primary btn-lg btn-block mt-4">
+                                    <i class="fas fa-lock me-2"></i>Place Order
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
+
+                    <!-- Hidden fields -->
+                    <input type="hidden" name="subtotal" value="{{ $subtotal }}">
+                    <input type="hidden" name="discount" value="{{ $discount }}">
+                    <input type="hidden" name="total" value="{{ $total }}">
+                </form>
             </div>
         </section>
     </main>

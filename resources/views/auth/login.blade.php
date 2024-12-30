@@ -1,5 +1,5 @@
 <x-guest-layout>
-<div class="nav-buttons">
+    <div class="nav-buttons">
         <a href="/home" class="nav-btn">Home</a>
     </div>
     <button id="theme-toggle" class="theme-toggle">
@@ -40,23 +40,15 @@
                 <x-input-error :messages="$errors->get('password')" class="mt-2" />
             </div>
 
-            <div class="remember-me">
-                <input
-                    id="remember_me"
-                    type="checkbox"
-                    name="remember">
-                <label for="remember_me">Remember me</label>
-            </div>
-
             <div class="buttons">
                 <x-primary-button class="btn btn-primary">
                     Log in
                 </x-primary-button>
 
                 @if (Route::has('register'))
-                    <a href="{{ route('register') }}" class="btn btn-secondary">
-                        Register
-                    </a>
+                <a href="{{ route('register') }}" class="btn btn-secondary">
+                    Register
+                </a>
                 @endif
             </div>
 

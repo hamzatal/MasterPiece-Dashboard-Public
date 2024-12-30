@@ -27,17 +27,18 @@ class ShopController extends Controller
         }
 
         if ($category) {
-            $query->whereHas('category', function($q) use ($category) {
+            $query->whereHas('category', function ($q) use ($category) {
                 $q->where('id', $category);
             });
         }
+
 
         if ($search) {
             $query->where('name', 'like', "%{$search}%");
         }
 
         // Apply sorting
-        switch($sort) {
+        switch ($sort) {
             case 'popularity':
                 $query->orderBy('views', 'desc');
                 break;
@@ -61,9 +62,9 @@ class ShopController extends Controller
         $categories = Category::all();
 
         // Get top rated products for sidebar
-        $topProducts = Product::orderBy( 'description')
-                            ->take(3)
-                            ->get();
+        $topProducts = Product::orderBy('description')
+            ->take(3)
+            ->get();
 
         return view('ecommerce.shop', compact('products', 'categories'));
     }
@@ -89,7 +90,7 @@ class ShopController extends Controller
             $product = Product::findOrFail($productId);
             $cart = session()->get('cart', []);
 
-            if(isset($cart[$productId])) {
+            if (isset($cart[$productId])) {
                 $cart[$productId]['quantity']++;
             } else {
                 $cart[$productId] = [

@@ -11,7 +11,7 @@ use Cookie;
 class CartController extends Controller
 {
     private $cookieName = 'shopping_cart';
-    private $cookieExpiration = 60 * 24 * 7; // 1 week
+    private $cookieExpiration = 60 * 24 * 7;
 
     public function index()
     {
@@ -57,7 +57,6 @@ class CartController extends Controller
     public function add(Request $request)
     {
         $cartData = json_decode(request()->cookie($this->cookieName), true) ?? ['items' => []];
-
         $productId = $request->input('product_id');
         $quantity = $request->input('quantity', 1);
 
@@ -73,6 +72,27 @@ class CartController extends Controller
         }
 
         return redirect()->back()->cookie($this->cookieName, json_encode($cartData), $this->cookieExpiration);
+    }
+    public function addToCart(Request $request)
+    {
+        $cartData = json_decode(request()->cookie('shopping_cart'), true) ?? ['items' => []];
+        $productId = $request->input('product_id');
+        $quantity = $request->input('quantity', 1);
+
+        $itemKey = array_search($productId, array_column($cartData['items'], 'product_id'));
+
+        if ($itemKey !== false) {
+            $cartData['items'][$itemKey]['quantity'] += $quantity;
+        } else {
+            $cartData['items'][] = [
+                'product_id' => $productId,
+                'quantity' => $quantity,
+            ];
+        }
+
+        return redirect()->back()
+            ->cookie('shopping_cart', json_encode($cartData), 60 * 24 * 7)
+            ->with('success', 'Product added to cart successfully!');
     }
 
     public function update(Request $request)
@@ -179,10 +199,11 @@ class CartController extends Controller
 
     public function checkout()
     {
-        $cartData = session()->get('cart', []);
+        $cartData = session()->get('cart', ['items' => []]);
         $products = [];
         $subtotal = 0;
         $discount = 0;
+        $appliedCoupon = null;
 
         foreach ($cartData['items'] as $item) {
             $product = Product::find($item['product_id']);
@@ -203,17 +224,21 @@ class CartController extends Controller
             }
         }
 
-        if (!empty($cartData['coupon'])) {
-            $coupon = Coupon::where('code', $cartData['coupon'])->where('is_active', true)->first();
+        if (isset($cartData['coupon'])) {
+            $coupon = Coupon::where('code', $cartData['coupon'])->first();
             if ($coupon) {
                 $discount = ($subtotal * $coupon->discount_value) / 100;
+                $appliedCoupon = $coupon;
             }
         }
 
         $total = $subtotal - $discount;
 
-        return view('ecommerce.checkout', compact('products', 'subtotal', 'discount', 'total'));
+        $user = auth()->user();
+
+        return view('ecommerce.checkout', compact('products', 'subtotal', 'discount', 'total', 'appliedCoupon', 'user'));
     }
+
 
     public function removeCoupon()
     {
@@ -236,12 +261,17 @@ class CartController extends Controller
             $cartData['items'] = array_values($cartData['items']);
         }
 
-        return redirect()->back()->cookie($this->cookieName, json_encode($cartData), $this->cookieExpiration);
+        return redirect()->back()
+            ->cookie($this->cookieName, json_encode($cartData), $this->cookieExpiration)
+            ->with('success', 'Item removed from cart successfully!');
     }
+
 
     public function clearCart()
     {
-        return redirect()->back()->cookie($this->cookieName, json_encode(['items' => []]), $this->cookieExpiration);
+        return redirect()->back()
+            ->cookie($this->cookieName, json_encode(['items' => []]), $this->cookieExpiration)
+            ->with('success', 'Cart cleared successfully!');
     }
 
     private function findItemKey($items, $productId)
@@ -253,5 +283,19 @@ class CartController extends Controller
         }
 
         return false;
+    }
+
+    private function calculateDiscount($subtotal, $couponCode)
+    {
+        $discount = 0;
+
+        if ($couponCode) {
+            $coupon = Coupon::where('code', $couponCode)->where('is_active', true)->first();
+            if ($coupon) {
+                $discount = ($subtotal * $coupon->discount_value) / 100;
+            }
+        }
+
+        return $discount;
     }
 }

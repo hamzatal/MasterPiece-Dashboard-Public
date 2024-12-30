@@ -6,24 +6,27 @@
 }
 
 :root {
+    /* Light theme - clean white design */
     --background-light: linear-gradient(
         135deg,
-        #a5b4fc 0%,
-        #818cf8 50%,
-        #6366f1 100%
+        #ffffff 0%,
+        #f8fafc 50%,
+        #f1f5f9 100%
     );
-    --background-dark: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-    --container-light: rgba(255, 255, 255, 0.95);
-    --container-dark: rgba(30, 41, 59, 0.95);
-    --text-light: #1e293b;
-    --text-dark: #f1f5f9;
-    --btn-primary-light: #4f46e5;
-    --btn-primary-dark: #6366f1;
+    --container-light: rgba(255, 255, 255, 1);
+    --text-light: #334155;
+    --btn-primary-light: #0f172a;
     --btn-primary-text-light: #ffffff;
+    --border-light: rgba(226, 232, 240, 1);
+    --input-bg-light: #ffffff;
+
+    /* Dark theme - keeping original dark colors */
+    --background-dark: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+    --container-dark: rgba(30, 41, 59, 0.95);
+    --text-dark: #f1f5f9;
+    --btn-primary-dark: #6366f1;
     --btn-primary-text-dark: #ffffff;
-    --border-light: rgba(255, 255, 255, 0.1);
     --border-dark: rgba(255, 255, 255, 0.05);
-    --input-bg-light: rgba(255, 255, 255, 0.9);
     --input-bg-dark: rgba(15, 23, 42, 0.7);
 }
 
@@ -38,7 +41,6 @@ body {
     position: relative;
     overflow: hidden;
 }
-
 body.dark {
     background: var(--background-dark);
 }

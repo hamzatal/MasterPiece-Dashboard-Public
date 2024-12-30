@@ -12,12 +12,28 @@ class Order extends Model
     use SoftDeletes;
     protected $fillable = [
         'user_id',
-        'order_number',
-        'status',
         'total',
-        'payment_id',
         'payment_status',
+        'name',
+        'price',
+        'status',
+        'payment_method',
+        'amount',
+        'total_price',
+        'total_amount',
+        'coupon_id',
     ];
+
+    // Add payment enum values as constants
+    const PAYMENT_PAYPAL = 'paypal';
+    const PAYMENT_VISA = 'visa';
+    const PAYMENT_CASH = 'cash';
+
+    // Add payment status enum values as constants
+    const STATUS_PAID = 'paid';
+    const STATUS_PENDING = 'pending';
+    const STATUS_FAILED = 'failed';
+
     protected $casts = [
         'total' => 'float',
         'created_at' => 'datetime',
@@ -33,10 +49,16 @@ class Order extends Model
     {
         return $this->hasMany(OrderItem::class);
     }
+    public function coupon()
+    {
+        return $this->belongsTo(Coupon::class);
+    }
+
     public function orderItems()
     {
         return $this->belongsToMany(Product::class, 'order_items')->withPivot('quantity', 'price');
     }
+
     public function shippingAddress()
     {
         return $this->hasOne(ShippingAddress::class);
@@ -45,10 +67,12 @@ class Order extends Model
     {
         return $this->belongsTo(User::class);
     }
-    public function payment()
+
+    public function shipping_address()
     {
-        return $this->belongsTo(Payment::class);
+        return $this->belongsTo(ShippingAddress::class, 'shipping_address_id');
     }
+
     public function scopeRecent($query)
     {
         return $query->orderBy('created_at', 'desc');
@@ -57,10 +81,7 @@ class Order extends Model
     {
         return $query->where('status', $status);
     }
-    public function getFormattedTotalAttribute()
-    {
-        return '$' . number_format($this->total, 2);
-    }
+
     public function getStatusColorAttribute()
     {
         $colors = [
@@ -73,7 +94,12 @@ class Order extends Model
 
         return $colors[$this->status] ?? 'gray';
     }
-    // Events
+
+    public function getFormattedTotalAttribute()
+    {
+        return 'JD ' . number_format($this->total, 2);
+    }
+
     protected static function booted()
     {
         static::creating(function ($order) {

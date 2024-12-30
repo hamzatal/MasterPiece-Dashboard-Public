@@ -15,19 +15,6 @@ use App\Models\Product;
 
 class OrderController extends Controller
 {
-    public function show($orderId)
-    {
-
-        $order = Order::with('shipping_address')->findOrFail($orderId);
-
-        return view('order.show', compact('order'));
-    }
-    const ALLOWED_STATUSES = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
-    const ALLOWED_PAYMENT_METHODS = ['visa', 'paypal', 'cash'];
-
-    /**
-     * Display a listing of orders with statistics
-     */
     public function index(Request $request)
     {
         $query = Order::query()->with(['user', 'orderItems']);
@@ -44,6 +31,7 @@ class OrderController extends Controller
         // Get user statistics
         $userStatistics = $this->getUserStatistics();
 
+
         if ($request->ajax()) {
             return view('orders.partials.table-rows', compact('orders'));
         }
@@ -51,20 +39,25 @@ class OrderController extends Controller
         return view('admin.orders.index', compact('orders', 'statistics', 'userStatistics'));
     }
 
-    /**
-     * Show order creation form
-     */
+    const ALLOWED_STATUSES = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
+    const ALLOWED_PAYMENT_METHODS = ['visa', 'paypal', 'cash'];
+
+    public function show($orderId)
+    {
+        $order = Order::with(['shipping_address', 'orderItems.product'])->findOrFail($orderId);
+            // dd($order->shipping_address);
+
+        return view('order.show', compact('order'));
+    }
+
+
     public function create()
     {
         return view('admin.orders.edit', ['order' => new Order()]);
     }
 
-    /**
-     * Store a new order
-     */
     public function store(Request $request)
     {
-        dd($request);
 
         $validatedData = $this->validateOrderData($request);
         try {
@@ -80,7 +73,9 @@ class OrderController extends Controller
                     'total' => $validatedData['total'],
                     'payment' => $validatedData['payment'],
                     'payment_status' => $validatedData['payment_status'] ?? 'pending',
-                    'notes' => $validatedData['notes']
+                    'notes' => $validatedData['notes'],
+                    'shipping_address_id' => $validatedData['shipping_address_id'],
+
                 ]);
             });
 
@@ -95,9 +90,6 @@ class OrderController extends Controller
         }
     }
 
-    /**
-     * Update existing order
-     */
     public function update(Request $request, Order $order)
     {
 
@@ -121,29 +113,19 @@ class OrderController extends Controller
         }
     }
 
-    /**
-     * Show specific order details
-     */
     public function view($id)
     {
         $order = Order::with(['user', 'orderItems'])->findOrFail($id);
-        // $items = Product::where('id', $order->orderItems->pluck('product_id')->toArray())->findOrFail($id);
 
         // dd($order);
         return view('admin.orders.view', compact('order'));
     }
 
-    /**
-     * Edit existing order
-     */
     public function edit(Order $order)
     {
         return view('admin.orders.edit', compact('order'));
     }
 
-    /**
-     * Generate PDF invoice for order
-     */
     public function generateInvoice(Order $order)
     {
         $order->load('user', 'orderItems');
@@ -151,17 +133,11 @@ class OrderController extends Controller
         return $pdf->download("invoice_{$order->id}.pdf");
     }
 
-    /**
-     * Export orders to Excel
-     */
     public function exportOrders(Request $request)
     {
         return Excel::download(new OrdersExport($request), 'orders.xlsx');
     }
 
-    /**
-     * Apply filters to query
-     */
     private function applyFilters($query, Request $request)
     {
         // Search filter
@@ -189,9 +165,6 @@ class OrderController extends Controller
         return $query;
     }
 
-    /**
-     * Apply date filtering to query
-     */
     private function applyDateFilter($query, $dateFilter)
     {
         $now = Carbon::now();
@@ -216,9 +189,6 @@ class OrderController extends Controller
         }
     }
 
-    /**
-     * Get order statistics
-     */
     private function getOrderStatistics()
     {
         return [
@@ -229,9 +199,6 @@ class OrderController extends Controller
         ];
     }
 
-    /**
-     * Get user statistics
-     */
     private function getUserStatistics()
     {
         return [
@@ -243,7 +210,7 @@ class OrderController extends Controller
                 ->get()
         ];
     }
-    // app/Http/Controllers/OrderController.php
+
     public function updateStatus(Request $request, Order $order)
     {
         // Validate the incoming status
@@ -259,14 +226,12 @@ class OrderController extends Controller
         // Optional: Add a flash message
         return redirect()->back()->with('success', 'Order status updated successfully');
     }
-    /**
-     * Validate order data
-     */
+
     private function validateOrderData(Request $request)
     {
         return $request->validate([
             'name' => 'required|string|max:255',
-
+            'shipping_address_id' => 'required|exists:shipping_addresses,id',
             'status' => 'required|in:' . implode(',', self::ALLOWED_STATUSES),
             'total' => 'required|numeric|min:0',
             'payment' => 'required|in:' . implode(',', self::ALLOWED_PAYMENT_METHODS),

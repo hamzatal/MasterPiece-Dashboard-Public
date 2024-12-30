@@ -129,4 +129,12 @@ class CategoryController extends Controller
 
         return redirect()->route('categories.index')->with('success', 'Category deleted successfully!');
     }
+
+    public function show(Category $category)
+    {
+        // Retrieve products or any related data for this category
+        $products = $category->products()->paginate(12);
+
+        return view('ecommerce.categories', compact('category', 'products'));
+    }
 }

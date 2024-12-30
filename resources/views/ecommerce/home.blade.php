@@ -74,6 +74,142 @@
     </section>
     <!-- End banner section -->
 
+    <!-- Start Categories Section -->
+    <section class="category-showcase">
+        <div class="category-grid">
+            @foreach($categories as $category)
+            <a href="{{ route('shop', ['category' => $category->id]) }}" class="category-item">
+                <div class="category-circle">
+                    <img
+                        src="{{ Storage::url($category->image) }}"
+                        alt="{{ $category->name }}"
+                        class="category-image"
+                        onerror="this.src='/assets/img/categories/default.jpg'">
+                </div>
+                <span class="category-name">{{ $category->name }}</span>
+            </a>
+
+            @endforeach
+        </div>
+    </section>
+    <!-- End Categories Section -->
+
+    <!-- Include CSS for categories -->
+    <style>
+        .category-showcase {
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .category-grid {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .category-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+
+        .category-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .category-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            overflow: hidden;
+            position: relative;
+            border: 3px solid #fff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .category-circle::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));
+            z-index: 1;
+        }
+
+        .category-circle:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            border-color: #f0f0f0;
+        }
+
+        .category-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .category-name {
+            font-size: 1rem;
+            color: #333;
+            font-weight: 500;
+            text-align: center;
+            margin-top: 0.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .category-name::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 2px;
+            background: #333;
+            transition: width 0.3s ease;
+        }
+
+        .category-item:hover .category-name::after {
+            width: 40px;
+        }
+
+        /* Modify existing product section */
+        .sp-section {
+            margin-top: 2rem;
+        }
+
+        .sp-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 2rem;
+            color: #333;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        .sp-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(to right, #333, #666);
+        }
+    </style>
+
     <!-- Start New product section -->
     <section class="sp-section">
         <div class="sp-container">
@@ -117,18 +253,13 @@
                         </div>
                         <!-- Actions -->
                         <div class="sp-actions">
-                            <form action="{{ route('cart.add') }}" method="POST" class="sp-form">
-                                @csrf
-                                <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                <button type="submit" class="sp-button sp-button-cart">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M9 20a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"></path>
-                                        <path d="M20 20a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"></path>
-                                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                                    </svg>
-                                    Add
-                                </button>
-                            </form>
+                        <form action="{{ route('cart.add') }}" method="POST" class="sp-form">
+    @csrf
+    <input type="hidden" name="product_id" value="{{ $product->id }}">
+    <button type="submit" class="sp-button sp-button-cart">Add to Cart</button>
+</form>
+
+
 
                             <form action="{{ route('wishlist.add', $product->id) }}" method="POST">
                                 @csrf

@@ -34,6 +34,11 @@ class AppServiceProvider extends ServiceProvider
         View::composer('*', function ($view) {
             $wishlistCount = Auth::check() ? Wishlist::where('user_id', Auth::id())->count() : 0;
 
+            View::composer('*', function ($view) {
+                $cartData = json_decode(request()->cookie('shopping_cart'), true) ?? ['items' => []];
+                $cartCount = array_sum(array_column($cartData['items'], 'quantity'));
+                $view->with('cartCount', $cartCount);
+            });
             $view->with('wishlistCount', $wishlistCount);
         });
     }

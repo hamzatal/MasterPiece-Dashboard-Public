@@ -58,7 +58,14 @@ class DashboardController extends Controller
         $recentActivities = Activity::with('user')
             ->latest()
             ->paginate(5); // Use paginate() instead of get()
-
+        $statusColors = [
+            'completed' => 'bg-green-100 text-green-800 dark:bg-green-600 dark:text-white',
+            'pending' => 'bg-yellow-200 text-yellow-800 dark:bg-yellow-500 dark:text-white',
+            'processing' => 'bg-blue-200 text-blue-800 dark:bg-blue-500 dark:text-white',
+            'shipped' => 'bg-purple-200 text-purple-800 dark:bg-purple-500 dark:text-white',
+            'delivered' => 'bg-green-200 text-green-800 dark:bg-green-500 dark:text-white',
+            'cancelled' => 'bg-red-200 text-red-800 dark:bg-red-600 dark:text-white',
+        ];
         return view('admin.dashboard', compact(
             'totalCustomers',
             'totalProducts',
@@ -70,8 +77,8 @@ class DashboardController extends Controller
             'activeCoupons',
             'averageRating',
             'totalReviews',
-            'recentActivities'
+            'recentActivities',
+            'statusColors',
         ));
     }
-
 }

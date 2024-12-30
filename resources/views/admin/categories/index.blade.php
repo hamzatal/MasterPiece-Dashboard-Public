@@ -101,17 +101,17 @@
                                             Edit
                                         </a>
                                         <form action="{{ route('categories.toggle', $category->id) }}" method="POST" class="inline">
-    @csrf
-    @method('POST')
-    <button type="submit" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full shadow-sm
+                                            @csrf
+                                            @method('POST')
+                                            <button type="submit" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full shadow-sm
         {{ $category->status == 'active' ? 'text-red-600 bg-red-100 hover:bg-red-200 focus:ring-red-500' : 'text-green-600 bg-green-100 hover:bg-green-200 focus:ring-green-500' }}
         focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all duration-300">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z" clip-rule="evenodd" />
-        </svg>
-        {{ $category->status == 'active' ? 'Deactivate' : 'Activate' }}
-    </button>
-</form>
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z" clip-rule="evenodd" />
+                                                </svg>
+                                                {{ $category->status == 'active' ? 'Deactivate' : 'Activate' }}
+                                            </button>
+                                        </form>
 
                                     </div>
                                 </td>

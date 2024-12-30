@@ -38,12 +38,18 @@ use Illuminate\Support\Facades\Route;
 
 //!TEST
 
+Route::post('/order/place', [OrderController::class, 'store'])->name('order.place');
+Route::post('/order/store', [OrderController::class, 'store'])->name('order.store');
+
+
+Route::get('/categories/{category}', [CategoryController::class, 'show'])->name('categories.show');
+Route::get('/categories/{id}', [CategoryController::class, 'show'])->name('categories');
+
 
 
 //!END TEST
 
 
-Route::post('/cart/add/{product}', [CartController::class, 'addToCart'])->name('cart.add');
 
 
 //? Cart Routes
@@ -54,12 +60,18 @@ Route::post('/cart/apply-coupon', [CartController::class, 'applyCoupon'])->name(
 Route::post('/cart/remove-coupon', [CartController::class, 'removeCoupon'])->name('cart.removeCoupon');
 Route::delete('/cart/remove/{id}', [CartController::class, 'removeItem'])->name('cart.remove');
 Route::delete('/cart/clear', [CartController::class, 'clearCart'])->name('cart.clear');
-Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout');
+Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
 
 //? Checkout Routes
-Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout');
-Route::post('/place-order', [OrderController::class, 'store'])->name('place.order');
-
+Route::middleware(['auth'])->group(function () {
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
+    Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+    Route::get('/order/success/{order}', [OrderController::class, 'success'])->name('order.success');
+    Route::get('/checkout', [CheckoutController::class, 'checkout'])->name('checkout');
+    Route::post('/checkout/store', [CheckoutController::class, 'store'])->name('checkout.store');
+    Route::get('/order/confirmation/{order}', [CheckoutController::class, 'confirmation'])->name('order.confirmation');
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
+});
 //? Banners Routes
 Route::middleware(['auth'])->prefix('banners')->group(function () {
     Route::get('/', [BannerController::class, 'index'])->name('banners.index'); // List all banners
@@ -73,7 +85,6 @@ Route::middleware(['auth'])->prefix('banners')->group(function () {
 
 //? Shop Routes
 Route::get('/shop', [ShopController::class, 'index'])->name('shop');
-Route::post('/cart/add/{product}', [ShopController::class, 'addToCart'])->name('cart.add');
 
 
 //? Public Routes

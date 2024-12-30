@@ -51,6 +51,7 @@
     <link rel="stylesheet" href="{{asset(path: 'assets')}}/css/wishlist.css">
     <link rel="stylesheet" href="{{asset('assets')}}/css/newproduct.css">
     <link rel="stylesheet" href="{{asset('assets')}}/css/navbar.css">
+    <link rel="stylesheet" href="{{asset('assets')}}/css/order-confirmation.css">
 
 </head>
 
@@ -97,7 +98,6 @@
     <script src="{{asset('assets')}}/js/wishlist.js"></script>
     <script src="{{asset('assets')}}/js/newproduct.js"></script>
     <script src="{{asset('assets')}}/js/navbar.js"></script>
-    <script src="{{ asset('js/product-grid.js') }}"></script>
 
 
 </body>

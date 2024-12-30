@@ -1,52 +1,54 @@
-document.getElementById('checkoutForm').addEventListener('submit', function(e) {
-    e.preventDefault();
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("checkout-form");
 
-    const formData = new FormData(this);
+    form.addEventListener("submit", function (e) {
+        const submitButton = form.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+        submitButton.innerHTML =
+            '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Processing...';
+    });
 
-    fetch('/checkout', {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(Object.fromEntries(formData))
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            window.location.href = data.redirect_url;
-        } else {
-            alert(data.message || 'An error occurred while processing your order.');
+    // Form validation
+    const inputs = form.querySelectorAll("input[required]");
+    inputs.forEach((input) => {
+        input.addEventListener("invalid", function (e) {
+            e.preventDefault();
+            this.classList.add("is-invalid");
+        });
+
+        input.addEventListener("input", function () {
+            if (this.validity.valid) {
+                this.classList;
+                this.classList.remove("is-invalid");
+            }
+        });
+    });
+
+    // Add loading states for form submission
+    form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        if (!form.checkValidity()) {
+            return;
         }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred while processing your order.');
+
+        const submitBtn = this.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML =
+            '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
+
+        try {
+            await this.submit();
+        } catch (error) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = "Place Order";
+            alert("An error occurred. Please try again.");
+        }
+    });
+
+    // Auto-format ZIP code
+    const zipInput = document.getElementById("zip_code");
+    zipInput.addEventListener("input", function (e) {
+        this.value = this.value.replace(/[^0-9-]/g, "");
     });
 });
-function updateCouponUI(data) {
-    const tbody = document.querySelector(
-        ".cart__summary--total__table tbody"
-    );
-    document
-        .querySelectorAll(".discount-row, .total-after-discount")
-        .forEach((el) => el.remove());
-
-    const discountHTML = `
-        <tr class="cart__summary--total__list discount-row">
-            <td class="cart__summary--total__title text-left">DISCOUNT</td>
-            <td class="cart__summary--amount text-right">- JD ${data.discount.toFixed(
-                2
-            )}</td>
-        </tr>
-        <tr class="cart__summary--total__list total-after-discount">
-            <td class="cart__summary--total__title text-left">TOTAL AFTER DISCOUNT</td>
-            <td class="cart__summary--amount text-right">JD ${data.new_total.toFixed(
-                2
-            )}</td>
-        </tr>
-    `;
-
-    tbody.insertAdjacentHTML("beforeend", discountHTML);
-}

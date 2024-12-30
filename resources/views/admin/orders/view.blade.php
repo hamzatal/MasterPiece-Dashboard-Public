@@ -26,84 +26,84 @@
                         </div>
                     </div>
 
-    <!-- Enhanced Order Details Bar with Advanced Features -->
-<div class="mt-8 bg-gray-800/50 rounded-xl border border-white/10 shadow-lg overflow-hidden">
-    <div class="flex flex-col md:flex-row justify-between items-center p-6 space-y-4 md:space-y-0">
-        <div class="flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-6 w-full">
-            {{-- Status Update Dropdown --}}
-            <div class="w-full md:w-64">
-                <form action="{{ route('orders.update-status', $order->id) }}" method="POST" class="relative group">
-                    @csrf
-                    @method('PATCH')
-                    <select
-                        name="status"
-                        class="form-select w-full px-4 py-2.5 bg-white/10 text-white border-2 border-white/20 rounded-xl
+                    <!-- Enhanced Order Details Bar with Advanced Features -->
+                    <div class="mt-8 bg-gray-800/50 rounded-xl border border-white/10 shadow-lg overflow-hidden">
+                        <div class="flex flex-col md:flex-row justify-between items-center p-6 space-y-4 md:space-y-0">
+                            <div class="flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-6 w-full">
+                                {{-- Status Update Dropdown --}}
+                                <div class="w-full md:w-64">
+                                    <form action="{{ route('orders.update-status', $order->id) }}" method="POST" class="relative group">
+                                        @csrf
+                                        @method('PATCH')
+                                        <select
+                                            name="status"
+                                            class="form-select w-full px-4 py-2.5 bg-white/10 text-white border-2 border-white/20 rounded-xl
                                focus:outline-none focus:ring-2 focus:ring-blue-500/70 focus:border-blue-500
                                transition-all duration-300 appearance-none pr-10"
-                        onchange="this.form.submit()">
-                        @php
-                            $statuses = [
-                                'pending' => 'Pending',
-                                'processing' => 'Processing',
-                                'shipped' => 'Shipped',
-                                'delivered' => 'Delivered',
-                                'cancelled' => 'Cancelled'
-                            ];
-                        @endphp
-                        @foreach($statuses as $value => $label)
-                            <option
-                                value="{{ $value }}"
-                                {{ $order->status == $value ? 'selected' : '' }}
-                                class="bg-gray-800 text-white">
-                                {{ $label }}
-                            </option>
-                        @endforeach
-                    </select>
+                                            onchange="this.form.submit()">
+                                            @php
+                                            $statuses = [
+                                            'pending' => 'Pending',
+                                            'processing' => 'Processing',
+                                            'shipped' => 'Shipped',
+                                            'delivered' => 'Delivered',
+                                            'cancelled' => 'Cancelled'
+                                            ];
+                                            @endphp
+                                            @foreach($statuses as $value => $label)
+                                            <option
+                                                value="{{ $value }}"
+                                                {{ $order->status == $value ? 'selected' : '' }}
+                                                class="bg-gray-800 text-white">
+                                                {{ $label }}
+                                            </option>
+                                            @endforeach
+                                        </select>
 
-                    {{-- Custom dropdown arrow --}}
-                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-white/70">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
-                        </svg>
+                                        {{-- Custom dropdown arrow --}}
+                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-white/70">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd" d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                            </svg>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                {{-- Order Creation Date --}}
+                                <div class="flex items-center space-x-3 text-white/90">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    <span class="text-sm tracking-wide">
+                                        Created {{ $order->created_at->format('M d, Y h:i A') }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            {{-- Additional Order Information --}}
+                            <div class="hidden md:flex items-center space-x-4">
+                                {{-- Order ID Badge --}}
+                                <div class="bg-white/10 px-3 py-1.5 rounded-lg text-sm text-white/80">
+                                    Order #{{ $order->id }}
+                                </div>
+
+                                {{-- Status Indicator --}}
+                                <div class="flex items-center space-x-2">
+                                    @php
+                                    $statusColors = [
+                                    'pending' => 'bg-yellow-500',
+                                    'processing' => 'bg-blue-500',
+                                    'shipped' => 'bg-green-500',
+                                    'delivered' => 'bg-emerald-600',
+                                    'cancelled' => 'bg-red-500'
+                                    ];
+                                    @endphp
+                                    <span class="w-3 h-3 rounded-full {{ $statusColors[$order->status] }}"></span>
+                                    <span class="text-sm text-white/90 capitalize">{{ $order->status }}</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </form>
-            </div>
-
-            {{-- Order Creation Date --}}
-            <div class="flex items-center space-x-3 text-white/90">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                <span class="text-sm tracking-wide">
-                    Created {{ $order->created_at->format('M d, Y h:i A') }}
-                </span>
-            </div>
-        </div>
-
-        {{-- Additional Order Information --}}
-        <div class="hidden md:flex items-center space-x-4">
-            {{-- Order ID Badge --}}
-            <div class="bg-white/10 px-3 py-1.5 rounded-lg text-sm text-white/80">
-                Order #{{ $order->id }}
-            </div>
-
-            {{-- Status Indicator --}}
-            <div class="flex items-center space-x-2">
-                @php
-                    $statusColors = [
-                        'pending' => 'bg-yellow-500',
-                        'processing' => 'bg-blue-500',
-                        'shipped' => 'bg-green-500',
-                        'delivered' => 'bg-emerald-600',
-                        'cancelled' => 'bg-red-500'
-                    ];
-                @endphp
-                <span class="w-3 h-3 rounded-full {{ $statusColors[$order->status] }}"></span>
-                <span class="text-sm text-white/90 capitalize">{{ $order->status }}</span>
-            </div>
-        </div>
-    </div>
-</div>
                 </div>
             </div>
 
@@ -125,9 +125,10 @@
                             @forelse($order->orderItems ?? [] as $item)
                             <div class="flex flex-col md:flex-row items-start md:items-center p-6 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 group">
                                 <img
-                                    src="{{ $item->image_url ?? 'default-image-url' }}"
+                                    src="{{ asset('storage/' . $item->image) }}"
                                     alt="{{ $item->name }}"
                                     class="w-full md:w-32 h-32 object-cover rounded-2xl mr-0 md:mr-6 shadow-lg group-hover:scale-105 transition-transform duration-300 mb-4 md:mb-0">
+
                                 <div class="flex-grow space-y-4">
                                     <h3 class="text-xl font-semibold text-gray-800 dark:text-white group-hover:text-blue-600 transition-colors duration-300">
                                         {{ $item->name ?? 'Product Name' }}
@@ -167,15 +168,6 @@
                         <!-- Enhanced Order Totals -->
                         <div class="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-8 border-t border-gray-200 dark:border-gray-700">
                             <div class="space-y-4">
-
-                                <div class="flex justify-between items-center">
-                                    <span class="text-gray-600 dark:text-gray-400 text-sm uppercase tracking-wider font-medium">Subtotal</span>
-                                    <span class="font-semibold text-gray-800 dark:text-white text-lg">${{ number_format($order->subtotal ?? 0, 2) }}</span>
-                                </div>
-                                <div class="flex justify-between items-center">
-                                    <span class="text-gray-600 dark:text-gray-400 text-sm uppercase tracking-wider font-medium">Tax</span>
-                                    <span class="text-gray-800 dark:text-white text-lg">${{ number_format($order->tax ?? 0, 2) }}</span>
-                                </div>
                                 <div class="flex justify-between items-center text-2xl font-bold text-blue-600 dark:text-blue-400 border-t dark:border-gray-700 pt-4">
                                     <span class="uppercase tracking-wider">Total</span>
                                     <span>${{ number_format($order->total ?? 0, 2) }}</span>
@@ -335,7 +327,7 @@
                     </div>
 
                     <!-- Enhanced Payment Details Card -->
-                    <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
+                    <!-- <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
                         <div class="p-6 bg-gradient-to-r from-green-50 to-green-100 dark:from-gray-700 dark:to-gray-600">
                             <h2 class="text-2xl font-bold text-gray-800 dark:text-white flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -377,7 +369,7 @@
                                 @endif
                             </div>
                         </div>
-                    </div>
+                    </div> -->
 
                     <!-- Enhanced Shipping Details Card -->
                     <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
@@ -398,24 +390,21 @@
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                                         </svg>
+
                                     </div>
                                     <h3 class="font-semibold text-xl text-gray-800 dark:text-white">
-                                        {{ $order->shipping_address->name }}
+                                        {{ $order->shipping_address->address_type ?? 'N/A' }}
                                     </h3>
                                 </div>
                                 <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-xl space-y-2">
                                     <p class="text-gray-600 dark:text-gray-300">
-                                        {{ $order->shipping_address->street_address }}<br>
-                                        {{ $order->shipping_address->city }},
-                                        {{ $order->shipping_address->state }}
-                                        {{ $order->shipping_address->zip_code }}<br>
-                                        {{ $order->shipping_address->country }}
+                                        {{ $order->shipping_address->street_address ?? 'N/A' }}<br>
+                                        {{ $order->shipping_address->city ?? 'N/A' }},
+                                        {{ $order->shipping_address->state ?? 'N/A' }}
+                                        {{ $order->shipping_address->zip_code ?? 'N/A' }}<br>
+                                        {{ $order->shipping_address->country ?? 'N/A' }}
                                     </p>
-                                    <div class="flex items-center pt-2 border-t border-gray-200 dark:border-gray-600">
-                                        <span class="text-gray-500 dark:text-gray-400 text-sm italic">
-                                            {{ $order->shipping_address->address_type }}
-                                        </span>
-                                    </div>
+
                                 </div>
                             </div>
                             @else
@@ -424,11 +413,13 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                 </svg>
-                                No shipping address provided
+                                No shipping address provided.
                             </div>
                             @endif
                         </div>
+
                     </div>
+
                 </div>
             </div>
         </div>

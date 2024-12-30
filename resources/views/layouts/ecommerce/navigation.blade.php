@@ -82,6 +82,7 @@
                     <div class="icon-item">
                         <a href="/cart" class="icon-link cart-icon">
                             <i class="bi bi-bag"></i>
+                            <span class="badge">{{ $cartCount }}</span>
                             <span class="icon-text">Cart</span>
                         </a>
                     </div>
