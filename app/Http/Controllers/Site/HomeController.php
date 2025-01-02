@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Site;
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\Product;
+use App\Models\Category; // Import the Category model
 use App\Models\Wishlist;
 use App\Models\Banner; // Import the Banner model
 use Illuminate\Http\Request;
@@ -18,8 +19,10 @@ class HomeController extends Controller
         $cartCount = array_sum(array_column($cartData['items'], 'quantity'));
 
         $products = Product::with('category')->paginate(8);
+
         $banners = Banner::where('active', 1)->get();
-        $categories = Product::with('category')->get();
+
+        $categories = Category::all();
 
         return view('ecommerce.home', compact('products', 'cartCount', 'banners', 'categories'));
     }

@@ -17,7 +17,7 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
     <!-- Scripts -->
-    @vite(['resources/js/dashboard-sidebar.js', 'resources/css/app.css', 'resources/css/pace.min.css','resources/css/bootstrap.min.css','resources/css/icons.css',' resources/css/appp.css', 'resources/js/app.js'])
+    @vite(['resources/js/dashboard-sidebar.js', 'resources/css/app.css', 'resources/css/pace.min.css','resources/css/bootstrap.min.css','resources/css/icons.css',' resources/css/app.css', 'resources/js/app.js'])
 
 </head>
 

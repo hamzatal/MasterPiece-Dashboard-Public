@@ -26,55 +26,35 @@ class ProductController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:products,name',
             'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
+            'new_price' => 'required|numeric|min:0',
             'original_price' => 'nullable|numeric|min:0',
             'stock_quantity' => 'nullable|integer|min:0',
             'category_id' => 'required|exists:categories,id',
-            'image' => 'nullable|image|max:2048|mimes:jpeg,png,jpg,gif',
+            'size' => 'nullable|string|max:50',
+            'color' => 'nullable|string|max:50',
+            'rating' => 'nullable|numeric|min:0|max:5',
+            'image1' => 'nullable|image|max:2048|mimes:jpeg,png,jpg,gif',
+            'image2' => 'nullable|image|max:2048|mimes:jpeg,png,jpg,gif',
+            'image3' => 'nullable|image|max:2048|mimes:jpeg,png,jpg,gif',
             'is_on_sale' => 'nullable|boolean',
             'discount_percentage' => 'nullable|numeric|min:0|max:100',
-        ], [
-            'price.required' => 'The price field is required.',
-            'stock_quantity.min' => 'The stock quantity must be at least 0.',
-            'image.mimes' => 'The image must be a file of type: jpeg, png, jpg, gif.',
         ]);
 
         try {
-            $newPrice = $validated['price'];
-            $is_active = 0;
+            $data = $validated;
 
-            if (isset($validated['discount_percentage'])) {
-                $newPrice = $validated['price'] * (1 - $validated['discount_percentage'] / 100);
-                $is_active = 1;
+            // Handle image uploads
+            if ($request->hasFile('image1')) {
+                $data['image1'] = $request->file('image1')->store('products', 'public');
             }
-
-            $data = [
-                'name' => $validated['name'],
-                'description' => $validated['description'] ?? null,
-                'original_price' => $validated['price'],
-                'new_price' => $newPrice,
-                'stock_quantity' => $validated['stock_quantity'] ?? 0,
-                'category_id' => $validated['category_id'],
-                'discount_percentage' => $validated['discount_percentage'],
-                'is_discount_active' => $is_active,
-            ];
-
-            // Handle image upload
-            if ($request->hasFile('image')) {
-                $imagePath = $request->file('image')->store('products', 'public');
-                $data['image'] = $imagePath;
+            if ($request->hasFile('image2')) {
+                $data['image2'] = $request->file('image2')->store('products', 'public');
+            }
+            if ($request->hasFile('image3')) {
+                $data['image3'] = $request->file('image3')->store('products', 'public');
             }
 
             $product = Product::create($data);
-
-            if ($validated['discount_percentage'] != null) {
-                $product_discount = Product_discount::create([
-                    'product_id' => $product->id,
-                    'discount_percentage' => $validated['discount_percentage'],
-                    'start_date' => now(),
-                    'is_active' => 1
-                ]);
-            }
 
             return redirect()->route('products.index')
                 ->with('success', "Product '{$product->name}' added successfully!");
@@ -96,40 +76,41 @@ class ProductController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:products,name,' . $product->id,
             'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
+            'new_price' => 'required|numeric|min:0',
             'original_price' => 'nullable|numeric|min:0',
             'stock_quantity' => 'nullable|integer|min:0',
             'category_id' => 'required|exists:categories,id',
-            'image' => 'nullable|image|max:2048|mimes:jpeg,png,jpg,gif',
+            'size' => 'nullable|string|max:50',
+            'color' => 'nullable|string|max:50',
+            'rating' => 'nullable|numeric|min:0|max:5',
+            'image1' => 'nullable|image|max:2048|mimes:jpeg,png,jpg,gif',
+            'image2' => 'nullable|image|max:2048|mimes:jpeg,png,jpg,gif',
+            'image3' => 'nullable|image|max:2048|mimes:jpeg,png,jpg,gif',
             'is_on_sale' => 'nullable|boolean',
             'discount_percentage' => 'nullable|numeric|min:0|max:100',
-        ], [
-            'price.required' => 'The price field is required.',
-            'stock_quantity.min' => 'The stock quantity must be at least 0.',
-            'image.mimes' => 'The image must be a file of type: jpeg, png, jpg, gif.',
         ]);
 
         try {
-            $newPrice = $validated['price'];
-            $is_active = 0;
-
-            if (isset($validated['discount_percentage'])) {
-                $newPrice = $validated['price'] * (1 - $validated['discount_percentage'] / 100);
-                $is_active = 1;
-            }
-
             $data = $validated;
-            $data['new_price'] = $newPrice;
 
-            // Handle image upload
-            if ($request->hasFile('image')) {
-                // Delete old image if exists
-                if ($product->image) {
-                    Storage::disk('public')->delete($product->image);
+            // Handle image uploads
+            if ($request->hasFile('image1')) {
+                if ($product->image1) {
+                    Storage::disk('public')->delete($product->image1);
                 }
-
-                $imagePath = $request->file('image')->store('products', 'public');
-                $data['image'] = $imagePath;
+                $data['image1'] = $request->file('image1')->store('products', 'public');
+            }
+            if ($request->hasFile('image2')) {
+                if ($product->image2) {
+                    Storage::disk('public')->delete($product->image2);
+                }
+                $data['image2'] = $request->file('image2')->store('products', 'public');
+            }
+            if ($request->hasFile('image3')) {
+                if ($product->image3) {
+                    Storage::disk('public')->delete($product->image3);
+                }
+                $data['image3'] = $request->file('image3')->store('products', 'public');
             }
 
             $product->update($data);
@@ -146,9 +127,14 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         try {
-            // Delete associated image
-            if ($product->image) {
-                Storage::disk('public')->delete($product->image);
+            if ($product->image1) {
+                Storage::disk('public')->delete($product->image1);
+            }
+            if ($product->image2) {
+                Storage::disk('public')->delete($product->image2);
+            }
+            if ($product->image3) {
+                Storage::disk('public')->delete($product->image3);
             }
 
             $productName = $product->name;
@@ -167,7 +153,6 @@ class ProductController extends Controller
         return view('admin.products.show', compact('product'));
     }
 
-    // Additional method to handle low stock alerts
     public function checkLowStock()
     {
         $lowStockProducts = Product::where('stock_quantity', '<=', 5)

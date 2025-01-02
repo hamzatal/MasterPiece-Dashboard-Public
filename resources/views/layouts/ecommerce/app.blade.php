@@ -33,6 +33,7 @@
     <!-- In your head section or before closing body tag -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.7/dist/cdn.min.js"></script>
 
+    <!-- Favicon -->
     <link rel="shortcut icon" type="image" href="{{asset('assets')}}/img/logo/logo2.png">
 
     <!-- ======= All CSS Plugins here ======== -->
@@ -52,6 +53,9 @@
     <link rel="stylesheet" href="{{asset('assets')}}/css/newproduct.css">
     <link rel="stylesheet" href="{{asset('assets')}}/css/navbar.css">
     <link rel="stylesheet" href="{{asset('assets')}}/css/order-confirmation.css">
+    <link rel="stylesheet" href="{{asset('assets')}}/css/product-details.css">
+    <link rel="stylesheet" href="{{asset('assets')}}/css/shop.css">
+
 
 </head>
 
@@ -98,6 +102,7 @@
     <script src="{{asset('assets')}}/js/wishlist.js"></script>
     <script src="{{asset('assets')}}/js/newproduct.js"></script>
     <script src="{{asset('assets')}}/js/navbar.js"></script>
+    <script src="{{asset('assets')}}/js/product-details.js"></script>
 
 
 </body>

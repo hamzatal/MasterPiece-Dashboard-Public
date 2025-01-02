@@ -1,3 +1,4 @@
+
 .sp-section {
     padding: 60px 0;
     background-color: #ffffff;
@@ -19,7 +20,7 @@
 }
 
 .sp-title::after {
-    content: "";
+    content: '';
     position: absolute;
     bottom: -10px;
     left: 50%;
@@ -32,9 +33,9 @@
 
 .sp-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 20px;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
 }
 
 .sp-card {

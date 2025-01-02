@@ -12,15 +12,21 @@ class Product extends Model
     protected $fillable = [
         'name',
         'description',
+        'image1',
+        'image2',
+        'image3',
         'new_price',
         'original_price',
         'stock_quantity',
+        'size',
+        'color',
+        'rating',
+        'category_id',
+        'status',
+        'is_on_sale',
         'discount_percentage',
         'is_discount_active',
-        'category_id',
-        'image'
     ];
-
 
     public function category()
     {
@@ -31,15 +37,33 @@ class Product extends Model
     {
         return $this->hasMany(Order::class);
     }
-    // In Product model
-    public function discounts()
+
+    public function scopeActive($query)
     {
-        return $this->hasMany(Product_discount::class);
+        return $query->where('status', 'active');
     }
-    public function scopeTopSelling($query, $limit = 1)
+
+    public function scopeOnSale($query)
     {
-        return $query->withCount('orders')
-            ->orderBy('orders_count', 'desc')
-            ->limit($limit);
+        return $query->where('is_on_sale', 1);
+    }
+
+    public function getImagesAttribute()
+    {
+        return array_filter([
+            $this->image1,
+            $this->image2,
+            $this->image3,
+        ]);
+    }
+
+    public function getFormattedRatingAttribute()
+    {
+        return number_format($this->rating, 1);
+    }
+
+    public function getIsDiscountedAttribute()
+    {
+        return $this->is_discount_active && $this->discount_percentage > 0;
     }
 }

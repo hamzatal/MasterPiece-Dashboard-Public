@@ -63,14 +63,10 @@ class Order extends Model
     {
         return $this->hasOne(ShippingAddress::class);
     }
+
     public function user()
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function shipping_address()
-    {
-        return $this->belongsTo(ShippingAddress::class, 'shipping_address_id');
     }
 
     public function scopeRecent($query)

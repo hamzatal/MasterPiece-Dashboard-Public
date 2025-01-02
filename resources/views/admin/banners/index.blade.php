@@ -44,8 +44,6 @@
     show: false,
     image: null,
     imagePreview: null,
-    isEditing: false,
-    editBanner: null,
     errors: {},
     handleImageUpload(event) {
         const file = event.target.files[0];
@@ -73,156 +71,136 @@
         this.errors = {};
         let isValid = true;
 
-        const title = document.querySelector('input[name=title]').value;
-        if (!title || title.length < 3) {
-            this.errors.title = 'Banner title must be at least 3 characters';
-            isValid = false;
-        }
-
 
 
         return isValid;
-    },
-openEditForm(banner) {
-    this.isEditing = true;
-    this.editBanner = banner;
-    this.$store.bannerForm.toggleForm(); // Open the form
-    this.$nextTick(() => {
-        // Populate form fields
-        document.querySelector('input[name=title]').value = banner.title;
-        document.querySelector('textarea[name=description]').value = banner.description || ''; // Handle missing description
-        document.querySelector('input[name=active]').checked = banner.active;
-        this.imagePreview = banner.image ? '{{ Storage::url('') }}' + banner.image : null;
-    });
-}
+    }
 }"
-                x-show="$store.bannerForm.isOpen"
-                x-transition:enter="transition ease-out duration-300"
-                x-transition:enter-start="opacity-0 transform -translate-y-4"
-                x-transition:enter-end="opacity-100 transform translate-y-0"
-                x-transition:leave="transition ease-in duration-300"
-                x-transition:leave-start="opacity-100 transform translate-y-0"
-                x-transition:leave-end="opacity-0 transform -translate-y-4"
-                class="mb-8 bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 border border-gray-100 dark:border-gray-700">
+    x-show="$store.bannerForm.isOpen"
+    x-transition:enter="transition ease-out duration-300"
+    x-transition:enter-start="opacity-0 transform -translate-y-4"
+    x-transition:enter-end="opacity-100 transform translate-y-0"
+    x-transition:leave="transition ease-in duration-300"
+    x-transition:leave-start="opacity-100 transform translate-y-0"
+    x-transition:leave-end="opacity-0 transform -translate-y-4"
+    class="mb-8 bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 border border-gray-100 dark:border-gray-700">
 
-                <form
-                    x-bind:action="isEditing ? '{{ route('banners.update', ':id') }}'.replace(':id', editBanner ? editBanner.id : '') : '{{ route('banners.store') }}'"
-                    method="POST"
-                    enctype="multipart/form-data"
-                    @submit.prevent="if(validateForm()) $el.submit()"
-                    class="space-y-6">
-                    @csrf
-                    <input type="hidden" name="_method" x-bind:value="isEditing ? 'PUT' : 'POST'">
-                    <!-- Form Header -->
-                    <div class="border-b border-gray-200 dark:border-gray-700 pb-4">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white" x-text="isEditing ? 'Edit Banner' : 'Add New Banner'"></h3>
-                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Fill in the information below to create or edit a banner.</p>
-                    </div>
+    <form
+        x-bind:action="isEditing ? '{{ route('banners.update', ':id') }}'.replace(':id', editBanner ? editBanner.id : '') : '{{ route('banners.store') }}'"
+        method="POST"
+        enctype="multipart/form-data"
+        @submit.prevent="if(validateForm()) $el.submit()"
+        class="space-y-6">
+        @csrf
 
-                    <div class="flex flex-col md:flex-row gap-6">
-                        <!-- Image Upload -->
-                        <div class="w-full md:w-1/3">
-                            <div class="space-y-2">
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Banner Image</label>
-                                <div class="relative aspect-[16/9] rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-gray-400 transition-colors">
-                                    <input
-                                        type="file"
-                                        name="image"
-                                        accept="image/jpeg,image/png,image/webp"
-                                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                                        @change="handleImageUpload($event)">
-                                    <div class="absolute inset-0 flex flex-col items-center justify-center" x-show="!imagePreview">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                        </svg>
-                                        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Click to upload banner image</p>
-                                        <p class="mt-1 text-xs text-gray-400">PNG, JPG, WEBP up to 4MB</p>
-                                    </div>
-                                    <img x-show="imagePreview" :src="imagePreview" class="absolute inset-0 w-full h-full object-cover rounded-xl">
-                                </div>
-                                <p class="text-xs text-red-500" x-text="errors.image" x-show="errors.image"></p>
-                            </div>
-                        </div>
+        <!-- Form Header -->
+        <div class="border-b border-gray-200 dark:border-gray-700 pb-4">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white" x-text="isEditing ? 'Edit Banner' : 'Add New Banner'"></h3>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Fill in the information below to create or edit a banner.</p>
+        </div>
 
-                        <!-- Form Fields -->
-                        <div class="w-full md:w-2/3 space-y-6">
-                            <!-- Title -->
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Banner Title</label>
-                                <input
-                                    type="text"
-                                    name="title"
-                                    class="w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
-                                    placeholder="Enter banner title">
-                                <p class="text-xs text-red-500 mt-1" x-text="errors.title" x-show="errors.title"></p>
-                            </div>
-
-                            <!-- Description -->
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Description</label>
-                                <textarea
-                                    name="description"
-                                    rows="3"
-                                    class="w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
-                                    placeholder="Enter banner description"></textarea>
-                                <p class="text-xs text-red-500 mt-1" x-text="errors.description" x-show="errors.description"></p>
-                            </div>
-
-
-                            <!-- Status -->
-                            <div>
-                                <div>
-                                    <label for="location" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Banner Location</label>
-                                    <div class="flex space-x-4">
-                                        <div class="flex items-center">
-                                            <input
-                                                type="radio"
-                                                name="is_homepage"
-                                                id="location_hero"
-                                                value="hero"
-                                                class="rounded border-gray-300 text-purple-600 focus:ring-purple-500">
-                                            <label for="location_hero" class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                                                Hero Section
-                                            </label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input
-                                                type="radio"
-                                                name="is_homepage"
-                                                id="location_discounted"
-                                                value="discounted_section"
-                                                class="rounded border-gray-300 text-purple-600 focus:ring-purple-500">
-                                            <label for="location_discounted" class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                                                Discounted Section
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Form Actions -->
-                    <div class="flex justify-end space-x-4 mt-6">
-                        <button
-                            type="button"
-                            @click="$store.bannerForm.toggleForm(); isEditing = false"
-                            class="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        <div class="flex flex-col md:flex-row gap-6">
+            <!-- Image Upload -->
+            <div class="w-full md:w-1/3">
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Banner Image</label>
+                    <div class="relative aspect-[16/9] rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-gray-400 transition-colors">
+                        <input
+                            type="file"
+                            name="image"
+                            accept="image/jpeg,image/png,image/webp"
+                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                            @change="handleImageUpload($event)">
+                        <div class="absolute inset-0 flex flex-col items-center justify-center" x-show="!imagePreview">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
-                            Cancel
-                        </button>
-                        <button
-                            type="submit"
-                            class="px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 text-white rounded-lg transition-colors flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
-                            <span x-text="isEditing ? 'Update Banner' : 'Save Banner'"></span>
-                        </button>
+                            <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Click to upload banner image</p>
+                            <p class="mt-1 text-xs text-gray-400">PNG, JPG, WEBP up to 4MB</p>
+                        </div>
+                        <img x-show="imagePreview" :src="imagePreview" class="absolute inset-0 w-full h-full object-cover rounded-xl">
                     </div>
-                </form>
+                    <p class="text-xs text-red-500" x-text="errors.image" x-show="errors.image"></p>
+                </div>
             </div>
+
+            <!-- Form Fields -->
+            <div class="w-full md:w-2/3 space-y-6">
+                <!-- Title -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Banner Title (Optional)</label>
+                    <input
+                        type="text"
+                        name="title"
+                        class="w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
+                        placeholder="Enter banner title">
+                </div>
+
+                <!-- Description -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Description</label>
+                    <textarea
+                        name="description"
+                        rows="3"
+                        class="w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
+                        placeholder="Enter banner description"></textarea>
+                </div>
+
+                <!-- Status -->
+                <div>
+                    <div>
+                        <label for="location" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Banner Location</label>
+                        <div class="flex space-x-4">
+                            <div class="flex items-center">
+                                <input
+                                    type="radio"
+                                    name="is_homepage"
+                                    id="location_hero"
+                                    value="hero"
+                                    class="rounded border-gray-300 text-purple-600 focus:ring-purple-500">
+                                <label for="location_hero" class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Hero Section
+                                </label>
+                            </div>
+                            <div class="flex items-center">
+                                <input
+                                    type="radio"
+                                    name="is_homepage"
+                                    id="location_discounted"
+                                    value="discounted_section"
+                                    class="rounded border-gray-300 text-purple-600 focus:ring-purple-500">
+                                <label for="location_discounted" class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Discounted Section
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Form Actions -->
+        <div class="flex justify-end space-x-4 mt-6">
+            <button
+                type="button"
+                @click="$store.bannerForm.toggleForm()"
+                class="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                Cancel
+            </button>
+            <button
+                type="submit"
+                class="px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 text-white rounded-lg transition-colors flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                Save Banner
+            </button>
+        </div>
+    </form>
+</div>
+
 
 
             <!-- Enhanced Banners Table -->
@@ -254,7 +232,7 @@ openEditForm(banner) {
                                             @endif
                                         </div>
                                         <div>
-                                            <div class="font-medium text-gray-900 dark:text-white">{{ $banner->title }}</div>
+                                            <div class="font-medium text-gray-900 dark:text-white">{{ $banner->title ?? 'N/A' }}</div>
                                             <div class="text-sm text-gray-500 dark:text-gray-400">#{{ $banner->id }}</div>
                                         </div>
                                     </div>
@@ -262,6 +240,7 @@ openEditForm(banner) {
                                 <td class="px-6 py-4 text-gray-700 dark:text-gray-300">
                                     {{ $banner->description  ?? 'N/A'  }}
                                 </td>
+
                                 <td class="px-6 py-4">
                                     <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium
                     {{ $banner->active ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300' }}">

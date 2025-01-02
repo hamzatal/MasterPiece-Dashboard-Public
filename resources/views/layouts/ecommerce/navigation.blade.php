@@ -1,92 +1,100 @@
-<!-- Enhanced Header HTML -->
-<header class="main-header">
-    <nav class="navbar navbar-expand-lg navbar-light">
-        <div class="container">
+<!-- Header  -->
+<header class="nx-main-header">
+    <nav class="nx-navbar">
+        <div class="nx-container">
             <!-- Logo -->
-            <a class="navbar-brand" href="/home">
-                <img src="assets/img/logo/dev.png" alt="logo" class="logo">
+            <a class="nx-brand" href="/home">
+                <img src="assets/img/logo/SyntaxStore.png" alt="logo" class="nx-logo">
             </a>
 
             <!-- Mobile Toggle -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
+            <button class="nx-mobile-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#nxContent">
+                <i class="bi bi-list"></i>
             </button>
 
-            <div class="collapse navbar-collapse" id="navbarContent">
+            <div class="nx-collapse" id="nxContent">
                 <!-- Search Bar -->
-                <div class="search-box">
-                    <input type="text" class="search-input" placeholder="Search products..." id="searchInput" onkeyup="searchProducts()">
-                    <button class="search-button" onclick="searchProducts()">
-                        <i class="bi bi-search search-icon"></i>
-                    </button>
+                <div class="nx-search-wrapper">
+                    <div class="nx-search-container">
+                        <i class="bi bi-search nx-search-icon"></i>
+                        <input type="text" class="nx-search-input" placeholder="Search products..." id="searchInput">
+                        <button class="nx-search-clear">
+                            <i class="bi bi-x"></i>
+                        </button>
+                    </div>
+                    <div class="nx-search-results" id="searchResults"></div>
                 </div>
 
-                <!-- Dynamic Search Results -->
-                <div id="searchResults"></div>
-
                 <!-- Navigation Menu -->
-                <ul class="navbar-nav mx-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/home">Home</a>
+                <ul class="nx-nav-list">
+                    <li class="nx-nav-item">
+                        <a class="nx-nav-link" href="/home">
+                            <i class="bi bi-house"></i>
+                            <span>Home</span>
+                        </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/shop">Shop</a>
+                    <li class="nx-nav-item">
+                        <a class="nx-nav-link" href="/shop">
+                            <i class="bi bi-shop"></i>
+                            <span>Shop</span>
+                        </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/about-us">About</a>
+                    <li class="nx-nav-item">
+                        <a class="nx-nav-link" href="/about-us">
+                            <i class="bi bi-info-circle"></i>
+                            <span>About</span>
+                        </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/contact-us">Contact</a>
+                    <li class="nx-nav-item">
+                        <a class="nx-nav-link" href="/contact-us">
+                            <i class="bi bi-envelope"></i>
+                            <span>Contact</span>
+                        </a>
                     </li>
                 </ul>
 
                 <!-- Right Icons -->
-                <div class="nav-icons">
-                    <div class="icon-item">
-                        <li class="header__menu--items header__minicart--items">
-                            <a class="header__account--btn">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class=" -user">
-                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                    <circle cx="12" cy="7" r="4"></circle>
-                                </svg>
-                                <span class="visually-hidden">My account</span>
-                                <svg class="menu__arrowdown--icon" xmlns="http://www.w3.org/2000/svg" width="12" height="7.41" viewBox="0 0 12 7.41">
-                                    <path d="M16.59,8.59,12,13.17,7.41,8.59,6,10l6,6,6-6Z" transform="translate(-6 -8.59)" fill="currentColor" opacity="0.7" />
-                                </svg>
-                            </a>
-                            <ul class="header__sub--menu" style="left: -125px; width: 175px;">
-                                <li class="header__sub--menu__items">
-                                    <a href="{{ route('profile.edit') }}" class="header__sub--menu__link">My Account</a>
-                                </li>
-                                <li class="header__sub--menu__items">
-                                    <a href="{{ route('profile.edit') }}" class="header__sub--menu__link">My Orders</a>
-                                </li>
-                                <li class="header__sub--menu__items">
-                                    <form method="POST" action="{{ route('logout') }}">
-                                        @csrf
-                                        <a href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();" class="header__sub--menu__link">
-                                            Logout
-                                        </a>
-                                    </form>
-                                </li>
-                            </ul>
-                        </li>
-                    </div>
-                    <div class="icon-item">
-                        <a href="/wishlist" class="icon-link">
-                            <i class="bi bi-heart"></i>
-                            <span class="badge">{{ $wishlistCount }}</span>
-                            <span class="icon-text">Wishlist</span>
-                        </a>
-                    </div>
-                    <div class="icon-item">
-                        <a href="/cart" class="icon-link cart-icon">
-                            <i class="bi bi-bag"></i>
-                            <span class="badge">{{ $cartCount }}</span>
-                            <span class="icon-text">Cart</span>
-                        </a>
-                    </div>
+                <div class="nx-actions">
 
+                    <a href="/wishlist" class="nx-action-btn">
+                        <i class="bi bi-heart"></i>
+                        <span class="nx-badge">{{ $wishlistCount }}</span>
+                        <span>Wishlist</span>
+                    </a>
+                    <a href="/cart" class="nx-action-btn">
+                        <i class="bi bi-bag"></i>
+                        <span class="nx-badge">{{ $cartCount }}</span>
+                        <span>Cart</span>
+                    </a>
+                    <div class="nx-action-item nx-account-dropdown">
+                        <button class="nx-action-btn">
+                            <i class="bi bi-person"></i>
+                            <span>Account</span>
+                        </button>
+                        <ul class="nx-dropdown-menu">
+                            <li>
+                                <a href="{{ route('profile.edit') }}" class="nx-dropdown-link">
+                                    <i class="bi bi-person-gear"></i>
+                                    My Account
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('orders.confirmation') }}" class="nx-dropdown-link">
+                                    <i class="bi bi-box"></i>
+                                    My Orders
+                                </a>
+                            </li>
+                            <li>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit" class="nx-dropdown-link">
+                                        <i class="bi bi-box-arrow-right"></i>
+                                        Logout
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -94,5 +102,5 @@
 </header>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-<link rel="stylesheet" href="css/navbar.js">
+<link rel="stylesheet" href="css/navbar.css">
 <link rel="javascript" href="js/navbar.js">

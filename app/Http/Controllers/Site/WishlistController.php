@@ -51,6 +51,7 @@ class WishlistController extends Controller
      */
     public function add($productId)
     {
+
         if (Wishlist::where('user_id', Auth::id())->where('product_id', $productId)->exists()) {
             return redirect()->back()->with('info', 'Product is already in your wishlist.');
         }

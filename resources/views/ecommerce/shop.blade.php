@@ -79,7 +79,7 @@
                     <!-- Clear Filters Button -->
                     @if(request()->has('search') || request()->has('min_price') || request()->has('max_price') || request()->has('category'))
                     <div>
-                        <a href="{{ route('shop', ['page' => request('page', 1)]) }}" class="btn btn-clear-filters primary__btn">
+                        <a href="{{ route('shop', ['page' => request('page', 1)]) }}" style="background-color: red;" class="btn btn-clear-filters primary__btn">
                             Clear All Filters
                         </a>
                     </div>
@@ -100,7 +100,7 @@
                                             <!-- Image Container -->
                                             <div class="sp-image-wrap">
                                                 <a href="{{ route('product.show', $product->id) }}">
-                                                    <img class="sp-image" src="{{ Storage::url($product->image) }}" alt="{{ $product->name }}">
+                                                    <img class="sp-image" src="{{ Storage::url($product->image1) }}" alt="{{ $product->name }}">
                                                 </a>
                                                 @if($product->is_discount_active && $product->discount_percentage)
                                                 <span class="sp-tag sp-tag-sale">{{ $product->discount_percentage }}% OFF</span>
@@ -119,9 +119,10 @@
 
                                                 <!-- Price -->
                                                 <div class="sp-price">
+                                                <span class="sp-old-price">JD {{ number_format($product->original_price, 2) }}</span>
+                                                @if($product->original_price)
                                                     <span class="sp-current-price">JD {{ number_format($product->new_price, 2) }}</span>
-                                                    @if($product->original_price)
-                                                    <span class="sp-old-price">JD {{ number_format($product->original_price, 2) }}</span>
+
                                                     @endif
                                                 </div>
 
@@ -145,7 +146,7 @@
                                                             </svg>
                                                         </button>
                                                     </form>
-                                                    <a href="{{ route('products.show', $product->id) }}" class="sp-icon-button" title="Quick View">
+                                                    <a href="{{ route('product.details', $product->id) }}" class="sp-icon-button" title="View Product Details">
                                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                             <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"></path>
                                                             <circle cx="12" cy="12" r="3"></circle>
@@ -178,7 +179,7 @@
                                     <li class="widget__categories--menu__list {{ !request('category') ? 'active' : '' }}">
                                         <a href="{{ route('shop') }}" class="widget__categories--menu__label">
                                             All Categories
-                                            <span class="widget__categories--menu__text">({{ App\Models\Product::count() }})</span>
+                                            <span class="widget__categories--menu__text">({{ App\Models\Category::count() }})</span>
                                         </a>
                                     </li>
                                     @foreach ($categories as $category)

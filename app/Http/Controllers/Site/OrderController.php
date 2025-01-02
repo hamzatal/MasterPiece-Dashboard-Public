@@ -7,10 +7,28 @@ use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Coupon;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
+    public function index()
+    {
+        $orders = auth()->user()->orders()->with(['items.product'])->latest()->get();
+
+        return view('ecommerce.orders', compact('orders'));
+    }
+
+    public function show($orderId)
+    {
+        $order = auth()->user()->orders()->with(['items.product', 'shippingAddress'])->find($orderId);
+
+        if (!$order) {
+            return redirect()->route('orders.index')->with('error', 'Order not found.');
+        }
+
+        return view('ecommerce.product-details', compact('order'));
+    }
+
     public function store(Request $request)
     {
         $cartData = json_decode(request()->cookie('shopping_cart'), true) ?? ['items' => [], 'coupon' => null];
@@ -39,7 +57,7 @@ class OrderController extends Controller
 
         $total = $subtotal - $discount;
 
-        DB::transaction(function () use ($cartData, $user, $subtotal, $discount, $total) {
+        $order = DB::transaction(function () use ($cartData, $user, $subtotal, $discount, $total) {
             $order = Order::create([
                 'user_id' => $user->id,
                 'subtotal' => $subtotal,
@@ -58,10 +76,16 @@ class OrderController extends Controller
                     ]);
                 }
             }
+
+            return $order;
         });
 
-        return redirect()->route('home')->with('success', 'Your order has been placed successfully!');
+        // Clear cart cookie
+        cookie()->queue(cookie()->forget('shopping_cart'));
+
+        return redirect()->route('orders.success', $order->id)->with('success', 'Your order has been placed successfully!');
     }
+
     public function success(Order $order)
     {
         if ($order->user_id !== auth()->id()) {

@@ -1,6 +1,5 @@
-
-$(document).ready(function() {
-    $('.hero__slider').slick({
+$(document).ready(function () {
+    $(".hero__slider").slick({
         infinite: true,
         slidesToShow: 1,
         slidesToScroll: 1,
@@ -10,23 +9,23 @@ $(document).ready(function() {
     });
 });
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener("DOMContentLoaded", function () {
     const bannerSlider = {
-        track: document.querySelector('.banner-track'),
-        slides: document.querySelectorAll('.banner-slide'),
-        prevBtn: document.querySelector('.banner-prev'),
-        nextBtn: document.querySelector('.banner-next'),
-        indicators: document.querySelector('.banner-indicators'),
+        track: document.querySelector(".banner-track"),
+        slides: document.querySelectorAll(".banner-slide"),
+        prevBtn: document.querySelector(".banner-prev"),
+        nextBtn: document.querySelector(".banner-next"),
+        indicators: document.querySelector(".banner-indicators"),
         currentIndex: 0,
         slideDuration: 6000, // 6 seconds per slide
 
         initialize() {
             // Create indicators
             this.slides.forEach((_, index) => {
-                const dot = document.createElement('button');
-                dot.className = 'banner-dot';
-                dot.setAttribute('aria-label', `Go to slide ${index + 1}`);
-                dot.addEventListener('click', () => this.goToSlide(index));
+                const dot = document.createElement("button");
+                dot.className = "banner-dot";
+                dot.setAttribute("aria-label", `Go to slide ${index + 1}`);
+                dot.addEventListener("click", () => this.goToSlide(index));
                 this.indicators.appendChild(dot);
             });
 
@@ -34,23 +33,31 @@ document.addEventListener('DOMContentLoaded', function() {
             this.showSlide(0);
 
             // Add event listeners
-            this.prevBtn.addEventListener('click', () => this.previousSlide());
-            this.nextBtn.addEventListener('click', () => this.nextSlide());
+            this.prevBtn.addEventListener("click", () => this.previousSlide());
+            this.nextBtn.addEventListener("click", () => this.nextSlide());
 
             // Start autoplay
             this.startAutoplay();
 
             // Pause autoplay on hover
-            this.track.addEventListener('mouseenter', () => this.pauseAutoplay());
-            this.track.addEventListener('mouseleave', () => this.startAutoplay());
+            this.track.addEventListener("mouseenter", () =>
+                this.pauseAutoplay()
+            );
+            this.track.addEventListener("mouseleave", () =>
+                this.startAutoplay()
+            );
         },
 
         showSlide(index) {
-            this.slides.forEach(slide => slide.classList.remove('active'));
-            document.querySelectorAll('.banner-dot').forEach(dot => dot.classList.remove('active'));
+            this.slides.forEach((slide) => slide.classList.remove("active"));
+            document
+                .querySelectorAll(".banner-dot")
+                .forEach((dot) => dot.classList.remove("active"));
 
-            this.slides[index].classList.add('active');
-            document.querySelectorAll('.banner-dot')[index].classList.add('active');
+            this.slides[index].classList.add("active");
+            document
+                .querySelectorAll(".banner-dot")
+                [index].classList.add("active");
             this.currentIndex = index;
         },
 
@@ -60,7 +67,9 @@ document.addEventListener('DOMContentLoaded', function() {
         },
 
         previousSlide() {
-            const prev = (this.currentIndex - 1 + this.slides.length) % this.slides.length;
+            const prev =
+                (this.currentIndex - 1 + this.slides.length) %
+                this.slides.length;
             this.showSlide(prev);
         },
 
@@ -69,13 +78,51 @@ document.addEventListener('DOMContentLoaded', function() {
         },
 
         startAutoplay() {
-            this.autoplayInterval = setInterval(() => this.nextSlide(), this.slideDuration);
+            this.autoplayInterval = setInterval(
+                () => this.nextSlide(),
+                this.slideDuration
+            );
         },
 
         pauseAutoplay() {
             clearInterval(this.autoplayInterval);
-        }
+        },
     };
 
     bannerSlider.initialize();
+});
+
+//! Swiper
+document.addEventListener("DOMContentLoaded", () => {
+    const swiper = new Swiper(".swiper-container", {
+        slidesPerView: 7,
+        spaceBetween: 10,
+        autoplay: {
+            delay: 3000,
+            disableOnInteraction: false,
+        },
+        autoplay: {
+            delay: 3000,
+            disableOnInteraction: false,
+            pauseOnMouseEnter: true,
+        },
+        pagination: {
+            el: ".swiper-pagination",
+            clickable: true,
+        },
+        breakpoints: {
+            1200: {
+                slidesPerView: 7,
+                spaceBetween: 20,
+            },
+            768: {
+                slidesPerView: 3,
+                spaceBetween: 15,
+            },
+            480: {
+                slidesPerView: 2,
+                spaceBetween: 10,
+            },
+        },
+    });
 });

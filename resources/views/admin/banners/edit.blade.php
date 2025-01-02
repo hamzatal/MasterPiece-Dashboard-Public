@@ -47,18 +47,21 @@
                         <div class="space-y-8">
                             <!-- Title -->
                             <div class="space-y-2">
-                                <label for="title" class="text-sm font-medium text-gray-700 dark:text-gray-300">Title</label>
+                                <label for="title" class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Title (Optional)
+                                </label>
                                 <input
                                     type="text"
                                     name="title"
                                     id="title"
                                     value="{{ old('title', $banner->title) }}"
                                     class="w-full px-4 py-3 rounded-xl border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                    placeholder="Enter compelling banner title">
+                                    placeholder="Enter a title if needed">
                                 @error('title')
                                 <p class="text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
+
 
                             <!-- Description -->
                             <div class="space-y-2">
@@ -151,60 +154,60 @@
         }
     }
 }" class="space-y-4">
-    <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Banner Image</label>
+                                <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Banner Image</label>
 
-    <div x-ref="imageContainer" class="relative aspect-square rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-gray-400 transition-colors">
-        <!-- File Input -->
-        <input
-            x-ref="imageInput"
-            type="file"
-            name="image"
-            accept="image/jpeg,image/png,image/webp"
-            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-            @change="handleImageUpload($event)">
+                                <div x-ref="imageContainer" class="relative aspect-square rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-gray-400 transition-colors">
+                                    <!-- File Input -->
+                                    <input
+                                        x-ref="imageInput"
+                                        type="file"
+                                        name="image"
+                                        accept="image/jpeg,image/png,image/webp"
+                                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                        @change="handleImageUpload($event)">
 
-        <!-- Upload Placeholder -->
-        <div
-            class="absolute inset-0 flex flex-col items-center justify-center"
-            x-show="!imagePreview"
-            x-transition:enter="transition ease-out duration-300"
-            x-transition:enter-start="opacity-0 transform scale-95"
-            x-transition:enter-end="opacity-100 transform scale-100">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-            <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Click to upload image</p>
-            <p class="mt-1 text-xs text-gray-400">PNG, JPG, WEBP up to 2MB</p>
-        </div>
+                                    <!-- Upload Placeholder -->
+                                    <div
+                                        class="absolute inset-0 flex flex-col items-center justify-center"
+                                        x-show="!imagePreview"
+                                        x-transition:enter="transition ease-out duration-300"
+                                        x-transition:enter-start="opacity-0 transform scale-95"
+                                        x-transition:enter-end="opacity-100 transform scale-100">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Click to upload image</p>
+                                        <p class="mt-1 text-xs text-gray-400">PNG, JPG, WEBP up to 2MB</p>
+                                    </div>
 
-        <!-- Image Preview -->
-        <template x-if="imagePreview">
-            <div class="relative h-full">
-                <img
-                    :src="imagePreview"
-                    class="absolute inset-0 w-full h-full object-cover rounded-xl"
-                    x-transition:enter="transition ease-out duration-300"
-                    x-transition:enter-start="opacity-0"
-                    x-transition:enter-end="opacity-100">
+                                    <!-- Image Preview -->
+                                    <template x-if="imagePreview">
+                                        <div class="relative h-full">
+                                            <img
+                                                :src="imagePreview"
+                                                class="absolute inset-0 w-full h-full object-cover rounded-xl"
+                                                x-transition:enter="transition ease-out duration-300"
+                                                x-transition:enter-start="opacity-0"
+                                                x-transition:enter-end="opacity-100">
 
-                <!-- Hover Overlay -->
-                <div
-                    class="absolute inset-0 bg-black bg-opacity-40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
-                    <button
-                        type="button"
-                        @click.prevent="removeImage()"
-                        class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
-                        Remove Image
-                    </button>
-                </div>
-            </div>
-        </template>
-    </div>
+                                            <!-- Hover Overlay -->
+                                            <div
+                                                class="absolute inset-0 bg-black bg-opacity-40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
+                                                <button
+                                                    type="button"
+                                                    @click.prevent="removeImage()"
+                                                    class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+                                                    Remove Image
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
 
-    @error('image')
-    <p class="text-sm text-red-600">{{ $message }}</p>
-    @enderror
-</div>
+                                @error('image')
+                                <p class="text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
                         </div>
                     </div>
 

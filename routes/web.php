@@ -26,68 +26,37 @@ use App\Http\Controllers\Site\{
     AccountController,
     CheckoutController,
     NotFoundController,
+    OrderConfirmationController,
     ProductDetailsController,
-    ProductGalleryController,
-    ProductLeftSidebarController,
     ShopController,
-    WishlistController
+    WishlistController,
+    SearchController,
 };
 use Illuminate\Support\Facades\Route;
 
 
-
-//!TEST
-
-Route::post('/order/place', [OrderController::class, 'store'])->name('order.place');
-Route::post('/order/store', [OrderController::class, 'store'])->name('order.store');
+//! Test Routes
 
 
-Route::get('/categories/{category}', [CategoryController::class, 'show'])->name('categories.show');
-Route::get('/categories/{id}', [CategoryController::class, 'show'])->name('categories');
+Route::get('/search', [SearchController::class, 'search'])->name('search');
+Route::get('/product-details/{id}', [ProductDetailsController::class, 'show'])->name('product.details');
+
+//! End Test Routes
 
 
 
-//!END TEST
+//? Order Confirmation Routes
 
-
-
-
-//? Cart Routes
-Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
-Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');
-Route::post('/cart/apply-coupon', [CartController::class, 'applyCoupon'])->name('cart.applyCoupon');
-Route::post('/cart/remove-coupon', [CartController::class, 'removeCoupon'])->name('cart.removeCoupon');
-Route::delete('/cart/remove/{id}', [CartController::class, 'removeItem'])->name('cart.remove');
-Route::delete('/cart/clear', [CartController::class, 'clearCart'])->name('cart.clear');
-Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
-
-//? Checkout Routes
 Route::middleware(['auth'])->group(function () {
-    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
-    Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
-    Route::get('/order/success/{order}', [OrderController::class, 'success'])->name('order.success');
-    Route::get('/checkout', [CheckoutController::class, 'checkout'])->name('checkout');
-    Route::post('/checkout/store', [CheckoutController::class, 'store'])->name('checkout.store');
-    Route::get('/order/confirmation/{order}', [CheckoutController::class, 'confirmation'])->name('order.confirmation');
-    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
+    Route::get('/orders', [OrderConfirmationController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{id}', [OrderConfirmationController::class, 'show'])->name('order.info');
+    Route::get('/my-orders', [OrderConfirmationController::class, 'index'])->name('orders.confirmation');
+    Route::get('/order-details/{id}', [OrderConfirmationController::class, 'show'])->name('order.details');
+    Route::get('/order-confirmation/{orderId}', [OrderController::class, 'showOrderConfirmation'])->name('order.confirmation');
 });
-//? Banners Routes
-Route::middleware(['auth'])->prefix('banners')->group(function () {
-    Route::get('/', [BannerController::class, 'index'])->name('banners.index'); // List all banners
-    Route::get('/create', [BannerController::class, 'create'])->name('banners.create'); // Show form to create a banner
-    Route::post('/', [BannerController::class, 'store'])->name('banners.store'); // Store new banner
-    Route::get('/{banner}/edit', [BannerController::class, 'edit'])->name('banners.edit'); // Show form to edit a banner
-    Route::put('/{banner}', [BannerController::class, 'update'])->name('banners.update'); // Update an existing banner
-    Route::delete('/{banner}', [BannerController::class, 'destroy'])->name('banners.destroy'); // Delete a banner
-    Route::patch('/banners/{banner}/toggle-status', [BannerController::class, 'toggleStatus'])->name('banners.toggleStatus');
-});
-
-//? Shop Routes
-Route::get('/shop', [ShopController::class, 'index'])->name('shop');
-
 
 //? Public Routes
+
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/home', [HomeController::class, 'index'])->name('home.index');
 Route::get('/about-us', [AboutController::class, 'index']);
@@ -98,13 +67,13 @@ Route::get('/faq', [FaqController::class, 'index']);
 Route::get('/login', [LoginController::class, 'index']);
 Route::resource('contacts', ContactController::class);
 
-//? Shop Routes
-Route::get('/product-details', [ProductDetailsController::class, 'index']);
-Route::get('/product-gallery', [ProductGalleryController::class, 'index']);
-Route::get('/product-left-sidebar', [ProductLeftSidebarController::class, 'index']);
+//? Shop & Product Routes
 
-//? Product Routes
-Route::group(['prefix' => 'products'], function () {
+Route::get('/shop', [ShopController::class, 'index'])->name('shop');
+
+//? Product Frontend Routes
+
+Route::prefix('products')->group(function () {
     Route::get('/', [ProductController::class, 'frontendIndex'])->name('home.products.index');
     Route::get('/{product:slug}', [ProductController::class, 'frontendShow'])->name('home.product.show');
     Route::get('/search', [ProductController::class, 'search'])->name('products.search');
@@ -112,18 +81,49 @@ Route::group(['prefix' => 'products'], function () {
         ->name('products.by.category');
 });
 
-//? product Routes
-Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.show');
-Route::get('/product/{id}/edit', [ProductController::class, 'edit'])->name('product.edit');
-Route::put('/product/{id}', [ProductController::class, 'update'])->name('product.update');
-Route::delete('/product/{id}', [ProductController::class, 'destroy'])->name('product.destroy');
-Route::get('/product/create', [ProductController::class, 'create'])->name('product.create');
-Route::post('/product', [ProductController::class, 'store'])->name('product.store');
+//? Product Management Routes
 
+Route::prefix('product')->group(function () {
+    Route::get('/{id}', [ProductController::class, 'show'])->name('product.show');
+    Route::get('/{id}/edit', [ProductController::class, 'edit'])->name('product.edit');
+    Route::put('/{id}', [ProductController::class, 'update'])->name('product.update');
+    Route::delete('/{id}', [ProductController::class, 'destroy'])->name('product.destroy');
+    Route::get('/create', [ProductController::class, 'create'])->name('product.create');
+    Route::post('/', [ProductController::class, 'store'])->name('product.store');
+    Route::get('/product-details/{id}', [ProductDetailsController::class, 'show'])->name('product.details');
+});
 
-//? Authentication Required Routes
+//? Cart Routes
+Route::prefix('cart')->group(function () {
+    Route::get('/', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/add', [CartController::class, 'add'])->name('cart.add');
+    Route::post('/update', [CartController::class, 'update'])->name('cart.update');
+    Route::post('/apply-coupon', [CartController::class, 'applyCoupon'])->name('cart.applyCoupon');
+    Route::post('/remove-coupon', [CartController::class, 'removeCoupon'])->name('cart.removeCoupon');
+    Route::delete('/remove/{id}', [CartController::class, 'removeItem'])->name('cart.remove');
+    Route::delete('/clear', [CartController::class, 'clearCart'])->name('cart.clear');
+});
+
+//? Checkout Routes (Authenticated)
+
+Route::middleware(['auth'])->group(function () {
+    Route::prefix('checkout')->group(function () {
+        Route::get('/', [CheckoutController::class, 'index'])->name('checkout');
+        Route::post('/', [CheckoutController::class, 'store'])->name('checkout.store');
+        Route::post('/store', [CheckoutController::class, 'store'])->name('checkout.store');
+    });
+
+    Route::prefix('order')->group(function () {
+        Route::get('/success/{order}', [OrderController::class, 'success'])->name('order.success');
+        Route::get('/confirmation/{order}', [CheckoutController::class, 'confirmation'])->name('order.confirmation');
+    });
+});
+
+//!Authenticated User Routes
+
 Route::middleware('auth')->group(function () {
-    // Account Management
+    //? Account Management
+
     Route::prefix('account')->group(function () {
         Route::get('/', [AccountController::class, 'index'])->name('account.index');
         Route::get('/edit', [AccountController::class, 'edit'])->name('account.edit');
@@ -131,30 +131,41 @@ Route::middleware('auth')->group(function () {
     });
 
     //? Wishlist
-    Route::middleware(['auth'])->group(function () {
-        Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
-        Route::post('/wishlist/add', [WishlistController::class, 'add'])->name('wishlist.add');
-        Route::delete('/wishlist/{id}', [WishlistController::class, 'remove'])->name('wishlist.remove');
-        Route::delete('/wishlist', [WishlistController::class, 'clearAll'])->name('wishlist.clearAll');
+
+    Route::prefix('wishlist')->group(function () {
+        Route::get('/', [WishlistController::class, 'index'])->name('wishlist.index');
+        Route::post('/add', [WishlistController::class, 'add'])->name('wishlist.add');
+        Route::post('/add/{productId}', [WishlistController::class, 'add'])->name('wishlist.add');
+        Route::delete('/{id}', [WishlistController::class, 'remove'])->name('wishlist.remove');
+        Route::delete('/', [WishlistController::class, 'clearAll'])->name('wishlist.clearAll');
     });
 
-    Route::post('/wishlist/add/{productId}', [WishlistController::class, 'add'])->name('wishlist.add');
-
     //? User Dashboard
+
     Route::prefix('dashboard')->group(function () {
         Route::get('/', [UserDashboardController::class, 'dashboard'])->name('user.dashboard');
         Route::put('/profile/update', [UserDashboardController::class, 'updateProfile'])->name('user.profile.update');
         Route::patch('/cart/{cart}', [UserDashboardController::class, 'updateCartQuantity'])->name('cart.update');
         Route::delete('/cart/{cart}', [UserDashboardController::class, 'removeFromCart'])->name('cart.remove');
     });
+
+    //? Profile
+
+    Route::prefix('profile')->group(function () {
+        Route::get('/', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::patch('/update', [ProfileController::class, 'update'])->name('profile.update');
+        Route::delete('/', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    });
 });
 
-//? Admin Routes
+//! Admin Routes
+
 Route::middleware(['auth', 'auth.role'])->prefix('dashboard')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/download-report', [DashboardController::class, 'downloadReport'])->name('dashboard.download-report');
 
     //? User Management
+
     Route::prefix('users')->group(function () {
         Route::get('/', [UserController::class, 'index'])->name('users.index');
         Route::get('/create', [UserController::class, 'create'])->name('users.create');
@@ -167,13 +178,28 @@ Route::middleware(['auth', 'auth.role'])->prefix('dashboard')->group(function ()
     });
 
     //? Category Management
+
     Route::resource('categories', CategoryController::class)->except(['show']);
     Route::post('/categories/{category}/toggle', [CategoryController::class, 'toggle'])->name('categories.toggle');
 
     //? Product Management
+
     Route::resource('products', ProductController::class);
 
+    //? Banner Management
+
+    Route::prefix('banners')->group(function () {
+        Route::get('/', [BannerController::class, 'index'])->name('banners.index');
+        Route::get('/create', [BannerController::class, 'create'])->name('banners.create');
+        Route::post('/', [BannerController::class, 'store'])->name('banners.store');
+        Route::get('/{banner}/edit', [BannerController::class, 'edit'])->name('banners.edit');
+        Route::put('/{banner}', [BannerController::class, 'update'])->name('banners.update');
+        Route::delete('/{banner}', [BannerController::class, 'destroy'])->name('banners.destroy');
+        Route::patch('/{banner}/toggle-status', [BannerController::class, 'toggleStatus'])->name('banners.toggleStatus');
+    });
+
     //? Coupon Management
+
     Route::resource('coupons', CouponController::class);
     Route::prefix('coupons')->group(function () {
         Route::get('/{coupon}/activate', [CouponController::class, 'activate'])->name('coupons.activate');
@@ -182,6 +208,7 @@ Route::middleware(['auth', 'auth.role'])->prefix('dashboard')->group(function ()
     });
 
     //? Discount Management
+
     Route::prefix('discounts')->group(function () {
         Route::get('/', [DiscountController::class, 'index'])->name('discounts.index');
         Route::get('/create', [DiscountController::class, 'create'])->name('discounts.create');
@@ -194,6 +221,7 @@ Route::middleware(['auth', 'auth.role'])->prefix('dashboard')->group(function ()
     });
 
     //? Order Management
+
     Route::prefix('orders')->group(function () {
         Route::get('/', [OrderController::class, 'index'])->name('orders.index');
         Route::get('/create', [OrderController::class, 'create'])->name('orders.create');
@@ -207,6 +235,7 @@ Route::middleware(['auth', 'auth.role'])->prefix('dashboard')->group(function ()
     });
 
     //? Review Management
+
     Route::prefix('reviews')->group(function () {
         Route::get('/', [ReviewController::class, 'index'])->name('reviews.index');
         Route::post('/', [ReviewController::class, 'store'])->name('reviews.store');
@@ -216,14 +245,8 @@ Route::middleware(['auth', 'auth.role'])->prefix('dashboard')->group(function ()
     });
 
     //? Reports
-    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
-});
 
-//? Profile Routes
-Route::middleware(['auth'])->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
 });
 
 require __DIR__ . '/auth.php';

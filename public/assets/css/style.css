@@ -1352,6 +1352,20 @@ hr {
     height: 0.2rem;
     background: var(--secondary-color);
 }
+.primary___btn{
+   width: 80%;
+   font-size: 1.4rem;
+   font-weight: var(--body-line-height);
+   line-height: 3.5rem;
+   display: inline-block;
+   height: 3.5rem;
+   padding: 0 1.8rem;
+   letter-spacing: 0.2px;
+   border-radius: 0.3rem;
+   background: var(--secondary-color);
+   color: var(--white-color);
+   border: 0;
+}
 .primary__btn {
     font-size: 1.4rem;
     font-weight: var(--body-line-height);

@@ -84,27 +84,25 @@ class ShopController extends Controller
         }
     }
 
-    public function addToCart($productId)
-    {
-        try {
-            $product = Product::findOrFail($productId);
-            $cart = session()->get('cart', []);
+  public function addToCart($productId)
+{
+    $product = Product::findOrFail($productId);
+    $cart = session()->get('cart', []);
 
-            if (isset($cart[$productId])) {
-                $cart[$productId]['quantity']++;
-            } else {
-                $cart[$productId] = [
-                    "name" => $product->name,
-                    "quantity" => 1,
-                    "price" => $product->new_price,
-                    "image" => $product->image
-                ];
-            }
-
-            session()->put('cart', $cart);
-            return back()->with('success', 'Product added to cart successfully!');
-        } catch (\Exception $e) {
-            return back()->with('error', 'Failed to add product to cart');
-        }
+    if (isset($cart[$productId])) {
+        $cart[$productId]['quantity']++;
+    } else {
+        $cart[$productId] = [
+            'name' => $product->name,
+            'quantity' => 1,
+            'price' => $product->new_price,
+            'image' => $product->image,
+        ];
     }
+
+    session()->put('cart', $cart);
+
+    return back()->with('success', 'Product added to cart!');
+}
+
 }

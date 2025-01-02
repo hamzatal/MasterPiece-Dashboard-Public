@@ -39,85 +39,85 @@
             </div>
             @endif
 
-            <!-- Modern Create/Edit Form with Validations -->
+            <!--  Create/Edit Form with Validations -->
             <div x-data="{
-                show: false,
-                image: null,
-                imagePreview: null,
-                isEditing: false,
-                editProduct: null,
-                errors: {},
-                handleImageUpload(event) {
-                    const file = event.target.files[0];
-                    if (file) {
-                        if (file.size > 2048576) { // 2MB limit
-                            this.errors.image = 'Image must be less than 2MB';
-                            event.target.value = '';
-                            return;
-                        }
-                        if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
-                            this.errors.image = 'Image must be in JPG, PNG, or WEBP format';
-                            event.target.value = '';
-                            return;
-                        }
-                        this.image = file;
-                        const reader = new FileReader();
-                        reader.onload = (e) => {
-                            this.imagePreview = e.target.result;
-                        };
-                        reader.readAsDataURL(file);
-                        this.errors.image = null;
-                    }
-                },
-                validateForm() {
-                    this.errors = {};
-                    let isValid = true;
+    show: false,
+    image1Preview: null,
+    image2Preview: null,
+    image3Preview: null,
+    isEditing: false,
+    editProduct: null,
+    errors: {},
+    handleImageUpload(event, imageNum) {
+        const file = event.target.files[0];
+        if (file) {
+            if (file.size > 2048576) { // 2MB limit
+                this.errors[`image${imageNum}`] = 'Image must be less than 2MB';
+                event.target.value = '';
+                return;
+            }
+            if (!['image/jpeg', 'image/png', 'image/gif'].includes(file.type)) {
+                this.errors[`image${imageNum}`] = 'Image must be in JPG, PNG, or GIF format';
+                event.target.value = '';
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                this[`image${imageNum}Preview`] = e.target.result;
+            };
+            reader.readAsDataURL(file);
+            this.errors[`image${imageNum}`] = null;
+        }
+    },
+    validateForm() {
+        this.errors = {};
+        let isValid = true;
 
-                    // Name validation
-                    const name = document.querySelector('input[name=name]').value;
-                    if (!name || name.length < 3) {
-                        this.errors.name = 'Product name must be at least 3 characters';
-                        isValid = false;
-                    }
+        // Name validation
+        const name = document.querySelector('input[name=name]').value;
+        if (!name || name.length < 3) {
+            this.errors.name = 'Product name must be at least 3 characters';
+            isValid = false;
+        }
 
-                    // Price validation
-                    const price = document.querySelector('input[name=price]').value;
-                    if (!price || price <= 0) {
-                        this.errors.price = 'Price must be greater than 0';
-                        isValid = false;
-                    }
+        // Price validation
+        const newPrice = document.querySelector('input[name=new_price]').value;
+        if (!newPrice || newPrice <= 0) {
+            this.errors.new_price = 'Price must be greater than 0';
+            isValid = false;
+        }
 
-                    // Category validation
-                    const category = document.querySelector('select[name=category_id]').value;
-                    if (!category) {
-                        this.errors.category = 'Please select a category';
-                        isValid = false;
-                    }
+        // Category validation
+        const category = document.querySelector('select[name=category_id]').value;
+        if (!category) {
+            this.errors.category = 'Please select a category';
+            isValid = false;
+        }
 
-                    // Stock validation
-                    const stock = document.querySelector('input[name=stock_quantity]').value;
-                    if (stock === '' || stock < 0) {
-                        this.errors.stock = 'Stock quantity must be 0 or greater';
-                        isValid = false;
-                    }
-
-                    return isValid;
-                },
-                openEditForm(product) {
-                    this.isEditing = true;
-                    this.editProduct = product;
-                    this.$store.productForm.toggleForm();
-                    this.$nextTick(() => {
-                        document.querySelector('input[name=name]').value = product.name;
-                        document.querySelector('input[name=price]').value = product.price;
-                        document.querySelector('input[name=discount_percentage]').value = product.discount_percentage;
-                        document.querySelector('select[name=category_id]').value = product.category_id;
-                        document.querySelector('input[name=stock_quantity]').value = product.stock_quantity;
-                        document.querySelector('textarea[name=description]').value = product.description;
-                        this.imagePreview = product.image ? '{{ Storage::url('') }}' + product.image : null;
-                    });
-                }
-            }"
+        return isValid;
+    },
+    openEditForm(product) {
+        this.isEditing = true;
+        this.editProduct = product;
+        this.$store.productForm.toggleForm();
+        this.$nextTick(() => {
+            document.querySelector('input[name=name]').value = product.name;
+            document.querySelector('input[name=new_price]').value = product.new_price;
+            document.querySelector('input[name=original_price]').value = product.original_price;
+            document.querySelector('select[name=category_id]').value = product.category_id;
+            document.querySelector('input[name=stock_quantity]').value = product.stock_quantity;
+            document.querySelector('textarea[name=description]').value = product.description;
+            document.querySelector('input[name=size]').value = product.size;
+            document.querySelector('input[name=color]').value = product.color;
+            document.querySelector('input[name=rating]').value = product.rating;
+            document.querySelector('input[name=is_on_sale]').checked = product.is_on_sale;
+            document.querySelector('input[name=discount_percentage]').value = product.discount_percentage;
+            this.image1Preview = product.image1 ? '{{ Storage::url('') }}' + product.image1 : null;
+            this.image2Preview = product.image2 ? '{{ Storage::url('') }}' + product.image2 : null;
+            this.image3Preview = product.image3 ? '{{ Storage::url('') }}' + product.image3 : null;
+        });
+    }
+}"
                 x-show="$store.productForm.isOpen"
                 x-transition:enter="transition ease-out duration-300"
                 x-transition:enter-start="opacity-0 transform -translate-y-4"
@@ -142,109 +142,220 @@
                         <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Fill in the information below to create a new product.</p>
                     </div>
 
-                    <div class="flex flex-col md:flex-row gap-6">
-                        <!-- Enhanced Image Upload Section -->
-                        <div class="w-full md:w-1/4">
-                            <div class="space-y-2">
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Product Image</label>
-                                <div class="relative aspect-square rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-gray-400 transition-colors">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Product Images Section -->
+                        <div class="space-y-4">
+                            <!-- Image 1 -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Primary Image</label>
+                                <div class="relative aspect-square rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-gray-400 transition-colors mt-2">
                                     <input
                                         type="file"
-                                        name="image"
-                                        accept="image/jpeg,image/png,image/webp"
+                                        name="image1"
+                                        accept="image/jpeg,image/png,image/gif"
                                         class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                                        @change="handleImageUpload($event)">
-                                    <div class="absolute inset-0 flex flex-col items-center justify-center" x-show="!imagePreview">
+                                        @change="handleImageUpload($event, 1)">
+                                    <div class="absolute inset-0 flex flex-col items-center justify-center" x-show="!image1Preview">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                         </svg>
-                                        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Click to upload image</p>
-                                        <p class="mt-1 text-xs text-gray-400">PNG, JPG, WEBP up to 2MB</p>
+                                        <p class="mt-2 text-sm text-gray-500">Primary Image</p>
                                     </div>
-                                    <img x-show="imagePreview" :src="imagePreview" class="absolute inset-0 w-full h-full object-cover rounded-xl">
+                                    <img x-show="image1Preview" :src="image1Preview" class="absolute inset-0 w-full h-full object-cover rounded-xl">
                                 </div>
-                                <p class="text-xs text-red-500" x-text="errors.image" x-show="errors.image"></p>
+                                <p class="text-xs text-red-500" x-text="errors.image1" x-show="errors.image1"></p>
+                            </div>
+
+                            <!-- Image 2 -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Secondary Image</label>
+                                <div class="relative aspect-square rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-gray-400 transition-colors mt-2">
+                                    <input
+                                        type="file"
+                                        name="image2"
+                                        accept="image/jpeg,image/png,image/gif"
+                                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                        @change="handleImageUpload($event, 2)">
+                                    <div class="absolute inset-0 flex flex-col items-center justify-center" x-show="!image2Preview">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                        <p class="mt-2 text-sm text-gray-500">Secondary Image</p>
+                                    </div>
+                                    <img x-show="image2Preview" :src="image2Preview" class="absolute inset-0 w-full h-full object-cover rounded-xl">
+                                </div>
+                                <p class="text-xs text-red-500" x-text="errors.image2" x-show="errors.image2"></p>
+                            </div>
+
+                            <!-- Image 3 -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Additional Image</label>
+                                <div class="relative aspect-square rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-gray-400 transition-colors mt-2">
+                                    <input
+                                        type="file"
+                                        name="image3"
+                                        accept="image/jpeg,image/png,image/gif"
+                                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                        @change="handleImageUpload($event, 3)">
+                                    <div class="absolute inset-0 flex flex-col items-center justify-center" x-show="!image3Preview">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                        <p class="mt-2 text-sm text-gray-500">Additional Image</p>
+                                    </div>
+                                    <img x-show="image3Preview" :src="image3Preview" class="absolute inset-0 w-full h-full object-cover rounded-xl">
+                                </div>
+                                <p class="text-xs text-red-500" x-text="errors.image3" x-show="errors.image3"></p>
                             </div>
                         </div>
 
-                        <!-- Enhanced Form Fields -->
-                        <div class="w-full md:w-3/4 grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- Product Name -->
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Product Name</label>
-                                <input
-                                    type="text"
-                                    name="name"
-                                    class="w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
-                                    placeholder="Enter product name">
-                                <p class="text-xs text-red-500 mt-1" x-text="errors.name" x-show="errors.name"></p>
-                            </div>
-
-                            <!-- Price -->
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Price</label>
-                                <div class="relative">
-                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <span class="text-gray-500 dark:text-gray-400">JD</span>
-                                    </div>
+                        <!-- Product Details -->
+                        <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Basic Information -->
+                            <div class="space-y-6">
+                                <!-- Product Name -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Product Name</label>
                                     <input
-                                        type="number"
-                                        step="0.001"
-                                        name="price"
-                                        class="pl-8 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
-                                        placeholder="0.000">
+                                        type="text"
+                                        name="name"
+                                        class="mt-1 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
+                                        placeholder="Enter product name">
+                                    <p class="text-xs text-red-500" x-text="errors.name" x-show="errors.name"></p>
                                 </div>
 
-                                <p class="text-xs text-red-500 mt-1" x-text="errors.price" x-show="errors.price"></p>
+                                <!-- Category -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Category</label>
+                                    <select
+                                        name="category_id"
+                                        class="mt-1 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500">
+                                        <option value="">Select Category</option>
+                                        @foreach($categories as $category)
+                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <p class="text-xs text-red-500" x-text="errors.category" x-show="errors.category"></p>
+                                </div>
+
+                                <!-- Product Attributes -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Size</label>
+                                    <input
+                                        type="text"
+                                        name="size"
+                                        class="mt-1 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
+                                        placeholder="e.g., S, M, L, XL or custom size">
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Color</label>
+                                    <input
+                                        type="text"
+                                        name="color"
+                                        class="mt-1 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
+                                        placeholder="e.g., Red, Blue, Black">
+                                </div>
                             </div>
 
-                            <!-- Discount -->
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Discount (%)</label>
-                                <input
-                                    type="number"
-                                    step="0.01"
-                                    min="0"
-                                    max="100"
-                                    name="discount_percentage"
-                                    class="w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
-                                    placeholder="Enter discount percentage">
+                            <!-- Pricing and Stock -->
+                            <div class="space-y-6">
+                                <!-- New Price -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">New Price</label>
+                                    <div class="relative mt-1">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <span class="text-gray-500 dark:text-gray-400">JD</span>
+                                        </div>
+                                        <input
+                                            type="number"
+                                            step="0.001"
+                                            name="new_price"
+                                            class="pl-8 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
+                                            placeholder="0.000">
+                                    </div>
+                                    <p class="text-xs text-red-500" x-text="errors.new_price" x-show="errors.new_price"></p>
+                                </div>
+
+                                <!-- Original Price -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Original Price</label>
+                                    <div class="relative mt-1">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <span class="text-gray-500 dark:text-gray-400">JD</span>
+                                        </div>
+                                        <input
+                                            type="number"
+                                            step="0.001"
+                                            name="original_price"
+                                            class="pl-8 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
+                                            placeholder="0.000">
+                                    </div>
+                                </div>
+
+                                <!-- Stock Quantity -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Stock Quantity</label>
+                                    <input
+                                        type="number"
+                                        name="stock_quantity"
+                                        min="0"
+                                        class="mt-1 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
+                                        placeholder="Enter stock quantity">
+                                    <p class="text-xs text-red-500" x-text="errors.stock" x-show="errors.stock"></p>
+                                </div>
+
+                                <!-- Rating -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Rating</label>
+                                    <input
+                                        type="number"
+                                        name="rating"
+                                        min="0"
+                                        max="5"
+                                        step="0.1"
+                                        class="mt-1 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
+                                        placeholder="Product rating (0-5)">
+                                </div>
                             </div>
 
-                            <!-- Category -->
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Category</label>
-                                <select
-                                    name="category_id"
-                                    class="w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500">
-                                    <option value="">Select Category</option>
-                                    @foreach($categories as $category)
-                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                    @endforeach
-                                </select>
-                                <p class="text-xs text-red-500 mt-1" x-text="errors.category" x-show="errors.category"></p>
-                            </div>
+                            <!-- Sale Information -->
+                            <div class="md:col-span-2 space-y-6">
+                                <div class="flex items-center space-x-4">
+                                    <div class="flex items-center">
+                                        <input
+                                            type="checkbox"
+                                            name="is_on_sale"
+                                            id="is_on_sale"
+                                            class="rounded border-gray-300 text-purple-600 focus:ring-purple-500">
+                                        <label for="is_on_sale" class="ml-2 text-sm text-gray-700 dark:text-gray-300">On Sale</label>
+                                    </div>
 
-                            <!-- Stock -->
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Stock Quantity</label>
-                                <input
-                                    type="number"
-                                    name="stock_quantity"
-                                    min="0"
-                                    class="w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
-                                    placeholder="Enter stock quantity">
-                                <p class="text-xs text-red-500 mt-1" x-text="errors.stock" x-show="errors.stock"></p>
-                            </div>
+                                    <div class="flex-1">
+                                        <div class="relative">
+                                            <input
+                                                type="number"
+                                                name="discount_percentage"
+                                                min="0"
+                                                max="100"
+                                                class="w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
+                                                placeholder="Discount percentage">
+                                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                                <span class="text-gray-500 dark:text-gray-400">%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
-                            <!-- Description -->
-                            <div class="md:col-span-2">
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Description</label>
-                                <textarea
-                                    name="description"
-                                    rows="4"
-                                    class="w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
-                                    placeholder="Enter product description"></textarea>
+                                <!-- Description -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
+                                    <textarea
+                                        name="description"
+                                        rows="4"
+                                        class="mt-1 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
+                                        placeholder="Enter product description"></textarea>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -271,6 +382,7 @@
                     </div>
                 </form>
             </div>
+
             <!-- Enhanced Products Table -->
             <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700">
                 <div class="overflow-x-auto">
@@ -290,8 +402,8 @@
                                 <td class="px-6 py-4">
                                     <div class="flex items-center space-x-4">
                                         <div class="flex-shrink-0 w-12 h-12">
-                                            @if($product->image)
-                                            <img src="{{ Storage::url($product->image) }}" alt="{{ $product->name }}" class="w-12 h-12 rounded-lg object-cover">
+                                            @if($product->image1)
+                                            <img src="{{ Storage::url($product->image1) }}" alt="{{ $product->name }}" class="w-12 h-12 rounded-lg object-cover">
                                             @else
                                             <div class="w-12 h-12 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -311,7 +423,7 @@
                                         <span class="text-gray-900 dark:text-white font-medium">JD {{ number_format($product->new_price, 3) }}</span>
                                         @if($product->discount_percentage > 0)
                                         <div class="flex items-center space-x-2">
-                                            <span class="text-xs text-gray-500 line-through">JD {{ number_format($product->new_price, 3) }}</span>
+                                            <span class="text-xs text-gray-500 line-through">JD {{ number_format($product->original_price, 3) }}</span>
                                             <span class="text-xs text-green-500">-{{ $product->discount_percentage }}%</span>
                                         </div>
                                         @endif
