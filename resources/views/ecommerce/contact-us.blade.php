@@ -4,6 +4,8 @@
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ ('Contact Us') }}
         </h2>
+        <link rel="stylesheet" href="css/contact-us.css">
+        <link rel="javascript" href="js/contact-us.js">
     </x-slot>
 
     <main class="main__content_wrapper">
@@ -131,221 +133,48 @@
         <div id="cardAlertContainer" class="card-alert-container"></div>
 
         <style>
-            .card-alert-container {
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                z-index: 9999;
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
-            }
 
-            .card-alert {
-                width: 300px;
-                padding: 16px;
-                border-radius: 8px;
-                background: white;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-                display: flex;
-                align-items: flex-start;
-                gap: 12px;
-                animation: slideIn 0.3s ease-out;
-                position: relative;
-                overflow: hidden;
-            }
-
-            .card-alert.success {
-                border-left: 4px solid #10B981;
-            }
-
-            .card-alert.error {
-                border-left: 4px solid #EF4444;
-            }
-
-            .card-alert.info {
-                border-left: 4px solid #3B82F6;
-            }
-
-            .card-alert.warning {
-                border-left: 4px solid #F59E0B;
-            }
-
-            .card-alert-icon {
-                flex-shrink: 0;
-                width: 24px;
-                height: 24px;
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 14px;
-            }
-
-            .card-alert.success .card-alert-icon {
-                background-color: #D1FAE5;
-                color: #059669;
-            }
-
-            .card-alert.error .card-alert-icon {
-                background-color: #FEE2E2;
-                color: #DC2626;
-            }
-
-            .card-alert.info .card-alert-icon {
-                background-color: #DBEAFE;
-                color: #2563EB;
-            }
-
-            .card-alert.warning .card-alert-icon {
-                background-color: #FEF3C7;
-                color: #D97706;
-            }
-
-            .card-alert-content {
-                flex-grow: 1;
-            }
-
-            .card-alert-title {
-                margin: 0 0 4px 0;
-                font-size: 16px;
-                font-weight: 600;
-                color: #1F2937;
-            }
-
-            .card-alert-message {
-                margin: 0;
-                font-size: 14px;
-                color: #6B7280;
-                line-height: 1.5;
-            }
-
-            .card-alert-close {
-                position: absolute;
-                top: 8px;
-                right: 8px;
-                background: none;
-                border: none;
-                color: #9CA3AF;
-                cursor: pointer;
-                padding: 4px;
-                border-radius: 4px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                transition: background-color 0.2s;
-            }
-
-            .card-alert-close:hover {
-                background-color: #F3F4F6;
-            }
-
-            .card-alert-progress {
-                position: absolute;
-                bottom: 0;
-                left: 0;
-                height: 3px;
-                background: rgba(0, 0, 0, 0.1);
-                width: 100%;
-            }
-
-            .card-alert-progress-bar {
-                height: 100%;
-                width: 100%;
-                transform-origin: left;
-                animation: progress 5s linear;
-            }
-
-            .card-alert.success .card-alert-progress-bar {
-                background-color: #10B981;
-            }
-
-            .card-alert.error .card-alert-progress-bar {
-                background-color: #EF4444;
-            }
-
-            .card-alert.info .card-alert-progress-bar {
-                background-color: #3B82F6;
-            }
-
-            .card-alert.warning .card-alert-progress-bar {
-                background-color: #F59E0B;
-            }
-
-            @keyframes slideIn {
-                from {
-                    transform: translateX(100%);
-                    opacity: 0;
-                }
-
-                to {
-                    transform: translateX(0);
-                    opacity: 1;
-                }
-            }
-
-            @keyframes slideOut {
-                from {
-                    transform: translateX(0);
-                    opacity: 1;
-                }
-
-                to {
-                    transform: translateX(100%);
-                    opacity: 0;
-                }
-            }
-
-            @keyframes progress {
-                from {
-                    transform: scaleX(1);
-                }
-
-                to {
-                    transform: scaleX(0);
-                }
-            }
         </style>
 
         <script>
             class CardAlert {
                 constructor() {
-                    this.container = document.getElementById('cardAlertContainer');
+                    this.container = document.getElementById("cardAlertContainer");
                     if (!this.container) {
-                        this.container = document.createElement('div');
-                        this.container.id = 'cardAlertContainer';
-                        this.container.className = 'card-alert-container';
+                        this.container = document.createElement("div");
+                        this.container.id = "cardAlertContainer";
+                        this.container.className = "card-alert-container";
                         document.body.appendChild(this.container);
                     }
                 }
 
                 show(type, title, message, duration = 5000) {
-                    const alert = document.createElement('div');
+                    const alert = document.createElement("div");
                     alert.className = `card-alert ${type}`;
 
                     const icons = {
-                        success: '✓',
-                        error: '✕',
-                        info: 'ℹ',
-                        warning: '!'
+                        success: "✓",
+                        error: "✕",
+                        info: "ℹ",
+                        warning: "!",
                     };
 
                     alert.innerHTML = `
-            <div class="card-alert-icon">${icons[type] || 'ℹ'}</div>
-            <div class="card-alert-content">
-                <h4 class="card-alert-title">${title}</h4>
-                <p class="card-alert-message">${message}</p>
-            </div>
-            <button class="card-alert-close">✕</button>
-            <div class="card-alert-progress">
-                <div class="card-alert-progress-bar"></div>
-            </div>
-        `;
+<div class="card-alert-icon">${icons[type] || "ℹ"}</div>
+<div class="card-alert-content">
+    <h4 class="card-alert-title">${title}</h4>
+    <p class="card-alert-message">${message}</p>
+</div>
+<button class="card-alert-close">✕</button>
+<div class="card-alert-progress">
+    <div class="card-alert-progress-bar"></div>
+</div>
+`;
 
                     this.container.appendChild(alert);
 
-                    const closeBtn = alert.querySelector('.card-alert-close');
-                    closeBtn.addEventListener('click', () => this.close(alert));
+                    const closeBtn = alert.querySelector(".card-alert-close");
+                    closeBtn.addEventListener("click", () => this.close(alert));
 
                     // Auto close after duration
                     setTimeout(() => {
@@ -355,15 +184,15 @@
                     }, duration);
 
                     // Remove alert after animation
-                    alert.addEventListener('animationend', (e) => {
-                        if (e.animationName === 'slideOut') {
+                    alert.addEventListener("animationend", (e) => {
+                        if (e.animationName === "slideOut") {
                             alert.remove();
                         }
                     });
                 }
 
                 close(alert) {
-                    alert.style.animation = 'slideOut 0.3s ease-out forwards';
+                    alert.style.animation = "slideOut 0.3s ease-out forwards";
                 }
             }
 
@@ -371,32 +200,45 @@
             const cardAlert = new CardAlert();
 
             // Modify your form submission code
-            document.addEventListener('DOMContentLoaded', function() {
-                const form = document.querySelector('.contact__form--inner');
+            document.addEventListener("DOMContentLoaded", function() {
+                const form = document.querySelector(".contact__form--inner");
 
-                form.addEventListener('submit', function(e) {
+                form.addEventListener("submit", function(e) {
                     e.preventDefault();
                     const formData = new FormData(form);
 
                     fetch("{{ route('contact.store') }}", {
-                            method: 'POST',
+                            method: "POST",
                             body: formData,
                             headers: {
-                                'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
-                            }
+                                "X-CSRF-TOKEN": document.querySelector('input[name="_token"]')
+                                    .value,
+                            },
                         })
-                        .then(response => response.json())
-                        .then(data => {
+                        .then((response) => response.json())
+                        .then((data) => {
                             if (data.success) {
-                                cardAlert.show('success', 'Success!', 'Your message has been sent successfully.');
+                                cardAlert.show(
+                                    "success",
+                                    "Success!",
+                                    "Your message has been sent successfully."
+                                );
                                 form.reset();
                             } else {
-                                cardAlert.show('error', 'Error!', 'Failed to send message. Please try again.');
+                                cardAlert.show(
+                                    "error",
+                                    "Error!",
+                                    "Failed to send message. Please try again."
+                                );
                             }
                         })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            cardAlert.show('error', 'Error!', 'An error occurred while sending the message.');
+                        .catch((error) => {
+                            console.error("Error:", error);
+                            cardAlert.show(
+                                "error",
+                                "Error!",
+                                "An error occurred while sending the message."
+                            );
                         });
                 });
             });

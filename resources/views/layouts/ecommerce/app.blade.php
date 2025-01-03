@@ -55,6 +55,7 @@
     <link rel="stylesheet" href="{{asset('assets')}}/css/order-confirmation.css">
     <link rel="stylesheet" href="{{asset('assets')}}/css/product-details.css">
     <link rel="stylesheet" href="{{asset('assets')}}/css/shop.css">
+    <link rel="stylesheet" href="{{asset('assets')}}/css/contact-us.css">
 
 
 </head>
@@ -104,6 +105,7 @@
     <script src="{{asset('assets')}}/js/navbar.js"></script>
     <script src="{{asset('assets')}}/js/product-details.js"></script>
     <script src="{{asset('assets')}}/js/shop.js"></script>
+    <script src="{{asset('assets')}}/js/contact-us.js"></script>
 
 
 </body>

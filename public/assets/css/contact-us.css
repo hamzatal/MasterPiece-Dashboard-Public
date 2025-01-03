@@ -1,0 +1,174 @@
+.card-alert-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.card-alert {
+    width: 300px;
+    padding: 16px;
+    border-radius: 8px;
+    background: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    animation: slideIn 0.3s ease-out;
+    position: relative;
+    overflow: hidden;
+}
+
+.card-alert.success {
+    border-left: 4px solid #10b981;
+}
+
+.card-alert.error {
+    border-left: 4px solid #ef4444;
+}
+
+.card-alert.info {
+    border-left: 4px solid #3b82f6;
+}
+
+.card-alert.warning {
+    border-left: 4px solid #f59e0b;
+}
+
+.card-alert-icon {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+
+.card-alert.success .card-alert-icon {
+    background-color: #d1fae5;
+    color: #059669;
+}
+
+.card-alert.error .card-alert-icon {
+    background-color: #fee2e2;
+    color: #dc2626;
+}
+
+.card-alert.info .card-alert-icon {
+    background-color: #dbeafe;
+    color: #2563eb;
+}
+
+.card-alert.warning .card-alert-icon {
+    background-color: #fef3c7;
+    color: #d97706;
+}
+
+.card-alert-content {
+    flex-grow: 1;
+}
+
+.card-alert-title {
+    margin: 0 0 4px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.card-alert-message {
+    margin: 0;
+    font-size: 14px;
+    color: #6b7280;
+    line-height: 1.5;
+}
+
+.card-alert-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: none;
+    border: none;
+    color: #9ca3af;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.card-alert-close:hover {
+    background-color: #f3f4f6;
+}
+
+.card-alert-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background: rgba(0, 0, 0, 0.1);
+    width: 100%;
+}
+
+.card-alert-progress-bar {
+    height: 100%;
+    width: 100%;
+    transform-origin: left;
+    animation: progress 5s linear;
+}
+
+.card-alert.success .card-alert-progress-bar {
+    background-color: #10b981;
+}
+
+.card-alert.error .card-alert-progress-bar {
+    background-color: #ef4444;
+}
+
+.card-alert.info .card-alert-progress-bar {
+    background-color: #3b82f6;
+}
+
+.card-alert.warning .card-alert-progress-bar {
+    background-color: #f59e0b;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+@keyframes progress {
+    from {
+        transform: scaleX(1);
+    }
+
+    to {
+        transform: scaleX(0);
+    }
+}
