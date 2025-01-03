@@ -9,6 +9,7 @@ $(document).ready(function () {
     });
 });
 
+//? Banner slider
 document.addEventListener("DOMContentLoaded", function () {
     const bannerSlider = {
         track: document.querySelector(".banner-track"),
@@ -92,7 +93,7 @@ document.addEventListener("DOMContentLoaded", function () {
     bannerSlider.initialize();
 });
 
-//! Swiper
+//? Swiper
 document.addEventListener("DOMContentLoaded", () => {
     const swiper = new Swiper(".swiper-container", {
         slidesPerView: 7,
@@ -127,6 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
+//? Add to wishlist
 document.addEventListener("DOMContentLoaded", () => {
     const wishlistButtons = document.querySelectorAll(".wishlist-button");
 
@@ -137,6 +139,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const form = this.closest("form");
             const url = form.action;
             const heartIcon = this.querySelector(".heart-icon");
+            const isInWishlist = heartIcon.classList.contains("heart-added");
 
             fetch(url, {
                 method: "POST",
@@ -145,25 +148,96 @@ document.addEventListener("DOMContentLoaded", () => {
                         'meta[name="csrf-token"]'
                     ).content,
                     "Content-Type": "application/json",
+                    Accept: "application/json",
                 },
                 body: JSON.stringify({}),
             })
-                .then((response) => response.json())
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok");
+                    }
+                    return response.json();
+                })
                 .then((data) => {
+                    console.log("Server Response:", data); // Debugging: Log the server response
+
                     if (data.status === "success") {
-                        heartIcon.classList.add("heart-added");
-                        this.querySelector(".tooltip").textContent =
-                            "In Wishlist";
+                        showNotification(data.message, "notification-success");
+
+                        // Reload the page to reflect changes
+                        window.location.reload();
                     } else if (data.status === "info") {
-                        alert(data.message);
+                        showNotification(data.message, "notification-info");
+                    } else if (data.status === "error") {
+                        showNotification(data.message, "notification-error");
                     }
                 })
-                .catch((error) => console.error("Error:", error));
+                .catch((error) => {
+                    console.error("Error:", error); // Debugging: Log any errors
+                    showNotification(
+                        "An error occurred while processing your request.",
+                        "notification-error"
+                    );
+                });
         });
     });
 });
 
-// Coupon popup
+//? Add to cart
+document.addEventListener("DOMContentLoaded", () => {
+    const addToCartButtons = document.querySelectorAll(".cart-button");
+
+    addToCartButtons.forEach((button) => {
+        button.addEventListener("click", function (e) {
+            e.preventDefault();
+
+            const form = this.closest("form");
+            const url = form.action;
+            const productId = form.querySelector(
+                'input[name="product_id"]'
+            ).value;
+
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    "X-CSRF-TOKEN": document.querySelector(
+                        'meta[name="csrf-token"]'
+                    ).content,
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                },
+                body: JSON.stringify({ product_id: productId }),
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok");
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    console.log("Server Response:", data); // Debugging: Log the server response
+
+                    if (data.status === "success") {
+                        showNotification(data.message, "notification-success");
+
+                        // Reload the page to reflect changes
+                        window.location.reload();
+                    } else if (data.status === "error") {
+                        showNotification(data.message, "notification-error");
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error:", error); // Debugging: Log any errors
+                    showNotification(
+                        "An error occurred while adding the product to the cart.",
+                        "notification-error"
+                    );
+                });
+        });
+    });
+});
+
+//? Coupon popup
 document.addEventListener("DOMContentLoaded", function () {
     const popup = document.getElementById("coupon-popup");
     const closePopup = document.querySelector(".close-popup");
@@ -184,3 +258,33 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 });
+
+//? Notification system
+function showNotification(message, type) {
+    const notification = document.createElement("div");
+    notification.className = `notification ${type}`;
+    notification.innerHTML = `
+        <div class="notification-content">
+            <span>${message}</span>
+            <button class="notification-close">&times;</button>
+        </div>
+    `;
+    document.body.appendChild(notification);
+
+    // Show notification
+    setTimeout(() => {
+        notification.classList.add("show");
+    }, 100);
+
+    // Auto-remove notification after 5 seconds
+    setTimeout(() => {
+        notification.remove();
+    }, 5000);
+
+    // Close button
+    notification
+        .querySelector(".notification-close")
+        .addEventListener("click", () => {
+            notification.remove();
+        });
+}

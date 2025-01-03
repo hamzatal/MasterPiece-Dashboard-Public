@@ -99,14 +99,14 @@ Route::prefix('product')->group(function () {
 });
 
 //? Cart Routes
+Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
+Route::post('/cart/clear', [CartController::class, 'clearCart'])->name('cart.clear');
 Route::prefix('cart')->group(function () {
     Route::get('/', [CartController::class, 'index'])->name('cart.index');
-    Route::post('/add', [CartController::class, 'add'])->name('cart.add');
     Route::post('/update', [CartController::class, 'update'])->name('cart.update');
     Route::post('/apply-coupon', [CartController::class, 'applyCoupon'])->name('cart.applyCoupon');
     Route::delete('/remove-coupon', [CartController::class, 'removeCoupon'])->name('cart.removeCoupon');
     Route::delete('/remove/{id}', [CartController::class, 'removeItem'])->name('cart.remove');
-    Route::delete('/clear', [CartController::class, 'clearCart'])->name('cart.clear');
 });
 
 //? Checkout Routes (Authenticated)
@@ -133,10 +133,9 @@ Route::middleware('auth')->group(function () {
     });
 
     //? Wishlist
+    Route::post('/wishlist/add/{productId}', [WishlistController::class, 'add'])->name('wishlist.add');
     Route::prefix('wishlist')->group(function () {
         Route::get('/', [WishlistController::class, 'index'])->name('wishlist.index');
-        Route::post('/add', [WishlistController::class, 'add'])->name('wishlist.add');
-        Route::post('/add/{productId}', [WishlistController::class, 'add'])->name('wishlist.add');
         Route::delete('/{id}', [WishlistController::class, 'remove'])->name('wishlist.remove');
         Route::delete('/', [WishlistController::class, 'clearAll'])->name('wishlist.clearAll');
     });

@@ -34,6 +34,14 @@ class NotificationManager {
 class ConfirmationDialog {
     static async show(message) {
         return new Promise((resolve) => {
+            // Remove existing dialog if any
+            const existingDialog = document.querySelector(
+                ".confirmation-dialog"
+            );
+            if (existingDialog) {
+                existingDialog.remove();
+            }
+
             const dialog = document.createElement("div");
             dialog.className = "confirmation-dialog";
 
@@ -214,9 +222,9 @@ class ShoppingCart {
                     const couponForm = document.createElement("div");
                     couponForm.className = "coupon-form";
                     couponForm.innerHTML = `
-                    <input type="text" id="coupon-code" placeholder="Enter coupon code" class="form-control">
-                    <button type="button" id="apply-coupon" class="btn btn-primary">Apply Coupon</button>
-                `;
+                        <input type="text" id="coupon-code" placeholder="Enter coupon code" class="form-control">
+                        <button type="button" id="apply-coupon" class="btn btn-primary">Apply Coupon</button>
+                    `;
 
                     document
                         .querySelector(".coupon-section")
@@ -255,16 +263,27 @@ class ShoppingCart {
                     {},
                     "DELETE"
                 );
-                if (response.success) {
+
+                // تحقق من وجود response.success
+                if (response && response.success) {
                     row.remove();
                     this.updateUI(response);
                     NotificationManager.show(
-                        "Item removed successfully",
+                        response.message || "Item removed successfully",
                         "success"
                     );
                     this.checkEmptyCart();
+
+                    // إعادة تحميل الصفحة بعد الحذف
+                    window.location.reload();
+                } else {
+                    NotificationManager.show(
+                        response.message || "Failed to remove item",
+                        "error"
+                    );
                 }
             } catch (error) {
+                console.error("Error removing item:", error);
                 NotificationManager.show("Failed to remove item", "error");
             }
         }
@@ -282,14 +301,22 @@ class ShoppingCart {
                     {},
                     "POST"
                 );
-                if (response.success) {
+
+                if (response && response.success) {
                     NotificationManager.show(
-                        "Cart cleared successfully",
+                        response.message || "Cart cleared successfully",
                         "success"
                     );
-                    setTimeout(() => location.reload(), 1000);
+
+                    window.location.reload();
+                } else {
+                    NotificationManager.show(
+                        response.message || "Failed to clear cart",
+                        "error"
+                    );
                 }
             } catch (error) {
+                console.error("Error clearing cart:", error);
                 NotificationManager.show("Failed to clear cart", "error");
             }
         }
@@ -315,26 +342,48 @@ class ShoppingCart {
     }
 
     async makeRequest(url, data, method = "POST") {
-        const response = await fetch(url, {
-            method: method,
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": this.csrfToken,
-                Accept: "application/json",
-            },
-            body: JSON.stringify(data),
-        });
+        try {
+            console.log("Sending request to:", url); // Debugging
+            console.log("Request data:", data); // Debugging
 
-        if (!response.ok) {
-            throw new Error(response.statusText);
+            const response = await fetch(url, {
+                method: method,
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": this.csrfToken,
+                    Accept: "application/json",
+                },
+                body: JSON.stringify(data),
+            });
+
+            console.log("Response status:", response.status); // Debugging
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || response.statusText);
+            }
+
+            const responseData = await response.json();
+            console.log("Response data:", responseData); // Debugging
+
+            return responseData;
+        } catch (error) {
+            console.error("Error in makeRequest:", error);
+            throw error;
         }
-
-        return await response.json();
     }
 
     updateUI(data) {
-        this.updateProductTotals(data);
-        this.updateCartTotals(data);
+        if (data.products) {
+            this.updateProductTotals(data);
+        }
+        if (
+            data.subtotal !== undefined ||
+            data.discount !== undefined ||
+            data.total !== undefined
+        ) {
+            this.updateCartTotals(data);
+        }
     }
 
     updateProductTotals(data) {
@@ -373,7 +422,10 @@ class ShoppingCart {
     checkEmptyCart() {
         const cartItems = document.querySelectorAll("tr[data-product-id]");
         if (cartItems.length === 0) {
-            location.reload();
+            const emptyCartMessage = document.createElement("div");
+            emptyCartMessage.className = "empty-cart-message";
+            emptyCartMessage.textContent = "Your cart is empty.";
+            document.querySelector(".cart-table").appendChild(emptyCartMessage);
         }
     }
 }

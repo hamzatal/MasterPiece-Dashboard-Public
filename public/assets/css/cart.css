@@ -462,6 +462,8 @@ body {
 .btn-empty-cart:hover {
     background: #2563eb;
 }
+
+
 .notification {
     position: fixed;
     top: 20px;

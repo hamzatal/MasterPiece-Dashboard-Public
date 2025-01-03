@@ -51,19 +51,34 @@ class WishlistController extends Controller
      */
     public function add($productId)
     {
+        try {
+            // Check if the product is already in the wishlist
+            if (Wishlist::where('user_id', Auth::id())->where('product_id', $productId)->exists()) {
+                return response()->json([
+                    'status' => 'info',
+                    'message' => 'Product is already in your wishlist.',
+                ]);
+            }
 
-        if (Wishlist::where('user_id', Auth::id())->where('product_id', $productId)->exists()) {
-            return redirect()->back()->with('info', 'Product is already in your wishlist.');
+            // Add the product to the wishlist
+            Wishlist::create([
+                'user_id' => Auth::id(),
+                'product_id' => $productId,
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Product added to wishlist!',
+            ]);
+        } catch (\Exception $e) {
+            // Log the error for debugging
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'An error occurred while processing your request.',
+            ], 500);
         }
-
-        Wishlist::create([
-            'user_id' => Auth::id(),
-            'product_id' => $productId,
-        ]);
-
-        return redirect()->back()->with('success', 'Product added to wishlist!');
     }
-
 
     /**
      * Remove a product from the wishlist.
@@ -73,17 +88,33 @@ class WishlistController extends Controller
      */
     public function remove($id)
     {
-        $wishlistItem = Wishlist::where('id', $id)
-            ->where('user_id', Auth::id())
-            ->first();
+        try {
+            $wishlistItem = Wishlist::where('id', $id)
+                ->where('user_id', Auth::id())
+                ->first();
 
-        if (!$wishlistItem) {
-            return redirect()->back()->with('error', 'Product not found in your wishlist.');
+            if (!$wishlistItem) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Product not found in your wishlist.',
+                ], 404);
+            }
+
+            $wishlistItem->delete();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Product removed from wishlist.',
+            ]);
+        } catch (\Exception $e) {
+            // Log the error for debugging
+            \Log::error('Error removing product from wishlist: ' . $e->getMessage());
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'An error occurred while processing your request.',
+            ], 500);
         }
-
-        $wishlistItem->delete();
-
-        return redirect()->back()->with('success', 'Product removed from wishlist.');
     }
 
     /**
@@ -103,5 +134,4 @@ class WishlistController extends Controller
             return redirect()->back()->with('error', 'Failed to clear the wishlist.');
         }
     }
-
 }

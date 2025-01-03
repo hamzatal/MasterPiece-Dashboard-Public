@@ -111,13 +111,23 @@
                         </div>
                         @endforeach
                     </div>
-
+                    <div id="confirmation-dialog" class="confirmation-dialog" style="display: none;">
+                        <div class="confirmation-content">
+                            <div class="confirmation-message">
+                                Are you sure you want to clear your wishlist?
+                            </div>
+                            <div class="confirmation-buttons">
+                                <button id="confirm-btn" class="confirm-btn">Confirm</button>
+                                <button id="cancel-btn" class="cancel-btn">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
                     <div class="favorites-footer">
                         <div class="favorites-footer__actions">
-                            <form action="{{ route('wishlist.clearAll') }}" method="POST">
+                            <form action="{{ route('wishlist.clearAll') }}" method="POST" id="clear-wishlist-form">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn-secondary" onclick="return confirm('Are you sure you want to clear your wishlist?')">
+                                <button type="button" id="clear-wishlist-btn" class="btn-secondary">
                                     <i class="fas fa-trash"></i>
                                     <span>Clear Wishlist</span>
                                 </button>

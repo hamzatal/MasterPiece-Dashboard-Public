@@ -129,11 +129,6 @@
                                                     </svg>
                                                     <span class="button-text">Add to Cart</span>
                                                 </span>
-                                                <span class="button-feedback">
-                                                    <svg class="check-icon" viewBox="0 0 24 24" width="18" height="18">
-                                                        <path d="M20 6L9 17l-5-5" />
-                                                    </svg>
-                                                </span>
                                             </button>
                                         </form>
 
