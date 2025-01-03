@@ -276,7 +276,7 @@
             </div>
 
             <!-- Review Statistics -->
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+            <!-- <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
                 <div class="bg-yellow-50 dark:bg-yellow-900 p-6 flex items-center justify-between">
                     <h3 class="text-xl font-bold text-yellow-800 dark:text-yellow-300 flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 text-yellow-500 dark:text-yellow-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -298,7 +298,7 @@
                         <p class="text-2xl font-bold text-blue-600 dark:text-blue-300">{{ $totalReviews }}</p>
                     </div>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
     </div>

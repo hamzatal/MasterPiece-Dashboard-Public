@@ -15,15 +15,6 @@
                                 Order #{{ $order->id }}
                             </h1>
                         </div>
-
-                        <div class="flex space-x-4">
-                            <button onclick="window.print()" class="inline-flex items-center px-6 py-3 bg-white/20 hover:bg-white/30 rounded-xl font-semibold backdrop-blur-sm transition-all duration-300 transform hover:scale-105">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-                                </svg>
-                                Print Order
-                            </button>
-                        </div>
                     </div>
 
                     <!-- Enhanced Order Details Bar with Advanced Features -->
@@ -125,7 +116,7 @@
                             @forelse($order->orderItems ?? [] as $item)
                             <div class="flex flex-col md:flex-row items-start md:items-center p-6 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 group">
                                 <img
-                                    src="{{ asset('storage/' . $item->image) }}"
+                                    src="{{ asset('storage/' . $item->image1) }}"
                                     alt="{{ $item->name }}"
                                     class="w-full md:w-32 h-32 object-cover rounded-2xl mr-0 md:mr-6 shadow-lg group-hover:scale-105 transition-transform duration-300 mb-4 md:mb-0">
 

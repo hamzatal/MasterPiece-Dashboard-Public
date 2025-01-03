@@ -117,7 +117,7 @@
         </a>
 
         <!-- Reviews -->
-        <a href="{{ route('reviews.index') }}"
+        <!-- <a href="{{ route('reviews.index') }}"
             class="group flex items-center px-4 py-2 text-sm font-medium rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-900/20 text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all duration-300 ease-in-out {{ request()->routeIs('reviews.*') ? 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 relative' : '' }}"
             {{ request()->routeIs('reviews.*') ? 'aria-current="page"' : '' }}>
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -127,7 +127,7 @@
             @if(request()->routeIs('reviews.*'))
             <span class="absolute right-3 top-1/2 transform -translate-y-1/2 w-2 h-2 bg-indigo-600 dark:bg-indigo-400 rounded-full"></span>
             @endif
-        </a>
+        </a> -->
 
         <!-- Contacts -->
         <a href="{{ route('contacts.index') }}"

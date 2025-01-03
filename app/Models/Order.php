@@ -102,4 +102,9 @@ class Order extends Model
             $order->status = $order->status ?? 'pending';
         });
     }
+
+    public function customer()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

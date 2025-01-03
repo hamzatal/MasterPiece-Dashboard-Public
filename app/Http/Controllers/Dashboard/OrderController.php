@@ -45,7 +45,7 @@ class OrderController extends Controller
     public function show($orderId)
     {
         $order = Order::with(['shipping_address', 'orderItems.product'])->findOrFail($orderId);
-            // dd($order->shipping_address);
+        // dd($order->shipping_address);
 
         return view('order.show', compact('order'));
     }
@@ -133,7 +133,7 @@ class OrderController extends Controller
         return $pdf->download("invoice_{$order->id}.pdf");
     }
 
-    public function exportOrders(Request $request)
+    public function export(Request $request)
     {
         return Excel::download(new OrdersExport($request), 'orders.xlsx');
     }

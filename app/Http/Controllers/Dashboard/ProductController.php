@@ -152,13 +152,8 @@ class ProductController extends Controller
     public function show($id)
     {
         $product = Product::findOrFail($id);
-        $reviews = Review::where('product_id', $id)
-            ->where('status', 'approved')
-            ->where('is_active', true)
-            ->orderBy('created_at', 'desc')
-            ->get();
 
-        return view('ecommerce.product-details', compact('product', 'reviews'));
+        return view('ecommerce.product-details', compact('product'));
     }
 
     public function checkLowStock()
