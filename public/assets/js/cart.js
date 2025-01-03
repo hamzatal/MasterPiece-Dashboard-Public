@@ -1,44 +1,142 @@
-// public/js/cart.js
+class NotificationManager {
+    static show(message, type = "info") {
+        const notification = document.createElement("div");
+        notification.className = `notification notification-${type} notification-slide`;
+
+        notification.innerHTML = `
+            <div class="notification-content">
+                <span class="notification-message">${message}</span>
+                <button class="notification-close">&times;</button>
+            </div>
+        `;
+
+        document.body.appendChild(notification);
+
+        // Trigger slide-in animation
+        setTimeout(() => notification.classList.add("show"), 100);
+
+        // Auto-close after 5 seconds
+        setTimeout(() => {
+            notification.classList.remove("show");
+            setTimeout(() => notification.remove(), 300);
+        }, 5000);
+
+        // Close button handler
+        notification
+            .querySelector(".notification-close")
+            .addEventListener("click", () => {
+                notification.classList.remove("show");
+                setTimeout(() => notification.remove(), 300);
+            });
+    }
+}
+
+class ConfirmationDialog {
+    static async show(message) {
+        return new Promise((resolve) => {
+            const dialog = document.createElement("div");
+            dialog.className = "confirmation-dialog";
+
+            dialog.innerHTML = `
+                <div class="confirmation-content">
+                    <p class="confirmation-message">${message}</p>
+                    <div class="confirmation-buttons">
+                        <button class="confirm-btn">Confirm</button>
+                        <button class="cancel-btn">Cancel</button>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(dialog);
+
+            const handleResponse = (confirmed) => {
+                dialog.remove();
+                resolve(confirmed);
+            };
+
+            dialog
+                .querySelector(".confirm-btn")
+                .addEventListener("click", () => handleResponse(true));
+            dialog
+                .querySelector(".cancel-btn")
+                .addEventListener("click", () => handleResponse(false));
+        });
+    }
+}
+
 class ShoppingCart {
     constructor() {
+        this.initializeElements();
+        this.initializeEventListeners();
+        this.csrfToken = document.querySelector(
+            'meta[name="csrf-token"]'
+        )?.content;
+        this.debounceTimeout = null;
+    }
+
+    initializeElements() {
         this.quantityControls = document.querySelectorAll(".quantity-controls");
         this.couponForm = document.getElementById("coupon-form");
         this.couponInput = document.getElementById("coupon-code");
         this.applyCouponBtn = document.getElementById("apply-coupon");
-        this.csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
-        this.debounceTimeout = null;
-        this.initializeEventListeners();
+        this.removeCouponBtn = document.getElementById("remove-coupon");
+        this.clearCartBtn = document.getElementById("clear-cart");
     }
 
     initializeEventListeners() {
-        // Initialize quantity controls
-        this.quantityControls.forEach(control => {
+        this.setupQuantityControls();
+        this.setupCouponControls();
+        this.setupRemoveItemButtons();
+        this.setupClearCartButton();
+    }
+
+    setupQuantityControls() {
+        this.quantityControls.forEach((control) => {
             const decreaseBtn = control.querySelector(".quantity-decrease");
             const increaseBtn = control.querySelector(".quantity-increase");
             const input = control.querySelector(".quantity-input");
             const productId = control.closest("tr").dataset.productId;
 
-            decreaseBtn?.addEventListener("click", () => this.handleQuantityChange(input, -1, productId));
-            increaseBtn?.addEventListener("click", () => this.handleQuantityChange(input, 1, productId));
-            input?.addEventListener("change", (e) => this.handleQuantityInput(e, productId));
+            decreaseBtn?.addEventListener("click", () =>
+                this.handleQuantityChange(input, -1, productId)
+            );
+            increaseBtn?.addEventListener("click", () =>
+                this.handleQuantityChange(input, 1, productId)
+            );
+            input?.addEventListener("change", (e) =>
+                this.handleQuantityInput(e, productId)
+            );
         });
+    }
 
-        // Initialize coupon controls
-        this.applyCouponBtn?.addEventListener("click", () => this.handleCouponApplication());
+    setupCouponControls() {
+        this.applyCouponBtn?.addEventListener("click", () =>
+            this.handleCouponApplication()
+        );
         this.couponInput?.addEventListener("keypress", (e) => {
             if (e.key === "Enter") {
                 e.preventDefault();
                 this.handleCouponApplication();
             }
         });
+        this.removeCouponBtn?.addEventListener("click", (e) =>
+            this.handleCouponRemoval(e)
+        );
+    }
 
-        // Initialize remove item buttons
-        document.querySelectorAll(".remove-item-btn").forEach(btn => {
+    setupRemoveItemButtons() {
+        document.querySelectorAll(".remove-item-btn").forEach((btn) => {
             btn.addEventListener("click", (e) => this.handleItemRemoval(e));
         });
     }
 
-    handleQuantityChange(input, change, productId) {
+    setupClearCartButton() {
+        this.clearCartBtn?.addEventListener("click", () =>
+            this.handleClearCart()
+        );
+    }
+
+    async handleQuantityChange(input, change, productId) {
         const newValue = Math.max(1, parseInt(input.value) + change);
         input.value = newValue;
         this.debounceUpdateCart(productId, newValue);
@@ -57,42 +155,87 @@ class ShoppingCart {
         }, 500);
     }
 
-    async updateCart(productId, quantity) {
-        try {
-            const response = await this.makeRequest("/cart/update", {
-                product_id: productId,
-                quantity: quantity
-            });
-
-            if (response.success) {
-                this.updateUI(response);
-                this.showNotification("Cart updated successfully", "success");
-            }
-        } catch (error) {
-            console.error("Error updating cart:", error);
-            this.showNotification("Failed to update cart", "error");
-        }
-    }
-
     async handleCouponApplication() {
         const couponCode = this.couponInput.value.trim();
         if (!couponCode) {
-            this.showNotification("Please enter a coupon code", "warning");
+            NotificationManager.show("Please enter a coupon code", "warning");
             return;
         }
 
         try {
             const response = await this.makeRequest("/cart/apply-coupon", {
-                coupon_code: couponCode
+                coupon_code: couponCode,
             });
-
             if (response.success) {
-                this.updateUI(response);
-                this.showNotification("Coupon applied successfully!", "success");
+                NotificationManager.show(
+                    "Coupon applied successfully!",
+                    "success"
+                );
                 this.couponInput.value = "";
+                setTimeout(() => location.reload(), 1000);
             }
         } catch (error) {
-            this.showNotification(error.message || "Failed to apply coupon", "error");
+            NotificationManager.show(
+                error.message || "Failed to apply coupon",
+                "error"
+            );
+        }
+    }
+    // Add this method to the ShoppingCart class
+    async handleCouponRemoval(event) {
+        event.preventDefault();
+        const confirmed = await ConfirmationDialog.show(
+            "Are you sure you want to remove the coupon?"
+        );
+
+        if (confirmed) {
+            try {
+                const response = await this.makeRequest(
+                    "/cart/remove-coupon",
+                    {},
+                    "DELETE"
+                );
+                if (response.success) {
+                    // Update cart totals immediately
+                    this.updateCartTotals({
+                        subtotal: response.subtotal,
+                        discount: 0,
+                        total: response.total,
+                    });
+
+                    // Remove the applied coupon display
+                    const appliedCouponDiv =
+                        document.querySelector(".applied-coupon");
+                    if (appliedCouponDiv) {
+                        appliedCouponDiv.remove();
+                    }
+
+                    // Show coupon input form
+                    const couponForm = document.createElement("div");
+                    couponForm.className = "coupon-form";
+                    couponForm.innerHTML = `
+                    <input type="text" id="coupon-code" placeholder="Enter coupon code" class="form-control">
+                    <button type="button" id="apply-coupon" class="btn btn-primary">Apply Coupon</button>
+                `;
+
+                    document
+                        .querySelector(".coupon-section")
+                        .appendChild(couponForm);
+
+                    // Reinitialize coupon controls
+                    this.couponInput = document.getElementById("coupon-code");
+                    this.applyCouponBtn =
+                        document.getElementById("apply-coupon");
+                    this.setupCouponControls();
+
+                    NotificationManager.show(
+                        "Coupon removed successfully",
+                        "success"
+                    );
+                }
+            } catch (error) {
+                NotificationManager.show("Failed to remove coupon", "error");
+            }
         }
     }
 
@@ -101,18 +244,73 @@ class ShoppingCart {
         const row = event.target.closest("tr");
         const productId = row.dataset.productId;
 
-        if (confirm("Are you sure you want to remove this item?")) {
+        const confirmed = await ConfirmationDialog.show(
+            "Are you sure you want to remove this item?"
+        );
+
+        if (confirmed) {
             try {
-                const response = await this.makeRequest("/cart/remove/" + productId, {}, "DELETE");
+                const response = await this.makeRequest(
+                    `/cart/remove/${productId}`,
+                    {},
+                    "DELETE"
+                );
                 if (response.success) {
                     row.remove();
                     this.updateUI(response);
-                    this.showNotification("Item removed successfully", "success");
+                    NotificationManager.show(
+                        "Item removed successfully",
+                        "success"
+                    );
                     this.checkEmptyCart();
                 }
             } catch (error) {
-                this.showNotification("Failed to remove item", "error");
+                NotificationManager.show("Failed to remove item", "error");
             }
+        }
+    }
+
+    async handleClearCart() {
+        const confirmed = await ConfirmationDialog.show(
+            "Are you sure you want to clear your cart?"
+        );
+
+        if (confirmed) {
+            try {
+                const response = await this.makeRequest(
+                    "/cart/clear",
+                    {},
+                    "POST"
+                );
+                if (response.success) {
+                    NotificationManager.show(
+                        "Cart cleared successfully",
+                        "success"
+                    );
+                    setTimeout(() => location.reload(), 1000);
+                }
+            } catch (error) {
+                NotificationManager.show("Failed to clear cart", "error");
+            }
+        }
+    }
+
+    async updateCart(productId, quantity) {
+        try {
+            const response = await this.makeRequest("/cart/update", {
+                product_id: productId,
+                quantity: quantity,
+            });
+
+            if (response.success) {
+                this.updateUI(response);
+                NotificationManager.show(
+                    "Cart updated successfully",
+                    "success"
+                );
+            }
+        } catch (error) {
+            NotificationManager.show("Failed to update cart", "error");
         }
     }
 
@@ -122,9 +320,9 @@ class ShoppingCart {
             headers: {
                 "Content-Type": "application/json",
                 "X-CSRF-TOKEN": this.csrfToken,
-                "Accept": "application/json"
+                Accept: "application/json",
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify(data),
         });
 
         if (!response.ok) {
@@ -135,21 +333,30 @@ class ShoppingCart {
     }
 
     updateUI(data) {
-        // Update product totals
+        this.updateProductTotals(data);
+        this.updateCartTotals(data);
+    }
+
+    updateProductTotals(data) {
         if (data.products) {
-            data.products.forEach(product => {
-                const row = document.querySelector(`tr[data-product-id="${product.id}"]`);
+            data.products.forEach((product) => {
+                const row = document.querySelector(
+                    `tr[data-product-id="${product.id}"]`
+                );
                 if (row) {
-                    row.querySelector(".product-total").textContent = `JD ${product.total.toFixed(2)}`;
+                    row.querySelector(
+                        ".product-total"
+                    ).textContent = `JD ${product.total.toFixed(2)}`;
                 }
             });
         }
+    }
 
-        // Update cart totals
+    updateCartTotals(data) {
         const elements = {
             subtotal: document.querySelector(".subtotal-amount"),
             discount: document.querySelector(".discount-amount"),
-            total: document.querySelector(".cart-total")
+            total: document.querySelector(".cart-total"),
         };
 
         if (data.subtotal !== undefined && elements.subtotal) {
@@ -163,17 +370,6 @@ class ShoppingCart {
         }
     }
 
-    showNotification(message, type) {
-        const notificationDiv = document.createElement("div");
-        notificationDiv.className = `alert alert-${type} notification`;
-        notificationDiv.textContent = message;
-
-        const container = document.querySelector(".cart__section--inner");
-        container.insertBefore(notificationDiv, container.firstChild);
-
-        setTimeout(() => notificationDiv.remove(), 3000);
-    }
-
     checkEmptyCart() {
         const cartItems = document.querySelectorAll("tr[data-product-id]");
         if (cartItems.length === 0) {
@@ -183,4 +379,20 @@ class ShoppingCart {
 }
 
 // Initialize cart functionality when DOM is loaded
-document.addEventListener("DOMContentLoaded", () => new ShoppingCart());
+document.addEventListener("DOMContentLoaded", () => {
+    new ShoppingCart();
+
+    // Initialize coupon notification
+    const couponNotification = document.querySelector(".coupon-notification");
+    const closeButton = document.querySelector(".coupon-notification-close");
+
+    if (couponNotification && closeButton) {
+        closeButton.addEventListener("click", () => {
+            couponNotification.style.display = "none";
+        });
+
+        setTimeout(() => {
+            couponNotification.style.display = "none";
+        }, 10000);
+    }
+});

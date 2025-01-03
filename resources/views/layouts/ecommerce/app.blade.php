@@ -103,6 +103,7 @@
     <script src="{{asset('assets')}}/js/newproduct.js"></script>
     <script src="{{asset('assets')}}/js/navbar.js"></script>
     <script src="{{asset('assets')}}/js/product-details.js"></script>
+    <script src="{{asset('assets')}}/js/shop.js"></script>
 
 
 </body>

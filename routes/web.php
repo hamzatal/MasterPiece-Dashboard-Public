@@ -31,32 +31,39 @@ use App\Http\Controllers\Site\{
     ShopController,
     WishlistController,
     SearchController,
+    ReviewsController,
 };
 use Illuminate\Support\Facades\Route;
+
+
+
 
 
 //! Test Routes
 
 
-Route::get('/search', [SearchController::class, 'search'])->name('search');
-Route::get('/product-details/{id}', [ProductDetailsController::class, 'show'])->name('product.details');
+
 
 //! End Test Routes
 
 
 
-//? Order Confirmation Routes
 
+
+//? Search Routes
+Route::get('/search', [SearchController::class, 'search'])->name('search');
+Route::get('/search-products', [ShopController::class, 'searchProducts'])->name('search.products');
+
+//? Order Confirmation Routes
 Route::middleware(['auth'])->group(function () {
     Route::get('/orders', [OrderConfirmationController::class, 'index'])->name('orders.index');
     Route::get('/orders/{id}', [OrderConfirmationController::class, 'show'])->name('order.info');
-    Route::get('/my-orders', [OrderConfirmationController::class, 'index'])->name('orders.confirmation');
     Route::get('/order-details/{id}', [OrderConfirmationController::class, 'show'])->name('order.details');
     Route::get('/order-confirmation/{orderId}', [OrderController::class, 'showOrderConfirmation'])->name('order.confirmation');
 });
+Route::get('/order/confirmation', [OrderConfirmationController::class, 'index'])->name('orders.confirmation');
 
 //? Public Routes
-
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/home', [HomeController::class, 'index'])->name('home.index');
 Route::get('/about-us', [AboutController::class, 'index']);
@@ -66,23 +73,22 @@ Route::post('/contact/store', [ContactUsController::class, 'store'])->name('cont
 Route::get('/faq', [FaqController::class, 'index']);
 Route::get('/login', [LoginController::class, 'index']);
 Route::resource('contacts', ContactController::class);
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 
 //? Shop & Product Routes
-
 Route::get('/shop', [ShopController::class, 'index'])->name('shop');
 
 //? Product Frontend Routes
-
 Route::prefix('products')->group(function () {
     Route::get('/', [ProductController::class, 'frontendIndex'])->name('home.products.index');
     Route::get('/{product:slug}', [ProductController::class, 'frontendShow'])->name('home.product.show');
     Route::get('/search', [ProductController::class, 'search'])->name('products.search');
     Route::get('/category/{category:slug}', [ProductController::class, 'productsByCategory'])
         ->name('products.by.category');
+    Route::get('/product-details/{id}', [ProductDetailsController::class, 'show'])->name('product.details');
 });
 
 //? Product Management Routes
-
 Route::prefix('product')->group(function () {
     Route::get('/{id}', [ProductController::class, 'show'])->name('product.show');
     Route::get('/{id}/edit', [ProductController::class, 'edit'])->name('product.edit');
@@ -90,7 +96,6 @@ Route::prefix('product')->group(function () {
     Route::delete('/{id}', [ProductController::class, 'destroy'])->name('product.destroy');
     Route::get('/create', [ProductController::class, 'create'])->name('product.create');
     Route::post('/', [ProductController::class, 'store'])->name('product.store');
-    Route::get('/product-details/{id}', [ProductDetailsController::class, 'show'])->name('product.details');
 });
 
 //? Cart Routes
@@ -99,13 +104,12 @@ Route::prefix('cart')->group(function () {
     Route::post('/add', [CartController::class, 'add'])->name('cart.add');
     Route::post('/update', [CartController::class, 'update'])->name('cart.update');
     Route::post('/apply-coupon', [CartController::class, 'applyCoupon'])->name('cart.applyCoupon');
-    Route::post('/remove-coupon', [CartController::class, 'removeCoupon'])->name('cart.removeCoupon');
+    Route::delete('/remove-coupon', [CartController::class, 'removeCoupon'])->name('cart.removeCoupon');
     Route::delete('/remove/{id}', [CartController::class, 'removeItem'])->name('cart.remove');
     Route::delete('/clear', [CartController::class, 'clearCart'])->name('cart.clear');
 });
 
 //? Checkout Routes (Authenticated)
-
 Route::middleware(['auth'])->group(function () {
     Route::prefix('checkout')->group(function () {
         Route::get('/', [CheckoutController::class, 'index'])->name('checkout');
@@ -119,11 +123,9 @@ Route::middleware(['auth'])->group(function () {
     });
 });
 
-//!Authenticated User Routes
-
+//! Authenticated User Routes
 Route::middleware('auth')->group(function () {
     //? Account Management
-
     Route::prefix('account')->group(function () {
         Route::get('/', [AccountController::class, 'index'])->name('account.index');
         Route::get('/edit', [AccountController::class, 'edit'])->name('account.edit');
@@ -131,7 +133,6 @@ Route::middleware('auth')->group(function () {
     });
 
     //? Wishlist
-
     Route::prefix('wishlist')->group(function () {
         Route::get('/', [WishlistController::class, 'index'])->name('wishlist.index');
         Route::post('/add', [WishlistController::class, 'add'])->name('wishlist.add');
@@ -141,7 +142,6 @@ Route::middleware('auth')->group(function () {
     });
 
     //? User Dashboard
-
     Route::prefix('dashboard')->group(function () {
         Route::get('/', [UserDashboardController::class, 'dashboard'])->name('user.dashboard');
         Route::put('/profile/update', [UserDashboardController::class, 'updateProfile'])->name('user.profile.update');
@@ -150,7 +150,6 @@ Route::middleware('auth')->group(function () {
     });
 
     //? Profile
-
     Route::prefix('profile')->group(function () {
         Route::get('/', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/update', [ProfileController::class, 'update'])->name('profile.update');
@@ -159,13 +158,11 @@ Route::middleware('auth')->group(function () {
 });
 
 //! Admin Routes
-
 Route::middleware(['auth', 'auth.role'])->prefix('dashboard')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/download-report', [DashboardController::class, 'downloadReport'])->name('dashboard.download-report');
 
     //? User Management
-
     Route::prefix('users')->group(function () {
         Route::get('/', [UserController::class, 'index'])->name('users.index');
         Route::get('/create', [UserController::class, 'create'])->name('users.create');
@@ -178,16 +175,13 @@ Route::middleware(['auth', 'auth.role'])->prefix('dashboard')->group(function ()
     });
 
     //? Category Management
-
     Route::resource('categories', CategoryController::class)->except(['show']);
     Route::post('/categories/{category}/toggle', [CategoryController::class, 'toggle'])->name('categories.toggle');
 
     //? Product Management
-
     Route::resource('products', ProductController::class);
 
     //? Banner Management
-
     Route::prefix('banners')->group(function () {
         Route::get('/', [BannerController::class, 'index'])->name('banners.index');
         Route::get('/create', [BannerController::class, 'create'])->name('banners.create');
@@ -199,7 +193,6 @@ Route::middleware(['auth', 'auth.role'])->prefix('dashboard')->group(function ()
     });
 
     //? Coupon Management
-
     Route::resource('coupons', CouponController::class);
     Route::prefix('coupons')->group(function () {
         Route::get('/{coupon}/activate', [CouponController::class, 'activate'])->name('coupons.activate');
@@ -208,7 +201,6 @@ Route::middleware(['auth', 'auth.role'])->prefix('dashboard')->group(function ()
     });
 
     //? Discount Management
-
     Route::prefix('discounts')->group(function () {
         Route::get('/', [DiscountController::class, 'index'])->name('discounts.index');
         Route::get('/create', [DiscountController::class, 'create'])->name('discounts.create');
@@ -221,7 +213,6 @@ Route::middleware(['auth', 'auth.role'])->prefix('dashboard')->group(function ()
     });
 
     //? Order Management
-
     Route::prefix('orders')->group(function () {
         Route::get('/', [OrderController::class, 'index'])->name('orders.index');
         Route::get('/create', [OrderController::class, 'create'])->name('orders.create');
@@ -235,17 +226,17 @@ Route::middleware(['auth', 'auth.role'])->prefix('dashboard')->group(function ()
     });
 
     //? Review Management
-
     Route::prefix('reviews')->group(function () {
-        Route::get('/', [ReviewController::class, 'index'])->name('reviews.index');
-        Route::post('/', [ReviewController::class, 'store'])->name('reviews.store');
+        Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews.index');
+        Route::get('/create', [ReviewController::class, 'create'])->name('reviews.create');
+        Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
         Route::get('/{id}/edit', [ReviewController::class, 'edit'])->name('reviews.edit');
         Route::post('/{review}/toggle-active', [ReviewController::class, 'toggleActive'])->name('reviews.toggleActive');
-        Route::patch('{review}/status', [ReviewController::class, 'updateStatus'])->name('reviews.updateStatus');
+        Route::patch('/{review}/status', [ReviewController::class, 'updateStatus'])->name('reviews.updateStatus');
+        Route::get('/get-reviews', [ReviewController::class, 'getReviews'])->name('reviews.get');
     });
 
     //? Reports
-
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
 });
 

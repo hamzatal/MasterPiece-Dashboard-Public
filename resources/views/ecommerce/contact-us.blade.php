@@ -29,9 +29,6 @@
         <!-- Start contact section -->
         <section class="contact__section section--padding">
             <div class="container">
-                <div class="section__heading text-center mb-40">
-                    <h2 class="section__heading--maintitle">Get In Touch</h2>
-                </div>
                 <div class="main__contact--area position__relative">
 
                     <div class="contact__form">
@@ -100,7 +97,7 @@
                                     </svg>
                                 </div>
                                 <div class="contact__info--content">
-                                    <p class="contact__info--content__desc text-white"> <a href="mailto:info@example.com">DevStore@Company.com</a> </p>
+                                    <p class="contact__info--content__desc text-white"> <a href="mailto:info@example.com">SyntaxStore@Company.com</a> </p>
                                 </div>
                             </div>
                         </div>

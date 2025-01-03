@@ -18,6 +18,8 @@
                     <ul class="footer__links">
                         <li><a href="/about-us">About</a></li>
                         <li><a href="/contact-us">Contact</a></li>
+                        <li><a href="/faq">FAQ</a></li>
+
                     </ul>
                 </div>
             </div>

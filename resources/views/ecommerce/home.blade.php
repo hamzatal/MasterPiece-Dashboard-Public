@@ -49,31 +49,6 @@
     </section>
     <!-- End Banner Slider -->
 
-    <!-- Start banner section -->
-    <!-- <section class="banner__section section--padding">
-        <div class="container-fluid">
-            <div class="row row-cols-1">
-                <div class="col">
-                    <div class="banner__section--inner position__relative">
-                        <a class="banner__items--thumbnail display-block" href="/shop"><img class="banner__items--thumbnail__img banner__img--height__md display-block" src="assets/img/banner/banner-bg1212.jpg" alt="banner-img">
-                            <div class="banner__content--style2">
-                                <h2 class="banner__content--style2__title text-white">Hello World !</h2>
-                                <p class="banner__content--style2__desc">Elevate your look with clothing designed specifically for programmers who value refined taste and professionalism in every detail.</p>
-
-                                <span class="primary__btn">Shop Now
-                                    <svg class="primary__btn--arrow__icon" xmlns="http://www.w3.org/2000/svg" width="20.2" height="12.2" viewBox="0 0 6.2 6.2">
-                                        <path d="M7.1,4l-.546.546L8.716,6.713H4v.775H8.716L6.554,9.654,7.1,10.2,9.233,8.067,10.2,7.1Z" transform="translate(-4 -4)" fill="currentColor"></path>
-                                    </svg>
-                                </span>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section> -->
-    <!-- End banner section -->
-
     <!-- Start Categories Section -->
     <section class="category-showcase">
         <h4 class="circles-title">Shop By Category</h4>
@@ -100,83 +75,116 @@
 
     <!-- Start New product section -->
     <section class="sp-section">
-        <div class="sp-container">
-            <h2 class="sp-title">New Products</h2>
+        <div class="col-xl-9 col-lg-8">
+            <div class="shop__product--wrapper">
+                <div class="tab_content">
+                    <!-- Grid View -->
+                    <div class="sp-container">
+                        <div class="sp-grid">
+                            @foreach($products as $product)
+                            <div class="sp-card">
+                                <!-- Image Container -->
+                                <div class="sp-image-wrap">
+                                    <a href="{{ route('product.details', $product->id) }}">
+                                        @if($product->image1)
+                                        <img src="{{ Storage::url($product->image1) }}" alt="{{ $product->name }}" class="sp-image">
+                                        @else
+                                        <img src="assets/img/product/default.png" alt="default-product-image" class="sp-image">
+                                        @endif
+                                    </a>
+                                    @if($product->is_discount_active && $product->discount_percentage)
+                                    <span class="sp-tag sp-tag-sale">{{ $product->discount_percentage }}% OFF</span>
+                                    @endif
+                                    @if(now()->diffInDays($product->created_at) <= 30)
+                                        <span class="sp-tag sp-tag-new">NEW</span>
+                                        @endif
+                                </div>
 
-            <div class="sp-grid">
-                @foreach($products as $product)
-                <div class="sp-card">
-                    <!-- Image Container -->
-                    <div class="sp-image-wrap">
-                        <a href="{{ route('product.details', $product->id) }}">
-                            @if($product->image1)
-                            <img src="{{ Storage::url($product->image1) }}" alt="{{ $product->name }}" class="sp-image">
+                                <!-- Content -->
+                                <div class="sp-content">
+                                    <span class="sp-category">{{ $product->category->name ?? 'Uncategorized' }}</span>
+                                    <h3 class="sp-name">
+                                        <a href="{{ route('products.show', $product->id) }}">{{ htmlspecialchars($product->name) }}</a>
+                                    </h3>
+
+                                    <!-- Price -->
+                                    <div class="sp-price">
+                                        @if ($product->is_discount_active)
+                                        <span class="sp-old-price">JD {{ number_format($product->original_price, 2) }}</span>
+                                        <span class="sp-current-price">JD {{ number_format($product->new_price, 2) }}</span>
+                                        @else
+                                        <span class="sp-current-price">JD {{ number_format($product->original_price, 2) }}</span>
+                                        @endif
+                                    </div>
+                                    <!-- Actions -->
+                                    <div class="action-group">
+                                        <form action="{{ route('cart.add') }}" method="POST" class="action-form">
+                                            @csrf
+                                            <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                            <button type="submit" class="action-button cart-button">
+                                                <span class="button-content">
+                                                    <svg class="button-icon" viewBox="0 0 24 24" width="18" height="18">
+                                                        <path d="M9 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM19 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
+                                                        <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" />
+                                                    </svg>
+                                                    <span class="button-text">Add to Cart</span>
+                                                </span>
+                                                <span class="button-feedback">
+                                                    <svg class="check-icon" viewBox="0 0 24 24" width="18" height="18">
+                                                        <path d="M20 6L9 17l-5-5" />
+                                                    </svg>
+                                                </span>
+                                            </button>
+                                        </form>
+
+                                        <div class="action-controls">
+                                            @php
+                                            $isInWishlist = \App\Models\Wishlist::where('user_id', auth()->id())->where('product_id', $product->id)->exists();
+                                            @endphp
+
+                                            <form action="{{ route('wishlist.add', $product->id) }}" method="POST" class="action-form">
+                                                @csrf
+                                                <button type="submit" class="icon-button wishlist-button" title="Add to Wishlist">
+                                                    <svg class="heart-icon {{ $isInWishlist ? 'heart-added' : '' }}" viewBox="0 0 24 24" width="20" height="20">
+                                                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                                                    </svg>
+                                                    <span class="tooltip">{{ $isInWishlist ? 'In Wishlist' : 'Add to Wishlist' }}</span>
+                                                </button>
+                                            </form>
+
+
+                                            <a href="{{ route('product.details', $product->id) }}" class="icon-button details-button" title="View Details">
+                                                <svg class="details-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                                                    <path d="M12 2a10 10 0 1010 10A10 10 0 0012 2zm0 18a8 8 0 118-8 8 8 0 01-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" />
+                                                </svg>
+
+                                                <span class="tooltip">View Details</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                        <!-- Pagination -->
+                        <div class="sp-pagination">
+                            @if($products->count() > 0)
+                            @if($products->hasPages())
+                            {{ $products->links() }}
+                            @endif
                             @else
-                            <img src="assets/img/product/default.png" alt="default-product-image" class="sp-image">
+                            <p>No products to display.</p>
                             @endif
-                        </a>
-                        @if($product->is_discount_active && $product->discount_percentage)
-                        <span class="sp-tag sp-tag-sale">{{ $product->discount_percentage }}% OFF</span>
-                        @endif
-                        @if(now()->diffInDays($product->created_at) <= 30)
-                            <span class="sp-tag sp-tag-new">NEW</span>
-                            @endif
+                        </div>
                     </div>
 
-                    <!-- Content -->
-                    <div class="sp-content">
-                        <span class="sp-category">{{ $product->category->name ?? 'Uncategorized' }}</span>
-                        <h3 class="sp-name">
-                            <a href="{{ route('products.show', $product->id) }}">{{ htmlspecialchars($product->name) }}</a>
-                        </h3>
-
-                        <!-- Price -->
-                        <div class="sp-price">
-                            @if ($product->is_discount_active)
-                            <span class="sp-old-price">JD {{ number_format($product->original_price, 2) }}</span>
-                            <span class="sp-current-price">JD {{ number_format($product->new_price, 2) }}</span>
-                            @else
-                            <span class="sp-current-price">JD {{ number_format($product->original_price, 2) }}</span>
-                            @endif
-                        </div>
-                        <!-- Actions -->
-                        <div class="sp-actions">
-                            <form action="{{ route('cart.add') }}" method="POST" class="sp-form">
-                                @csrf
-                                <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                <button type="submit" class="sp-button sp-button-cart">Add to Cart</button>
-                            </form>
-                            <form action="{{ route('wishlist.add', $product->id) }}" method="POST">
-                                @csrf
-                                <button type="submit" class="sp-icon-button" title="Add to Wishlist">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                                    </svg>
-                                </button>
-                            </form>
-                            <a href="{{ route('product.details', $product->id) }}" class="sp-icon-button" title="View Product Details">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"></path>
-                                    <circle cx="12" cy="12" r="3"></circle>
-                                </svg>
-                            </a>
-
-
-
-                        </div>
+                    <!-- Pagination -->
+                    <div class="pagination__area bg__gray--color">
+                        <nav class="pagination justify-content-center">
+                            {{ $products->links() }}
+                        </nav>
                     </div>
                 </div>
-                @endforeach
-            </div>
-            <!-- Pagination -->
-            <div class="sp-pagination">
-                @if($products->count() > 0)
-                @if($products->hasPages())
-                {{ $products->links() }}
-                @endif
-                @else
-                <p>No products to display.</p>
-                @endif
             </div>
         </div>
     </section>
@@ -187,70 +195,99 @@
         <div class="sale-container">
             <h2 class="sale-title">Sale Products</h2>
 
-            <div class="sale-grid">
-                @foreach($products as $product)
-                @if($product->is_discount_active)
-                <div class="sale-card">
-                    <!-- Image Container -->
-                    <div class="sale-image-wrap">
-                        <a href="{{ route('product.details', $product->id) }}">
-                            @if($product->image1)
-                            <img src="{{ Storage::url($product->image1) }}" alt="{{ $product->name }}" class="sale-image">
-                            @else
-                            <img src="assets/img/product/default.png" alt="default-product-image" class="sale-image">
-                            @endif
-                        </a>
-                        @if($product->original_price && $product->price < $product->original_price)
-                            <span class="sale-tag sale-tag-sale">{{ $product->discount_percentage }}% OFF</span>
-                            @endif
-                    </div>
+            <div class="col-xl-9 col-lg-8">
+                <div class="shop__product--wrapper">
+                    <div class="tab_content">
+                        <!-- Grid View -->
+                        <div class="sp-container">
+                            <div class="sp-grid">
+                                @foreach($products as $product)
+                                @if($product->is_discount_active)
+                                <div class="sp-card">
+                                    <!-- Image Container -->
+                                    <div class="sp-image-wrap">
+                                        <a href="{{ route('product.details', $product->id) }}">
+                                            @if($product->image1)
+                                            <img src="{{ Storage::url($product->image1) }}" alt="{{ $product->name }}" class="sp-image">
+                                            @else
+                                            <img src="assets/img/product/default.png" alt="default-product-image" class="sp-image">
+                                            @endif
+                                        </a>
+                                        @if($product->discount_percentage)
+                                        <span class="sp-tag sp-tag-sale">{{ $product->discount_percentage }}% OFF</span>
+                                        @endif
+                                    </div>
 
-                    <!-- Content -->
-                    <div class="sale-content">
-                        <span class="sale-category">{{ $product->category->name }}</span>
-                        <h3 class="sale-name">
-                            <a href="{{ route('products.show', $product->id) }}">{{ $product->name }}</a>
-                        </h3>
+                                    <!-- Content -->
+                                    <div class="sp-content">
+                                        <span class="sp-category">{{ $product->category->name ?? 'Uncategorized' }}</span>
+                                        <h3 class="sp-name">
+                                            <a href="{{ route('products.show', $product->id) }}">{{ htmlspecialchars($product->name) }}</a>
+                                        </h3>
 
-                        <div class="sale-price">
-                            <span class="sale-old-price">JD {{ number_format($product->original_price, 2) }}</span>
+                                        <!-- Price -->
+                                        <div class="sp-price">
+                                            <span class="sp-old-price">JD {{ number_format($product->original_price, 2) }}</span>
+                                            <span class="sp-current-price">JD {{ number_format($product->new_price, 2) }}</span>
+                                        </div>
 
-                            @if($product->original_price)
-                            <span class="sale-current-price">JD {{ number_format($product->new_price, 2) }}</span>
-                            @endif
-                        </div>
+                                        <!-- Actions -->
+                                        <div class="action-group">
+                                            <form action="{{ route('cart.add') }}" method="POST" class="action-form">
+                                                @csrf
+                                                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                                <button type="submit" class="action-button cart-button">
+                                                    <span class="button-content">
+                                                        <svg class="button-icon" viewBox="0 0 24 24" width="18" height="18">
+                                                            <path d="M9 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM19 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
+                                                            <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" />
+                                                        </svg>
+                                                        <span class="button-text">Add to Cart</span>
+                                                    </span>
+                                                </button>
+                                            </form>
 
-                              <!-- Actions -->
-                              <div class="sp-actions">
-                            <form action="{{ route('cart.add') }}" method="POST" class="sp-form">
-                                @csrf
-                                <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                <button type="submit" class="sp-button sp-button-cart">Add to Cart</button>
-                            </form>
-                            <form action="{{ route('wishlist.add', $product->id) }}" method="POST">
-                                @csrf
-                                <button type="submit" class="sp-icon-button" title="Add to Wishlist">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                                    </svg>
-                                </button>
-                            </form>
-                            <a href="{{ route('product.details', $product->id) }}" class="sp-icon-button" title="View Product Details">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"></path>
-                                    <circle cx="12" cy="12" r="3"></circle>
-                                </svg>
-                            </a>
+                                            <div class="action-controls">
+                                                @php
+                                                $isInWishlist = \App\Models\Wishlist::where('user_id', auth()->id())->where('product_id', $product->id)->exists();
+                                                @endphp
 
+                                                <form action="{{ route('wishlist.add', $product->id) }}" method="POST" class="action-form">
+                                                    @csrf
+                                                    <button type="submit" class="icon-button wishlist-button" title="Add to Wishlist">
+                                                        <svg class="heart-icon {{ $isInWishlist ? 'heart-added' : '' }}" viewBox="0 0 24 24" width="20" height="20">
+                                                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                                                        </svg>
+                                                        <span class="tooltip">{{ $isInWishlist ? 'In Wishlist' : 'Add to Wishlist' }}</span>
+                                                    </button>
+                                                </form>
 
-
+                                                <a href="{{ route('product.details', $product->id) }}" class="icon-button details-button" title="View Details">
+                                                    <svg class="details-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                                                        <path d="M12 2a10 10 0 1010 10A10 10 0 0012 2zm0 18a8 8 0 118-8 8 8 0 01-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" />
+                                                    </svg>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
+                                @endforeach
+                            </div>
+                            <!-- Pagination -->
+                            <div class="sp-pagination">
+                                @if($products->count() > 0)
+                                @if($products->hasPages())
+                                {{ $products->links() }}
+                                @endif
+                                @else
+                                <p>No products to display.</p>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>
-                @endif
-                @endforeach
             </div>
-
             <div class="sale-pagination">
                 {{ $products->links() }}
             </div>
@@ -296,6 +333,23 @@
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+
+    @if($coupon)
+    <!-- Coupon Popup -->
+    <div id="coupon-popup" class="coupon-popup">
+        <div class="coupon-popup-content">
+            <span class="close-popup">&times;</span>
+            <h3>🎉 Special Offer! 🎉</h3>
+            <p>Use the code below to get a <strong>{{ $coupon->discount_value }}%</strong> discount:</p>
+            <div class="coupon-code">
+                <span>{{ $coupon->code }}</span>
+            </div>
+            <p style="color: red;">Hurry up! Offer ends soon.</p>
+        </div>
+    </div>
+    @endif
+
+
 
 
 </x-ecommerce-app-layout>

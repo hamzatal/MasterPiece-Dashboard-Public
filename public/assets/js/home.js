@@ -126,3 +126,61 @@ document.addEventListener("DOMContentLoaded", () => {
         },
     });
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+    const wishlistButtons = document.querySelectorAll(".wishlist-button");
+
+    wishlistButtons.forEach((button) => {
+        button.addEventListener("click", function (e) {
+            e.preventDefault();
+
+            const form = this.closest("form");
+            const url = form.action;
+            const heartIcon = this.querySelector(".heart-icon");
+
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    "X-CSRF-TOKEN": document.querySelector(
+                        'meta[name="csrf-token"]'
+                    ).content,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({}),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.status === "success") {
+                        heartIcon.classList.add("heart-added");
+                        this.querySelector(".tooltip").textContent =
+                            "In Wishlist";
+                    } else if (data.status === "info") {
+                        alert(data.message);
+                    }
+                })
+                .catch((error) => console.error("Error:", error));
+        });
+    });
+});
+
+// Coupon popup
+document.addEventListener("DOMContentLoaded", function () {
+    const popup = document.getElementById("coupon-popup");
+    const closePopup = document.querySelector(".close-popup");
+
+    if (popup) {
+        setTimeout(() => {
+            popup.style.display = "block";
+        }, 2000);
+
+        closePopup.addEventListener("click", () => {
+            popup.style.display = "none";
+        });
+
+        window.addEventListener("click", (event) => {
+            if (event.target === popup) {
+                popup.style.display = "none";
+            }
+        });
+    }
+});

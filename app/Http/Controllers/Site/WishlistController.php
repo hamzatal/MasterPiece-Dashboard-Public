@@ -103,4 +103,5 @@ class WishlistController extends Controller
             return redirect()->back()->with('error', 'Failed to clear the wishlist.');
         }
     }
+
 }

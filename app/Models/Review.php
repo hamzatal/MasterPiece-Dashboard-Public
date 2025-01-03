@@ -11,12 +11,7 @@ class Review extends Model
         'rating',
         'comment',
         'status',
-        'is_active'
+        'is_active',
     ];
 
-    protected $casts = [
-        'is_active' => 'boolean',
-        'rating' => 'integer'
-    ];
 }
-

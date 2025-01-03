@@ -65,6 +65,8 @@ class ShopController extends Controller
         $topProducts = Product::orderBy('description')
             ->take(3)
             ->get();
+        $categories = Category::paginate(10);
+
 
         return view('ecommerce.shop', compact('products', 'categories'));
     }
@@ -84,25 +86,67 @@ class ShopController extends Controller
         }
     }
 
-  public function addToCart($productId)
-{
-    $product = Product::findOrFail($productId);
-    $cart = session()->get('cart', []);
+    public function addToCart($productId)
+    {
+        $product = Product::findOrFail($productId);
+        $cart = session()->get('cart', []);
 
-    if (isset($cart[$productId])) {
-        $cart[$productId]['quantity']++;
-    } else {
-        $cart[$productId] = [
-            'name' => $product->name,
-            'quantity' => 1,
-            'price' => $product->new_price,
-            'image' => $product->image,
-        ];
+        if (isset($cart[$productId])) {
+            $cart[$productId]['quantity']++;
+        } else {
+            $cart[$productId] = [
+                'name' => $product->name,
+                'quantity' => 1,
+                'price' => $product->new_price,
+                'image' => $product->image,
+            ];
+        }
+
+        session()->put('cart', $cart);
+
+        return back()->with('success', 'Product added to cart!');
     }
 
-    session()->put('cart', $cart);
+    public function shop()
+    {
+        $categories = Category::paginate(5);
+        $products = Product::paginate(10);
+        return view('shop', compact('categories', 'products'));
+    }
 
-    return back()->with('success', 'Product added to cart!');
-}
+    public function searchProducts(Request $request)
+    {
+        try {
+            $query = $request->get('q');
 
+            if (empty($query)) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Search query is required'
+                ], 400);
+            }
+
+            $products = Product::where('name', 'like', "%{$query}%")
+                ->orWhere('description', 'like', "%{$query}%")
+                ->select('id', 'name', 'new_price as price', 'image1 as image')
+                ->get();
+
+            $categories = Category::where('name', 'like', "%{$query}%")
+                ->select('id', 'name', 'image as image')
+                ->get();
+
+            return response()->json([
+                'status' => 'success',
+                'data' => [
+                    'products' => $products,
+                    'categories' => $categories,
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'An error occurred while searching'
+            ], 500);
+        }
+    }
 }

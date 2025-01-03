@@ -158,298 +158,367 @@
 </x-admin-app-layout>
 @else
 <x-ecommerce-app-layout>
-    <style>
-        /* Custom CSS */
-        :root {
-            --primary-red: #e31837;
-            --dark-red: #b31329;
-            --off-white: #f8f9fa;
-            --btn-hover-bg: #dc3545;
-            --input-border-focus: #e31837;
-        }
-
-        .account__welcome--text {
-            font-size: 1.5rem;
-            margin-bottom: 30px;
-            color: #333;
-            text-align: center;
-            font-weight: 500;
-        }
-
-        .account__wrapper {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-            padding: 40px;
-            width: 100%;
-        }
-
-        .account__content {
-            margin-bottom: 40px;
-        }
-
-        .account__content--title {
-            position: relative;
-            padding-bottom: 15px;
-            margin-bottom: 30px;
-            font-weight: 600;
-        }
-
-        .account__content--title::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 60px;
-            height: 3px;
-            background: var(--primary-red);
-        }
-
-        /* Profile Image Styles */
-        .profile-image-container {
-            position: relative;
-            width: 200px;
-            height: 200px;
-            margin: 0 auto 30px;
-        }
-
-        .profile-image-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 50%;
-            border: 4px solid var(--primary-red);
-            transition: all 0.3s ease;
-        }
-
-        .profile-image-label {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            background: var(--primary-red);
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .profile-image-label:hover {
-            background: var(--dark-red);
-            transform: scale(1.1);
-        }
-
-        /* Form Styles */
-        .form-control {
-            border: 2px solid #e1e1e1;
-            padding: 12px;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .form-control:focus {
-            border-color: var(--input-border-focus);
-            box-shadow: 0 0 0 0.2rem rgba(227, 24, 55, 0.25);
-        }
-
-        .form-label {
-            font-weight: 500;
-            color: #333;
-            margin-bottom: 8px;
-        }
-
-        /* Danger Zone Styles */
-        .danger-zone {
-            background: #fff5f5;
-            border: 1px solid #feb2b2;
-            border-radius: 12px;
-            padding: 25px;
-        }
-
-        .danger-zone h2 {
-            color: #dc3545;
-        }
-
-        /* Button Styles */
-        .btn {
-            border-radius: 8px;
-            padding: 12px 20px;
-            font-weight: 500;
-            transition: background-color 0.3s ease;
-        }
-
-        .primary__btn {
-            background-color: var(--primary-red);
-            color: white;
-        }
-
-        .primary__btn:hover {
-            background-color: var(--btn-hover-bg);
-        }
-
-        .danger-zone .btn:hover {
-            background-color: var(--dark-red);
-        }
-
-        /* Responsive Adjustments */
-        @media (max-width: 768px) {
-            .account__wrapper {
-                padding: 20px;
-            }
-
-            .profile-image-container {
-                width: 150px;
-                height: 150px;
-            }
-        }
-    </style>
 
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Profile') }}
         </h2>
     </x-slot>
+    <main class="main__content_wrapper">
 
-    <!-- Start breadcrumb section -->
-    <section class="breadcrumb__section breadcrumb__bg">
-        <div class="container">
-            <div class="row row-cols-1">
-                <div class="col">
-                    <div class="breadcrumb__content text-center">
-                        <ul class="breadcrumb__content--menu d-flex justify-content-center">
-                            <li class="breadcrumb__content--menu__items"><span>Home</span></li>
-                            <li class="breadcrumb__content--menu__items"><span>My Account</span></li>
-                        </ul>
+        <!-- Start breadcrumb section -->
+        <section class="breadcrumb__section breadcrumb__bg">
+            <div class="container">
+                <div class="row row-cols-1">
+                    <div class="col">
+                        <div class="breadcrumb__content text-center">
+                            <h1 class="breadcrumb__content--title text-white mb-25">My Account</h1>
+                            <ul class="breadcrumb__content--menu d-flex justify-content-center">
+                                <li class="breadcrumb__content--menu__items"><a class="text-white" href="/home">Home</a></li>
+                                <li class="breadcrumb__content--menu__items"><span class="text-white">My Account</span></li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
-    <!-- End breadcrumb section -->
+        </section>
+        <!-- End breadcrumb section -->
 
-    <!-- Profile Section -->
-    <section class="my__account--section section--padding">
-        <div class="container">
-            <div class="account__wrapper">
-                <!-- Profile Update Form -->
-                <div class="account__content">
-                    <h2 class="account__content--title h3">Update Your Profile</h2>
-                    <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
-                        @csrf
-                        @method('PATCH')
+        <!-- Profile Section -->
+        <section class="profile">
+            <div class="profile__layout">
+                <div class="profile__content">
+                    <!-- Profile Update Section -->
+                    <div class="profile__block">
+                        <div class="profile__header">
+                            <h2 class="profile__title">Profile Settings</h2>
+                        </div>
 
-                        <div class="row">
-                            <!-- Profile Picture -->
-                            <div class="col-md-4 text-center">
-                                <div class="profile-image-container">
-                                    <img id="profile-image"
-                                        src="{{ Auth::user()->image ? asset('storage/' . Auth::user()->image) : asset('default-profile.png') }}"
-                                        alt="Profile Picture">
-                                    <label for="image-input" class="profile-image-label">
-                                        <i class="fas fa-camera"></i>
-                                        <input type="file" name="image" id="image-input" class="d-none">
+                        <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data" class="profile__form">
+                            @csrf
+                            @method('PATCH')
+
+                            <div class="profile__grid">
+                                <!-- Profile Picture Column -->
+                                <div class="profile__avatar">
+                                    <label for="profileImageUpload" class="profile__avatar-label">
+                                        <img class="profile__avatar-img" src="{{ auth()->user()->image ? auth()->user()->image : asset('logo2.png') }}" alt="{{ auth()->user()->name }}'s profile photo">
+                                        <div class="profile__avatar-overlay">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="profile__avatar-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            </svg>
+                                        </div>
                                     </label>
+                                    <input type="file" id="profileImageUpload" class="profile__avatar-input" name="image" accept="image/*">
                                 </div>
-                            </div>
 
-                            <!-- Profile Details -->
-                            <div class="col-md-8">
-                                <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <label class="form-label" for="name">Full Name</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text"><i class="fas fa-user"></i></span>
-                                            <input type="text" class="form-control" id="name" name="name" value="{{ old('name', $user->name) }}">
+                                <!-- Profile Details Column -->
+                                <div class="profile__details">
+                                    <div class="profile__form-grid">
+                                        <div class="profile__input-group">
+                                            <label for="name" class="profile__label">Full Name</label>
+                                            <div class="profile__input-field">
+                                                <i class="fas fa-user profile__input-icon"></i>
+                                                <input type="text" id="name" name="name" value="{{ old('name', $user->name) }}" class="profile__input">
+                                            </div>
+                                        </div>
+
+                                        <div class="profile__input-group">
+                                            <label for="email" class="profile__label">Email Address</label>
+                                            <div class="profile__input-field">
+                                                <i class="fas fa-envelope profile__input-icon"></i>
+                                                <input type="email" id="email" name="email" value="{{ old('email', $user->email) }}" class="profile__input">
+                                            </div>
+                                        </div>
+
+                                        <div class="profile__input-group">
+                                            <label for="phone" class="profile__label">Phone Number</label>
+                                            <div class="profile__input-field">
+                                                <i class="fas fa-phone profile__input-icon"></i>
+                                                <input type="tel" id="phone" name="phone" value="{{ old('phone', $user->phone) }}" class="profile__input">
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <div class="col-md-6">
-                                        <label class="form-label" for="email">Email Address</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                                            <input type="email" class="form-control" id="email" name="email" value="{{ old('email', $user->email) }}">
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <label class="form-label" for="phone">Phone Number</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text"><i class="fas fa-phone"></i></span>
-                                            <input type="tel" class="form-control" id="phone" name="phone" value="{{ old('phone', $user->phone) }}">
-                                        </div>
-                                    </div>
-
-                                    <div class="col-12 text-end">
-                                        <button type="submit" class="btn primary__btn">
-                                            <i class="fas fa-save me-2"></i>Update Profile
+                                    <div class="profile__actions">
+                                        <button type="submit" class="profile__submit-btn">
+                                            <i class="fas fa-save profile__submit-icon"></i>Save Changes
                                         </button>
                                     </div>
                                 </div>
                             </div>
+                        </form>
+                    </div>
+
+                    <!-- Password Change Section -->
+                    <div class="profile__block">
+                        <div class="profile__header">
+                            <h2 class="profile__title">Security Settings</h2>
                         </div>
-                    </form>
-                </div>
 
-                <!-- Password Change Section -->
-                <div class="account__content">
-                    <h2 class="account__content--title h3">Change Password</h2>
-                    <form method="post" action="{{ route('password.update') }}">
-                        @csrf
-                        @method('put')
+                        <form method="post" action="{{ route('password.update') }}" class="profile__form">
+                            @csrf
+                            @method('put')
 
-                        <div class="row g-3">
-                            <div class="col-md-4">
-                                <label class="form-label" for="current_password">Current Password</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                                    <input type="password" class="form-control" id="current_password" name="current_password">
+                            <div class="profile__form-grid">
+                                <div class="profile__input-group">
+                                    <label for="current_password" class="profile__label">Current Password</label>
+                                    <div class="profile__input-field">
+                                        <i class="fas fa-lock profile__input-icon"></i>
+                                        <input type="password" id="current_password" name="current_password" class="profile__input">
+                                    </div>
+                                </div>
+
+                                <div class="profile__input-group">
+                                    <label for="password" class="profile__label">New Password</label>
+                                    <div class="profile__input-field">
+                                        <i class="fas fa-key profile__input-icon"></i>
+                                        <input type="password" id="password" name="password" class="profile__input">
+                                    </div>
+                                </div>
+
+                                <div class="profile__input-group">
+                                    <label for="password_confirmation" class="profile__label">Confirm Password</label>
+                                    <div class="profile__input-field">
+                                        <i class="fas fa-key profile__input-icon"></i>
+                                        <input type="password" id="password_confirmation" name="password_confirmation" class="profile__input">
+                                    </div>
+                                </div>
+
+                                <div class="profile__actions">
+                                    <button type="submit" class="profile__submit-btn">
+                                        <i class="fas fa-save profile__submit-icon"></i>Update Password
+                                    </button>
                                 </div>
                             </div>
+                        </form>
+                    </div>
 
-                            <div class="col-md-4">
-                                <label class="form-label" for="password">New Password</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-key"></i></span>
-                                    <input type="password" class="form-control" id="password" name="password">
-                                </div>
-                            </div>
-
-                            <div class="col-md-4">
-                                <label class="form-label" for="password_confirmation">Confirm New Password</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-key"></i></span>
-                                    <input type="password" class="form-control" id="password_confirmation" name="password_confirmation">
-                                </div>
-                            </div>
-
-                            <div class="col-12 text-end">
-                                <button type="submit" class="btn primary__btn">
-                                    <i class="fas fa-save me-2"></i>Change Password
-                                </button>
-                            </div>
+                    <!-- Account Deletion Section -->
+                    <div class="profile__block profile__block--danger">
+                        <div class="profile__header">
+                            <h2 class="profile__title">Danger Zone</h2>
                         </div>
-                    </form>
-                </div>
+                        <div class="profile__warning-message">
+                            <p>Once you delete your account, there is no going back. Please be certain.</p>
+                        </div>
+                        <form method="post" action="{{ route('profile.destroy') }}" class="profile__form">
+                            @csrf
+                            @method('delete')
 
-                <!-- Danger Zone Section -->
-                <div class="account__content danger-zone">
-                    <h2 class="h3">Delete Account</h2>
-                    <p>Deleting your account will remove all of your data permanently. This action is irreversible.</p>
-                    <form method="POST" action="{{ route('profile.destroy') }}">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger">
-                            <i class="fas fa-trash me-2"></i>Delete Account
-                        </button>
-                    </form>
+                            <div class="profile__form-grid">
+                                <div class="profile__input-group">
+                                    <label for="password" class="profile__label">Confirm Password</label>
+                                    <div class="profile__input-field">
+                                        <i class="fas fa-lock profile__input-icon"></i>
+                                        <input type="password" id="password" name="password" class="profile__input" placeholder="Enter your password to confirm deletion">
+                                    </div>
+                                </div>
+
+                                <div class="profile__actions">
+                                    <button type="submit" class="profile__delete-btn">
+                                        <i class="fas fa-trash profile__submit-icon"></i>Delete Account
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
-</x-ecommerce-app-layout>
+        </section>
 
+        <style>
+            /* General Styles */
+            .profile {
+                padding: 2rem;
+                background-color: #f9fafb;
+                font-family: 'Inter', sans-serif;
+            }
+
+            .profile__layout {
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+
+            .profile__content {
+                display: flex;
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            .profile__block {
+                background: #ffffff;
+                border-radius: 12px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                padding: 1.5rem;
+            }
+
+            .profile__block--danger {
+                background: #fff5f5;
+                border: 1px solid #fecaca;
+            }
+
+            .profile__header {
+                margin-bottom: 1.5rem;
+            }
+
+            .profile__title {
+                font-size: 1.5rem;
+                font-weight: 600;
+                color: #1a1a1a;
+            }
+
+            /* Profile Picture Section */
+            .profile__avatar {
+                display: flex;
+                justify-content: center;
+                margin-bottom: 1.5rem;
+                position: relative;
+            }
+
+            .profile__avatar-label {
+                cursor: pointer;
+                position: relative;
+            }
+
+            .profile__avatar-img {
+                width: 120px;
+                height: 120px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 4px solid #ffffff;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                transition: filter 0.3s ease;
+            }
+
+            .profile__avatar-label:hover .profile__avatar-img {
+                filter: brightness(0.75);
+            }
+
+            .profile__avatar-overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+
+            .profile__avatar-label:hover .profile__avatar-overlay {
+                opacity: 1;
+            }
+
+            .profile__avatar-icon {
+                width: 48px;
+                height: 48px;
+                color: #ffffff;
+            }
+
+            .profile__avatar-input {
+                display: none;
+            }
+
+            /* Profile Details Section */
+            .profile__details {
+                width: 100%;
+            }
+
+            .profile__form-grid {
+                display: grid;
+                gap: 1rem;
+            }
+
+            .profile__input-group {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .profile__input-field {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                border: 1px solid #e0e0e0;
+                border-radius: 8px;
+                padding: 0.75rem;
+            }
+
+            .profile__input-icon {
+                color: #6b7280;
+            }
+
+            .profile__input {
+                flex: 1;
+                border: none;
+                outline: none;
+                font-size: 1rem;
+            }
+
+            /* Danger Zone Section */
+            .profile__warning-message {
+                color: #dc2626;
+                margin-bottom: 1rem;
+            }
+
+            .profile__delete-btn {
+                background: #dc2626;
+                color: #ffffff;
+                border: none;
+                padding: 0.75rem 1.5rem;
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: 1rem;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                transition: background 0.3s ease;
+            }
+
+            .profile__delete-btn:hover {
+                background: #b91c1c;
+            }
+
+            /* Buttons */
+            .profile__submit-btn {
+                background: #3b82f6;
+                color: #ffffff;
+                border: none;
+                padding: 0.75rem 1.5rem;
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: 1rem;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                transition: background 0.3s ease;
+                margin: 15px;
+            }
+
+            .profile__submit-btn:hover {
+                background: #2563eb;
+            }
+        </style>
+
+        <script>
+            // JavaScript to handle image preview
+            document.getElementById('profileImageUpload').addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = document.querySelector('.profile__avatar-img');
+                        img.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        </script>
+
+    </main>
+</x-ecommerce-app-layout>
 @endif

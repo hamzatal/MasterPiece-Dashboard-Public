@@ -26,6 +26,23 @@
         </section>
         <!-- End breadcrumb section -->
 
+        <!-- Coupon Banner -->
+        @if($coupon)
+        <div class="coupon-notification">
+            <div class="coupon-notification-content">
+                <div class="coupon-notification-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                        <path d="M9.375 3a1.875 1.875 0 000 3.75h1.875v4.5H3.375A1.875 1.875 0 011.5 9.375v-.75c0-1.036.84-1.875 1.875-1.875h3.193A3.375 3.375 0 0112 2.753a3.375 3.375 0 015.432 3.997h3.943c1.035 0 1.875.84 1.875 1.875v.75c0 1.036-.84 1.875-1.875 1.875H12.75v-4.5h1.875a1.875 1.875 0 10-1.875-1.875V6.75h-1.5V4.875C11.25 3.839 10.41 3 9.375 3zM11.25 12.75H3v6.75c0 1.035.84 1.875 1.875 1.875h9.375c1.035 0 1.875-.84 1.875-1.875v-6.75h-5.625zM12 10.5a.75.75 0 01.75.75v.75h.75a.75.75 0 010 1.5h-.75v.75a.75.75 0 01-1.5 0v-.75h-.75a.75.75 0 010-1.5h.75v-.75a.75.75 0 01.75-.75z" />
+                    </svg>
+                </div>
+                <div class="coupon-notification-text">
+                    <p style="color: white;">🎉 Special Offer! Use the code <strong>{{ $coupon->code }}</strong> to get <strong>{{ $coupon->discount_value }}%</strong> off your purchase. 🎉</p>
+                </div>
+                <button class="coupon-notification-close">&times;</button>
+            </div>
+        </div>
+        @endif
+
         <!-- Cart Section Start -->
         <section class="cart__section section--padding">
             <div class="container-fluid">
@@ -51,8 +68,8 @@
                                                 <div class="cart-product-info d-flex align-items-center">
                                                     <img src="{{ Storage::url($product['image']) }}" alt="{{ $product['name'] }}" class="cart-product-image">
                                                     <div>
-                                                        <h4>{{ $product['name'] }}</h4>
-                                                        <p>Category: {{ $product['category'] }}</p>
+                                                        <h6>{{ $product['name'] }}</h6>
+                                                        <p class="text-muted">{{ $product['category'] }}</p>
                                                     </div>
                                                 </div>
                                             </td>
@@ -66,17 +83,13 @@
                                             </td>
                                             <td class="product-total">JD {{ number_format($product['total'], 2) }}</td>
                                             <td>
-                                                <form action="{{ route('cart.remove', $product['id']) }}" method="POST">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="remove-item-btn">
-                                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                            <path d="M3 6h18"></path>
-                                                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
-                                                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
-                                                        </svg>
-                                                    </button>
-                                                </form>
+                                                <button type="button" class="remove-item-btn">
+                                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                        <path d="M3 6h18"></path>
+                                                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                                                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                                                    </svg>
+                                                </button>
                                             </td>
                                         </tr>
                                         @endforeach
@@ -84,68 +97,74 @@
                                 </table>
                             </div>
                             <div class="cart-actions mt-4">
-                                <form action="{{ route('cart.clear') }}" method="POST" class="d-inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger">Clear Cart</button>
-                                </form>
+                                <button type="button" class="btn btn-danger" id="clear-cart">Clear Cart</button>
                             </div>
                         </div>
                         <div class="col-lg-4">
                             <div class="cart-summary">
-                                <h3>Cart Summary</h3>
-                                <div class="coupon-section">
-                                    @if(isset($appliedCoupon))
-                                    <div class="applied-coupon">
-                                        <p>Applied Coupon: <strong>{{ $appliedCoupon->code }}</strong> ({{ $appliedCoupon->discount_percentage }}% OFF)</p>
-                                        <form action="{{ route('cart.removeCoupon') }}" method="POST" class="d-inline">
-                                            @csrf
-                                            <button type="submit" class="btn btn-sm btn-danger">Remove Coupon</button>
-                                        </form>
-                                    </div>
-                                    @else
-                                    <div class="coupon-section mb-4">
-                                        <div class="coupon-form">
-                                            <input type="text" id="coupon-code" placeholder="Enter coupon code" class="form-control">
-                                            <button type="button" id="apply-coupon" class="btn btn-primary">Apply Coupon</button>
+                                <div class="cart-summary-header">
+                                    <h3>Cart Summary</h3>
+                                </div>
+                                <div class="cart-summary-content">
+                                    <div class="coupon-section">
+                                        @if(isset($appliedCoupon))
+                                        <div class="applied-coupon">
+                                            <p>Applied Coupon: <strong>{{ $appliedCoupon->code }}</strong> ({{ $appliedCoupon->discount_percentage }}% OFF)</p>
+                                            <button type="button" class="btn btn-sm btn-danger" id="remove-coupon">Remove Coupon</button>
                                         </div>
-                                        <div id="coupon-message" class="mt-2"></div>
+                                        @else
+                                        <div class="coupon-section mb-4">
+                                            <div class="coupon-form">
+                                                <input type="text" id="coupon-code" placeholder="Enter coupon code" class="form-control">
+                                                <button type="button" id="apply-coupon" class="btn btn-primary">Apply Coupon</button>
+                                            </div>
+                                            <div id="coupon-message" class="mt-2"></div>
+                                        </div>
+                                        @endif
                                     </div>
-                                    @endif
+                                    <div class="cart-totals">
+                                        <div class="total-row">
+                                            <span>Subtotal:</span>
+                                            <span class="subtotal-amount">JD {{ number_format($subtotal, 2) }}</span>
+                                        </div>
+                                        <div class="total-row">
+                                            <span>Discount:</span>
+                                            <span class="discount-amount">JD {{ number_format($discount, 2) }}</span>
+                                        </div>
+                                        <div class="total-row grand-total">
+                                            <span>Total:</span>
+                                            <span class="cart-total">JD {{ number_format($total, 2) }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="checkout-section">
+                                        <a href="{{ route('checkout') }}" class="btn btn-primary btn-block">
+                                            Proceed to Checkout
+                                        </a>
+                                    </div>
                                 </div>
-                                <div class="cart-totals">
-                                    <div class="total-row">
-                                        <span>Subtotal:</span>
-                                        <span class="subtotal-amount">JD {{ number_format($subtotal, 2) }}</span>
-                                    </div>
-                                    <div class="total-row">
-                                        <span>Discount:</span>
-                                        <span class="discount-amount">JD {{ number_format($discount, 2) }}</span>
-                                    </div>
-                                    <div class="total-row grand-total">
-                                        <span>Total:</span>
-                                        <span class="cart-total">JD {{ number_format($total, 2) }}</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="checkout-section mt-4">
-                                <a href="{{ route('checkout') }}" class="btn btn-success w-100 py-3">
-                                    Proceed to Checkout
-                                </a>
                             </div>
                         </div>
                     </div>
+                    @else
+                    <div class="empty-cart text-center">
+                        <div class="empty-cart-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-cart" viewBox="0 0 16 16" width="64" height="64">
+                                <path d="M0 1a1 1 0 0 1 1-1h2.5a1 1 0 0 1 .96.74L5.58 4H14a1 1 0 0 1 .92 1.39l-1.5 3a1 1 0 0 1-.92.61H6.26l-.2 1H14.5a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.48-.36L4.01 5H1.5a.5.5 0 0 1 0-1h2.22l.9-3H1a1 1 0 0 1-1-1z" />
+                                <path d="M7 13.5A1.5 1.5 0 1 0 8.5 15 1.5 1.5 0 0 0 7 13.5zm-3 0A1.5 1.5 0 1 0 5.5 15 1.5 1.5 0 0 0 4 13.5z" />
+                            </svg>
+                        </div>
+                        <h3 class="empty-cart-title">Your cart is empty</h3>
+                        <p class="empty-cart-message">It looks like you haven't added anything to your cart yet.</p>
+                        <a href="{{ route('shop') }}" class="btn btn-primary">
+                            Continue Shopping
+                        </a>
+                    </div>
+                    @endif
                 </div>
-            </div>
-            @else
-            <div class="empty-cart text-center">
-                <h3>Your cart is empty</h3>
-                <a href="{{ route('home') }}" class="btn btn-primary">Continue Shopping</a>
-            </div>
-            @endif
-            </div>
             </div>
         </section>
         <!-- Cart Section End -->
+
     </main>
+
 </x-ecommerce-app-layout>

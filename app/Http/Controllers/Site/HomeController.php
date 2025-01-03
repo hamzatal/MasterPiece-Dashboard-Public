@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Category; // Import the Category model
 use App\Models\Wishlist;
 use App\Models\Banner; // Import the Banner model
+use App\Models\Coupon; // Import the Coupon model
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -24,6 +25,10 @@ class HomeController extends Controller
 
         $categories = Category::all();
 
-        return view('ecommerce.home', compact('products', 'cartCount', 'banners', 'categories'));
+        $coupon = Coupon::where('is_active', true)
+            ->orderBy('discount_value', 'desc')
+            ->first();
+
+        return view('ecommerce.home', compact('products', 'cartCount', 'banners', 'categories', 'coupon'));
     }
 }

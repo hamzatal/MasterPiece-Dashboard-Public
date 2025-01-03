@@ -10,8 +10,8 @@ class ReviewController extends Controller
 {
     public function index()
     {
-        $reviews = Review::paginate(5);
-        return view('admin.reviews.index', compact('reviews'));
+        $reviews = Review::where('status', 'approved')->orderBy('created_at', 'desc')->paginate(5);
+        return response()->json($reviews);
     }
 
     public function store(Request $request)
@@ -20,19 +20,17 @@ class ReviewController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'comment' => 'required|string|max:1000',
+            'rating' => 'required|integer|min:1|max:5',
         ]);
+
+        $validated['status'] = 'pending'; // Default status
+        $validated['is_active'] = true;
 
         Review::create($validated);
 
-        if ($request->wantsJson()) {
-            return response()->json([
-                'message' => 'Review added successfully',
-                'stats' => $this->getStatsData()
-            ]);
-        }
-
-        return redirect()->route('reviews.index')->with('success', 'Review added successfully.');
+        return response()->json(['message' => 'Review added successfully']);
     }
+
     public function edit($id)
     {
         $review = Review::findOrFail($id); // Fetch review by ID
@@ -51,6 +49,7 @@ class ReviewController extends Controller
 
         return redirect()->back()->with('success', 'Review status updated successfully');
     }
+
     public function getStats()
     {
         return response()->json($this->getStatsData());
@@ -104,5 +103,16 @@ class ReviewController extends Controller
             'message' => 'Reviews updated successfully',
             'stats' => $this->getStatsData()
         ]);
+    }
+
+    // Get all reviews
+    public function getReviews()
+    {
+        $reviews = Review::where('status', 'approved')
+            ->where('is_active', true)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json(['reviews' => $reviews]);
     }
 }

@@ -15,8 +15,6 @@ class ShippingAddress extends Model
         'address_type',
         'street_address',
         'city',
-        'state',
-        'zip_code',
         'country',
         'default_address',
     ];
@@ -37,6 +35,6 @@ class ShippingAddress extends Model
 
     public function getFullAddressAttribute()
     {
-        return "{$this->street_address}, {$this->city}, {$this->state} {$this->zip_code}, {$this->country}";
+        return "{$this->street_address}, {$this->city}, {$this->country}";
     }
 }

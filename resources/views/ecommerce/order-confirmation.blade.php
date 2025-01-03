@@ -13,10 +13,10 @@
                 <div class="row row-cols-1">
                     <div class="col">
                         <div class="breadcrumb__content text-center">
-                            <h1 class="breadcrumb__content--title text-white mb-25">My Order</h1>
+                            <h1 class="breadcrumb__content--title text-white mb-25">My Orders</h1>
                             <ul class="breadcrumb__content--menu d-flex justify-content-center">
                                 <li class="breadcrumb__content--menu__items"><a class="text-white" href="/home">Home</a></li>
-                                <li class="breadcrumb__content--menu__items"><span class="text-white">My Order</span></li>
+                                <li class="breadcrumb__content--menu__items"><span class="text-white">My Orders</span></li>
                             </ul>
                         </div>
                     </div>
@@ -76,7 +76,6 @@
                 @endif
             </div>
         </section>
-
         <!-- End Orders Section -->
 
         <style>
@@ -178,6 +177,7 @@
                 border-radius: 5px;
             }
         </style>
-    </main>
 
+
+    </main>
 </x-ecommerce-app-layout>

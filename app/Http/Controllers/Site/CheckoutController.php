@@ -87,8 +87,6 @@ class CheckoutController extends Controller
                 'address_type' => 'required|in:home,work',
                 'street_address' => 'required|string|max:255',
                 'city' => 'required|string|max:100',
-                'state' => 'required|string|max:100',
-                'zip_code' => 'required|string|max:20',
                 'country' => 'required|string|max:100',
                 'subtotal' => 'required|numeric',
                 'discount' => 'required|numeric',
@@ -152,8 +150,6 @@ class CheckoutController extends Controller
                 'address_type' => $validatedData['address_type'],
                 'street_address' => $validatedData['street_address'],
                 'city' => $validatedData['city'],
-                'state' => $validatedData['state'],
-                'zip_code' => $validatedData['zip_code'],
                 'country' => $validatedData['country'],
                 'default_address' => false,
             ]);
@@ -170,6 +166,7 @@ class CheckoutController extends Controller
             return redirect()->back()->with('error', 'Failed to place order: ' . $e->getMessage());
         }
     }
+    
     public function confirmation($id)
     {
         $order = Cache::remember("order_{$id}", 600, function () use ($id) {
@@ -192,7 +189,8 @@ class CheckoutController extends Controller
         $order->discount = $discount;
         $order->total = $total;
 
-        return view('ecommerce.order-confirmation', compact('order'));
-    }
+        $orders = Order::where('user_id', auth()->id())->paginate(10);
 
+        return view('ecommerce.order-confirmation', compact('order', 'orders'));
+    }
 }

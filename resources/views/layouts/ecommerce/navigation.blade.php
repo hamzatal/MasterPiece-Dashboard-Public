@@ -55,7 +55,6 @@
 
                 <!-- Right Icons -->
                 <div class="nx-actions">
-
                     <a href="/wishlist" class="nx-action-btn">
                         <i class="bi bi-heart"></i>
                         <span class="nx-badge">{{ $wishlistCount }}</span>
@@ -66,6 +65,8 @@
                         <span class="nx-badge">{{ $cartCount }}</span>
                         <span>Cart</span>
                     </a>
+
+                    @auth
                     <div class="nx-action-item nx-account-dropdown">
                         <button class="nx-action-btn">
                             <i class="bi bi-person"></i>
@@ -95,6 +96,14 @@
                             </li>
                         </ul>
                     </div>
+                    @endauth
+
+                    @guest
+                    <a href="{{ route('login') }}" class="nx-action-btn">
+                        <i class="bi bi-box-arrow-in-right"></i>
+                        <span>Login</span>
+                    </a>
+                    @endguest
                 </div>
             </div>
         </div>

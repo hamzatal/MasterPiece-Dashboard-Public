@@ -27,213 +27,235 @@
         </section>
         <!-- End breadcrumb section -->
 
-        <!-- Start wishlist section -->
-        <section class="wishlist__section section--padding">
-            <div class="container">
-                <div class="wishlist__section--inner">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="wishlist-container">
-                                @if(session('success'))
-                                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                    {{ session('success') }}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                </div>
+        <!-- Start Wishlist Page -->
+        <section class="favorites-showcase">
+            <div class="favorites-container">
+                <div class="favorites-wrapper">
+                    @if(session('success'))
+                    <div class="alert-box alert-box--success">
+                        {{ session('success') }}
+                        <button type="button" class="alert-box__close" data-bs-dismiss="alert">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    @endif
+
+                    @if(session('error'))
+                    <div class="alert-box alert-box--error">
+                        {{ session('error') }}
+                        <button type="button" class="alert-box__close" data-bs-dismiss="alert">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    @endif
+
+                    @if($wishlistItems->count() > 0)
+                    <div class="favorites-grid">
+                        @foreach($wishlistItems as $item)
+                        <div class="product-card" data-item-id="{{ $item->id }}">
+                            <div class="product-card__image">
+                                <img src="{{ Storage::url($item->product->image1) }}" alt="{{ $item->product->name }}">
+                                @if($item->product->original_price && $item->product->original_price > $item->product->new_price)
+                                <span class="product-card__badge">Sale</span>
                                 @endif
+                            </div>
 
-                                @if(session('error'))
-                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                    {{ session('error') }}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            <div class="product-card__content">
+                                <h3 class="product-card__title">{{ $item->product->name }}</h3>
+                                <p class="product-card__description">{{ $item->product->category->name }}</p>
+
+                                <div class="product-card__status">
+                                    @if($item->product->stock_quantity > 0)
+                                    <span class="status-indicator status-indicator--in-stock">In Stock</span>
+                                    @else
+                                    <span class="status-indicator status-indicator--out-stock">Out of Stock</span>
+                                    @endif
                                 </div>
-                                @endif
 
-                                @if($wishlistItems->count() > 0)
-                                <div class="wishlist-items">
-                                    @foreach($wishlistItems as $item)
-                                    <div class="wishlist-item" data-item-id="{{ $item->id }}">
-                                        <img class="border-radius-5" src="{{ Storage::url($item->product->image) }}" alt="{{ $item->product->name }}">
-                                        <div class="wishlist-item-details">
-                                            <h3>Name: {{ $item->product->name }}</h3>
-                                            <p>Description: {{ $item->product->description }}</p>
-                                            @if($item->product->stock_quantity > 0)
-                                            <span class="text-success">In Stock</span>
-                                            @else
-                                            <span class="text-danger">Out of Stock</span>
-                                            @endif
-                                        </div>
+                                <div class="product-card__price">
+                                    @if($item->product->original_price && $item->product->original_price > $item->product->new_price)
+                                    <span class="price-original">JD {{ number_format($item->product->original_price, 2) }}</span>
+                                    <span class="price-current">JD {{ number_format($item->product->new_price, 2) }}</span>
+                                    @else
+                                    <span class="price-current">JD {{ number_format($item->product->new_price, 2) }}</span>
+                                    @endif
+                                </div>
 
-                                        <div class="wishlist-item-price">
-                                            @if($item->product->original_price && $item->product->original_price > $item->product->new_price)
-                                            <span class="text-decoration-line-through text-muted">
-                                                JD {{ number_format($item->product->original_price, 2) }}
+                                <div class="product-card__actions">
+                                    @if($item->product->stock_quantity > 0)
+                                    <form action="{{ route('cart.add') }}" method="POST" class="action-form">
+                                        @csrf
+                                        <input type="hidden" name="product_id" value="{{ $item->product->id }}">
+                                        <button type="submit" class="action-button cart-button">
+                                            <span class="button-content">
+                                                <svg class="button-icon" viewBox="0 0 24 24" width="18" height="18">
+                                                    <path d="M9 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM19 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
+                                                    <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" />
+                                                </svg>
+                                                <span class="button-text">Add to Cart</span>
                                             </span>
-                                            <span class="text-danger ms-2">
-                                                JD {{ number_format($item->product->new_price, 2) }}
-                                            </span>
-                                            @else
-                                            <span class="text-primary">
-                                                JD {{ number_format($item->product->new_price, 2) }}
-                                            </span>
-                                            @endif
-                                        </div>
+                                        </button>
+                                    </form>
+                                    @endif
 
+                                    <form action="{{ route('wishlist.remove', $item->id) }}" method="POST" class="action-form">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn-action btn-action--remove">
+                                            <i class="fas fa-trash-alt"></i>
+                                            <span>Remove</span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
 
-                                        <div class="wishlist-actions">
-                                            @if($item->product->stock_quantity > 0)
-                                            <form action="{{ route('cart.add') }}" method="POST">
-                                                @csrf
-                                                <input type="hidden" name="product_id" value="{{ $item->product->id }}">
-                                                <button type="submit" class="btn btn-primary">
-                                                    <i class="fas fa-shopping-cart me-2"></i>Add to Cart
-                                                </button>
-                                            </form>
-                                            @endif
+                    <div class="favorites-footer">
+                        <div class="favorites-footer__actions">
+                            <form action="{{ route('wishlist.clearAll') }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn-secondary" onclick="return confirm('Are you sure you want to clear your wishlist?')">
+                                    <i class="fas fa-trash"></i>
+                                    <span>Clear Wishlist</span>
+                                </button>
+                            </form>
 
-                                            <form action="{{ route('wishlist.remove', $item->id) }}" method="POST" class="d-inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger">
-                                                    <i class="fas fa-trash-alt me-2"></i>Remove
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                    @endforeach
+                            <a href="{{ route('products.index') }}" class="btn-primary">
+                                <i class="fas fa-shopping-bag"></i>
+                                <span>Continue Shopping</span>
+                            </a>
+                        </div>
 
-                                    <div class="wishlist-footer">
-                                        <div class="d-flex justify-content-between align-items-center mb-4">
-                                            <form action="{{ route('wishlist.clearAll') }}" method="POST">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-outline" onclick="return confirm('Are you sure you want to clear your wishlist?')">
-                                                    <i class="fas fa-trash me-2"></i>Clear Wishlist
-                                                </button>
-                                            </form>
+                        @if($wishlistItems->hasPages())
+                        <div class="pagination">
+                            {{ $wishlistItems->onEachSide(1)->links() }}
+                        </div>
+                        @endif
+                    </div>
 
-                                            <a href="{{ route('products.index') }}" class="btn btn-outline">
-                                                <i class="fas fa-shopping-bag me-2"></i>Continue Shopping
+                    @else
+                    <div class="favorites-empty">
+                        <i class="fas fa-heart"></i>
+                        <h3>Your wishlist is empty</h3>
+                        <p>Browse our products and add some items to your wishlist!</p>
+                        <a href="/shop" class="empty-btn-primary">
+                            <i class="fas fa-shopping-bag"></i>
+                            <span>Browse Products</span>
+                        </a>
+                    </div>
+                    @endif
+                </div>
+            </div>
+        </section>
+        <!-- End Wishlist Page -->
+
+        <!-- Start Sale Section -->
+        <section class="sale-section">
+            <div class="sale-container">
+                <h2 class="sale-title">Sale Products</h2>
+
+                <div class="col-xl-9 col-lg-8">
+                    <div class="shop__product--wrapper">
+                        <div class="tab_content">
+                            <!-- Grid View -->
+                            <div class="sp-container">
+                                <div class="sp-grid">
+                                    @foreach($products as $product)
+                                    @if($product->is_discount_active)
+                                    <div class="sp-card">
+                                        <!-- Image Container -->
+                                        <div class="sp-image-wrap">
+                                            <a href="{{ route('product.details', $product->id) }}">
+                                                @if($product->image1)
+                                                <img src="{{ Storage::url($product->image1) }}" alt="{{ $product->name }}" class="sp-image">
+                                                @else
+                                                <img src="assets/img/product/default.png" alt="default-product-image" class="sp-image">
+                                                @endif
                                             </a>
+                                            @if($product->discount_percentage)
+                                            <span class="sp-tag sp-tag-sale">{{ $product->discount_percentage }}% OFF</span>
+                                            @endif
                                         </div>
 
-                                        @if($wishlistItems->hasPages())
-                                        <div class="wishlist-pagination">
-                                            <div class="pagination-container">
-                                                {{ $wishlistItems->onEachSide(1)->links() }}
+                                        <!-- Content -->
+                                        <div class="sp-content">
+                                            <span class="sp-category">{{ $product->category->name ?? 'Uncategorized' }}</span>
+                                            <h3 class="sp-name">
+                                                <a href="{{ route('products.show', $product->id) }}">{{ htmlspecialchars($product->name) }}</a>
+                                            </h3>
+
+                                            <!-- Price -->
+                                            <div class="sp-price">
+                                                <span class="sp-old-price">JD {{ number_format($product->original_price, 2) }}</span>
+                                                <span class="sp-current-price">JD {{ number_format($product->new_price, 2) }}</span>
+                                            </div>
+
+                                            <!-- Actions -->
+                                            <div class="action-group">
+                                                <form action="{{ route('cart.add') }}" method="POST" class="action-form">
+                                                    @csrf
+                                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                                    <button type="submit" class="action-button cart-button">
+                                                        <span class="button-content">
+                                                            <svg class="button-icon" viewBox="0 0 24 24" width="18" height="18">
+                                                                <path d="M9 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM19 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
+                                                                <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" />
+                                                            </svg>
+                                                            <span class="button-text">Add to Cart</span>
+                                                        </span>
+                                                    </button>
+                                                </form>
+
+                                                <div class="action-controls">
+                                                    @php
+                                                    $isInWishlist = \App\Models\Wishlist::where('user_id', auth()->id())->where('product_id', $product->id)->exists();
+                                                    @endphp
+
+                                                    <form action="{{ route('wishlist.add', $product->id) }}" method="POST" class="action-form">
+                                                        @csrf
+                                                        <button type="submit" class="icon-button wishlist-button" title="Add to Wishlist">
+                                                            <svg class="heart-icon {{ $isInWishlist ? 'heart-added' : '' }}" viewBox="0 0 24 24" width="20" height="20">
+                                                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                                                            </svg>
+                                                            <span class="tooltip">{{ $isInWishlist ? 'In Wishlist' : 'Add to Wishlist' }}</span>
+                                                        </button>
+                                                    </form>
+
+                                                    <a href="{{ route('product.details', $product->id) }}" class="icon-button details-button" title="View Details">
+                                                        <svg class="details-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                                                            <path d="M12 2a10 10 0 1010 10A10 10 0 0012 2zm0 18a8 8 0 118-8 8 8 0 01-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" />
+                                                        </svg>
+                                                    </a>
+                                                </div>
                                             </div>
                                         </div>
-                                        @endif
                                     </div>
+                                    @endif
+                                    @endforeach
                                 </div>
-                                @else
-                                <div class="wishlist-empty">
-                                    <i class="fas fa-heart text-muted mb-4" style="font-size: 3rem;"></i>
-                                    <h3>Your wishlist is empty</h3>
-                                    <p>Browse our products and add some items to your wishlist!</p>
-                                    <a href="/shop" class="btn btn-primary mt-4">
-                                        <i class="fas fa-shopping-bag me-2"></i>Browse Products
-                                    </a>
+                                <!-- Pagination -->
+                                <div class="sp-pagination">
+                                    @if($products->count() > 0)
+                                    @if($products->hasPages())
+                                    {{ $products->links() }}
+                                    @endif
+                                    @else
+                                    <p>No products to display.</p>
+                                    @endif
                                 </div>
-                                @endif
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-
-        </section>
-        <!-- End wishlist section -->
-
-        <!-- Start New product section -->
-        <section class="sp-section">
-            <div class="sp-container">
-                <h2 class="sp-title">New Products</h2>
-
-                <div class="sp-grid">
-                    @foreach($products as $product)
-                    <div class="sp-card">
-                        <!-- Image Container -->
-                        <div class="sp-image-wrap">
-                            <a href="{{ route('products.show', $product->id) }}">
-                                @if($product->image)
-                                <img src="{{ Storage::url($product->image) }}" alt="{{ $product->name }}" class="sp-image">
-                                @else
-                                <img src="assets/img/product/default.png" alt="default-product-image" class="sp-image">
-                                @endif
-                            </a>
-                            @if($product->is_discount_active && $product->discount_percentage)
-                            <span class="sp-tag sp-tag-sale">{{ $product->discount_percentage }}% OFF</span>
-                            @endif
-                            @if(now()->diffInDays($product->created_at) <= 30)
-                                <span class="sp-tag sp-tag-new">NEW</span>
-                                @endif
-                        </div>
-
-                        <!-- Content -->
-                        <div class="sp-content">
-                            <span class="sp-category">{{ $product->category->name ?? 'Uncategorized' }}</span>
-                            <h3 class="sp-name">
-                                <a href="{{ route('products.show', $product->id) }}">{{ htmlspecialchars($product->name) }}</a>
-                            </h3>
-
-                            <!-- Price -->
-                            <div class="sp-price">
-                                @if ($product->is_discount_active)
-                                <span class="sp-old-price">JD {{ number_format($product->original_price, 2) }}</span>
-                                <span class="sp-current-price">JD {{ number_format($product->new_price, 2) }}</span>
-                                @else
-                                <span class="sp-current-price">JD {{ number_format($product->original_price, 2) }}</span>
-                                @endif
-                            </div>
-                            <!-- Actions -->
-                            <div class="sp-actions">
-                                <form action="{{ route('cart.add') }}" method="POST" class="sp-form">
-                                    @csrf
-                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                    <button type="submit" class="sp-button sp-button-cart">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M9 20a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"></path>
-                                            <path d="M20 20a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"></path>
-                                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                                        </svg>
-                                        Add
-                                    </button>
-                                </form>
-
-                                <form action="{{ route('wishlist.add', $product->id) }}" method="POST">
-                                    @csrf
-                                    <button type="submit" class="sp-icon-button" title="Add to Wishlist">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                                        </svg>
-                                    </button>
-                                </form>
-
-
-                                <a href="{{ route('products.show', $product->id) }}" class="sp-icon-button" title="Quick View">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"></path>
-                                        <circle cx="12" cy="12" r="3"></circle>
-                                    </svg>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    @endforeach
-                </div>
-                <!-- Pagination -->
-                <div class="sp-pagination">
-                    @if($products->count() > 0)
-                    @if($products->hasPages())
+                <div class="sale-pagination">
                     {{ $products->links() }}
-                    @endif
-                    @else
-                    <p>No products to display.</p>
-                    @endif
                 </div>
             </div>
         </section>
-        <!-- End product section -->
+        <!-- End Sale Section -->
 
     </main>
 

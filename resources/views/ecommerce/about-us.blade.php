@@ -60,7 +60,7 @@
 
 
         <!-- Start testimonial section -->
-        <section class="testimonial__section bg__gray--color section--padding">
+        <!-- <section class="testimonial__section bg__gray--color section--padding">
             <div class="container-fluid">
                 <div class="section__heading text-center mb-40">
                     <h2 class="section__heading--maintitle">Our Clients Say</h2>
@@ -271,7 +271,7 @@
                     <div class="testimonial__pagination swiper-pagination"></div>
                 </div>
             </div>
-        </section>
+        </section> -->
         <!-- End testimonial section -->
 
 
