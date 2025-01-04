@@ -11,10 +11,10 @@ class Product_discount extends Model
 
     protected $fillable = [
         'product_id',
-        'discount_percentage',
-        'start_date',
-        'end_date',
-        'is_active'
+        'discount_percentage', // Match table column
+        'start_date', // Match table column
+        'end_date', // Match table column
+        'is_active',
     ];
 
     // Relationship with Product model

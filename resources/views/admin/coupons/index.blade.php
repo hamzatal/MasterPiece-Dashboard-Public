@@ -4,11 +4,11 @@
         <!-- Page Header -->
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
-                <div class="p-8 bg-gradient-to-br from-violet-500/10 via-purple-500/10 to-fuchsia-500/10">
+                <div class="p-8 bg-gradient-to-br from-blue-500/10 via-gray-700/10 to-teal-100/10">
                     <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
                         <div class="flex items-center gap-5">
                             <div class="flex-shrink-0">
-                                <span class="inline-flex items-center justify-center h-16 w-16 rounded-2xl bg-gradient-to-br from-violet-600 to-fuchsia-600 shadow-lg">
+                                <span class="inline-flex items-center justify-center h-16 w-16 rounded-2xl bg-gradient-to-br from-blue-600 to-teal-300 shadow-lg">
                                     <svg class="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
@@ -24,7 +24,7 @@
                             </div>
                         </div>
                         <div class="flex-shrink-0">
-                            <a href="{{ route('coupons.create') }}" class="inline-flex items-center px-6 py-3 text-lg font-medium text-white bg-gradient-to-r from-violet-600 to-fuchsia-600 rounded-xl shadow-lg hover:shadow-xl transform transition hover:-translate-y-0.5">
+                            <a href="{{ route('coupons.create') }}" class="inline-flex items-center px-6 py-3 text-lg font-medium text-white bg-gradient-to-r from-blue-600 to-teal-300 rounded-xl shadow-lg hover:shadow-xl transform transition hover:-translate-y-0.5">
                                 <svg class="mr-2 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
                                 </svg>
@@ -46,13 +46,13 @@
                                     </svg>
                                 </div>
                                 <input type="text" name="search" value="{{ request('search') }}"
-                                    class="block w-full pl-12 pr-4 py-3 text-base rounded-xl border-gray-200 dark:border-gray-600 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:text-white"
+                                    class="block w-full pl-12 pr-4 py-3 text-base rounded-xl border-gray-200 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
                                     placeholder="Search coupons...">
                             </div>
 
                             <!-- Status Filter -->
                             <div class="relative">
-                                <select name="status" class="block w-full pl-4 pr-10 py-3 text-base rounded-xl border-gray-200 dark:border-gray-600 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:text-white">
+                                <select name="status" class="block w-full pl-4 pr-10 py-3 text-base rounded-xl border-gray-200 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
                                     <option value="">All Status</option>
                                     <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
                                     <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
@@ -61,7 +61,7 @@
 
                             <!-- Discount Type Filter -->
                             <div class="relative">
-                                <select name="discount_type" class="block w-full pl-4 pr-10 py-3 text-base rounded-xl border-gray-200 dark:border-gray-600 focus:ring-violet-500 focus:border-violet-500 dark:bg-gray-700 dark:text-white">
+                                <select name="discount_type" class="block w-full pl-4 pr-10 py-3 text-base rounded-xl border-gray-200 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
                                     <option value="">All Discount Types</option>
                                     <option value="percentage" {{ request('discount_type') == 'percentage' ? 'selected' : '' }}>Percentage</option>
                                     <option value="fixed" {{ request('discount_type') == 'fixed' ? 'selected' : '' }}>Fixed Amount</option>
@@ -76,7 +76,7 @@
                                 </svg>
                                 Reset
                             </a>
-                            <button type="submit" class="inline-flex items-center px-5 py-2.5 bg-violet-600 hover:bg-violet-700 text-white rounded-xl font-medium transition-colors">
+                            <button type="submit" class="inline-flex items-center px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-colors">
                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
                                 </svg>
@@ -95,7 +95,7 @@
                                 <div class="flex justify-between items-start mb-4">
                                     <div>
                                         <h3 class="text-xl font-semibold text-gray-900 dark:text-white">{{ $coupon->code }}</h3>
-                                        <p class="mt-1 text-violet-600 dark:text-violet-400 font-medium">
+                                        <p class="mt-1 text-blue-600 dark:text-blue-400 font-medium">
                                             {{ $coupon->discount_type == 'percentage' ? $coupon->discount_value . '%' : '$' . number_format($coupon->discount_value, 2) }} Off
                                         </p>
                                     </div>
@@ -155,7 +155,7 @@
                                 <h3 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">No coupons found</h3>
                                 <p class="mt-2 text-gray-500 dark:text-gray-400">Create your first coupon to get started!</p>
                                 <div class="mt-6">
-                                    <a href="{{ route('coupons.create') }}" class="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium rounded-xl transition-all duration-200 transform hover:scale-105 hover:shadow-lg">
+                                    <a href="{{ route('coupons.create') }}" class="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-blue-600 to-teal-300 text-white font-medium rounded-xl transition-all duration-200 transform hover:scale-105 hover:shadow-lg">
                                         <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                                         </svg>

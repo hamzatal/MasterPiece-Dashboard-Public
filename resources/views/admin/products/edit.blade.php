@@ -16,8 +16,9 @@
                 @csrf
                 @method('PUT')
 
+                {{-- Error Messages --}}
                 @if ($errors->any())
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl" role="alert">
                     <ul>
                         @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -26,6 +27,7 @@
                 </div>
                 @endif
 
+                {{-- Name and Category --}}
                 <div class="grid md:grid-cols-2 gap-6">
                     {{-- Name Input --}}
                     <div>
@@ -39,7 +41,7 @@
                             value="{{ old('name', $product->name) }}"
                             placeholder="Enter product name"
                             required
-                            class="mt-1 block w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition duration-300" />
+                            class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition duration-300" />
                     </div>
 
                     {{-- Category Dropdown --}}
@@ -50,7 +52,7 @@
                         <select
                             name="category_id"
                             id="category_id"
-                            class="mt-1 block w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition duration-300"
+                            class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition duration-300"
                             required>
                             @foreach($categories as $category)
                             <option
@@ -72,26 +74,27 @@
                         name="description"
                         id="description"
                         rows="4"
-                        class="mt-1 block w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition duration-300"
+                        class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition duration-300"
                         placeholder="Enter product description"
                         required>{{ old('description', $product->description) }}</textarea>
                 </div>
 
+                {{-- Price and Stock --}}
                 <div class="grid md:grid-cols-2 gap-6">
                     {{-- Price Input --}}
                     <div>
-                        <label for="price" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label for="original_price" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Price
                         </label>
                         <input
                             type="number"
-                            name="price"
-                            id="price"
-                            value="{{ old('new_price', $product->new_price) }}"
+                            name="original_price"
+                            id="original_price"
+                            value="{{ old('original_price', $product->original_price) }}"
                             step="0.01"
                             placeholder="Enter price"
                             required
-                            class="mt-1 block w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition duration-300" />
+                            class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition duration-300" />
                     </div>
 
                     {{-- Stock Input --}}
@@ -106,45 +109,145 @@
                             value="{{ old('stock_quantity', $product->stock_quantity) }}"
                             placeholder="Enter stock quantity"
                             required
-                            class="mt-1 block w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition duration-300" />
+                            class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition duration-300" />
                     </div>
                 </div>
 
-                {{-- Image Upload --}}
-                <div class="space-y-4">
+                {{-- Size and Color --}}
+                <div class="grid md:grid-cols-2 gap-6">
+                    {{-- Size Dropdown with Custom Option --}}
+                    <div>
+                        <label for="size" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Size
+                        </label>
+                        <select
+                            name="size"
+                            id="size"
+                            class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition duration-300"
+                            onchange="toggleCustomInput('size', 'customSizeInput')">
+                            <option value="">Select Size</option>
+                            <option value="S" {{ old('size', $product->size) == 'S' ? 'selected' : '' }}>Small (S)</option>
+                            <option value="M" {{ old('size', $product->size) == 'M' ? 'selected' : '' }}>Medium (M)</option>
+                            <option value="L" {{ old('size', $product->size) == 'L' ? 'selected' : '' }}>Large (L)</option>
+                            <option value="XL" {{ old('size', $product->size) == 'XL' ? 'selected' : '' }}>Extra Large (XL)</option>
+                            <option value="40" {{ old('size', $product->size) == '40' ? 'selected' : '' }}>40</option>
+                            <option value="41" {{ old('size', $product->size) == '41' ? 'selected' : '' }}>41</option>
+                            <option value="42" {{ old('size', $product->size) == '42' ? 'selected' : '' }}>42</option>
+                            <option value="43" {{ old('size', $product->size) == '43' ? 'selected' : '' }}>43</option>
+                            <option value="44" {{ old('size', $product->size) == '44' ? 'selected' : '' }}>44</option>
+                            <option value="45" {{ old('size', $product->size) == '45' ? 'selected' : '' }}>45</option>
+                            <option value="custom">Custom Size</option>
+                        </select>
+                        {{-- Custom Size Input (Shows when "Custom" is selected) --}}
+                        <input
+                            x-show="showCustomSizeInput"
+                            type="text"
+                            name="custom_size"
+                            id="customSizeInput"
+                            placeholder="Enter custom size"
+                            class="mt-2 w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition duration-300"
+                            style="display: none;" />
+                    </div>
+
+                    {{-- Color Dropdown with Custom Option --}}
+                    <div>
+                        <label for="color" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Color
+                        </label>
+                        <select
+                            name="color"
+                            id="color"
+                            class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition duration-300"
+                            onchange="toggleCustomInput('color', 'customColorInput')">
+                            <option value="">Select Color</option>
+                            <option value="Black" {{ old('color', $product->color) == 'Black' ? 'selected' : '' }}>Black</option>
+                            <option value="White" {{ old('color', $product->color) == 'White' ? 'selected' : '' }}>White</option>
+                            <option value="Red" {{ old('color', $product->color) == 'Red' ? 'selected' : '' }}>Red</option>
+                            <option value="Blue" {{ old('color', $product->color) == 'Blue' ? 'selected' : '' }}>Blue</option>
+                            <option value="Green" {{ old('color', $product->color) == 'Green' ? 'selected' : '' }}>Green</option>
+                            <option value="Yellow" {{ old('color', $product->color) == 'Yellow' ? 'selected' : '' }}>Yellow</option>
+                            <option value="Gray" {{ old('color', $product->color) == 'Gray' ? 'selected' : '' }}>Gray</option>
+                            <option value="custom">Custom Color</option>
+                        </select>
+                        {{-- Custom Color Input (Shows when "Custom" is selected) --}}
+                        <input
+                            x-show="showCustomColorInput"
+                            type="text"
+                            name="custom_color"
+                            id="customColorInput"
+                            placeholder="Enter custom color"
+                            class="mt-2 w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition duration-300"
+                            style="display: none;" />
+                    </div>
+                </div>
+
+                {{-- Image Upload Section --}}
+                <div class="space-y-6">
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Current Image
+                        Product Images
                     </label>
-                    <div class="flex items-center space-x-6">
-                        @if($product->image)
-                        <img
-                            src="{{ Storage::url($product->image) }}"
-                            alt="{{ $product->name }}"
-                            class="w-64 h-64 object-cover rounded-2xl shadow-lg" />
-                        @else
-                        <div class="w-64 h-64 bg-gray-200 dark:bg-gray-700 rounded-2xl flex items-center justify-center">
-                            <span class="text-gray-500 dark:text-gray-300">No Image</span>
-                        </div>
-                        @endif
-                    </div>
-                </div>
 
-                <div>
-                    <label for="image" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Update Image
-                    </label>
-                    <input
-                        type="file"
-                        name="image"
-                        id="image"
-                        accept="image/*"
-                        class="block w-full text-sm text-gray-500
-                            file:mr-4 file:py-2 file:px-4
-                            file:rounded-full file:border-0
-                            file:text-sm file:font-semibold
-                            file:bg-indigo-50 file:text-indigo-700
-                            hover:file:bg-indigo-100
-                            dark:file:bg-indigo-900 dark:file:text-indigo-200" />
+                    <div class="flex space-x-4">
+                        {{-- Image 1 --}}
+                        <div class="w-32 h-32 relative">
+                            <input
+                                type="file"
+                                name="image1"
+                                id="image1"
+                                accept="image/*"
+                                class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                onchange="previewImage(event, 'image1Preview')" />
+                            <div class="w-full h-full rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-gray-400 transition-colors flex items-center justify-center" id="image1Placeholder">
+                                @if($product->image1)
+                                <img id="image1Preview" src="{{ Storage::url($product->image1) }}" class="w-full h-full object-cover rounded-xl" />
+                                @else
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                @endif
+                            </div>
+                        </div>
+
+                        {{-- Image 2 --}}
+                        <div class="w-32 h-32 relative">
+                            <input
+                                type="file"
+                                name="image2"
+                                id="image2"
+                                accept="image/*"
+                                class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                onchange="previewImage(event, 'image2Preview')" />
+                            <div class="w-full h-full rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-gray-400 transition-colors flex items-center justify-center" id="image2Placeholder">
+                                @if($product->image2)
+                                <img id="image2Preview" src="{{ Storage::url($product->image2) }}" class="w-full h-full object-cover rounded-xl" />
+                                @else
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                @endif
+                            </div>
+                        </div>
+
+                        {{-- Image 3 --}}
+                        <div class="w-32 h-32 relative">
+                            <input
+                                type="file"
+                                name="image3"
+                                id="image3"
+                                accept="image/*"
+                                class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                onchange="previewImage(event, 'image3Preview')" />
+                            <div class="w-full h-full rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-gray-400 transition-colors flex items-center justify-center" id="image3Placeholder">
+                                @if($product->image3)
+                                <img id="image3Preview" src="{{ Storage::url($product->image3) }}" class="w-full h-full object-cover rounded-xl" />
+                                @else
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 {{-- Action Buttons --}}
@@ -163,4 +266,42 @@
             </form>
         </div>
     </div>
+
+    <script>
+        function previewImage(event, previewId) {
+            const input = event.target;
+            const preview = document.getElementById(previewId);
+            const placeholder = document.getElementById(input.id + 'Placeholder');
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.classList.add('w-full', 'h-full', 'object-cover', 'rounded-xl');
+                    placeholder.innerHTML = '';
+                    placeholder.appendChild(img);
+                };
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                placeholder.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                `;
+            }
+        }
+
+        function toggleCustomInput(selectId, customInputId) {
+            const select = document.getElementById(selectId);
+            const customInput = document.getElementById(customInputId);
+
+            if (select.value === 'custom') {
+                customInput.style.display = 'block';
+            } else {
+                customInput.style.display = 'none';
+            }
+
+        }
+    </script>
 </x-admin-app-layout>

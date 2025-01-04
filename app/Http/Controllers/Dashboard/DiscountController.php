@@ -39,23 +39,30 @@ class DiscountController extends Controller
     {
         $validated = $request->validate([
             'product_id' => 'required|exists:products,id',
-            'percentage' => 'required|numeric|min:0|max:100',
-            'startdate' => 'required|date|before_or_equal:enddate',
-            'enddate' => 'required|date|after_or_equal:startdate',
+            'discount_percentage' => 'required|numeric|min:0|max:100', // Match table column
+            'start_date' => 'required|date|before_or_equal:end_date', // Match table column
+            'end_date' => 'required|date|after_or_equal:start_date', // Match table column
             'is_active' => 'boolean',
         ]);
 
         try {
-            $discount = Product_discount::create($validated);
+            // Create the discount
+            $discount = Product_discount::create([
+                'product_id' => $validated['product_id'],
+                'discount_percentage' => $validated['discount_percentage'], // Match table column
+                'start_date' => $validated['start_date'], // Match table column
+                'end_date' => $validated['end_date'], // Match table column
+                'is_active' => $validated['is_active'] ?? false, // Default to false if not provided
+            ]);
 
-            // Update product price
+            // Update the product price
             $product = $discount->product;
-            $discountedPrice = $product->original_price * (1 - ($discount->percentage / 100));
-            $product->update(['price' => $discountedPrice]);
+            $discountedPrice = $product->original_price * (1 - ($discount->discount_percentage / 100)); // Match table column
+            $product->update(['new_price' => $discountedPrice]);
 
             return redirect()->route('discounts.index')->with('success', 'Discount created successfully!');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Failed to create discount.')->withInput();
+            return redirect()->back()->with('error', 'Failed to create discount: ' . $e->getMessage())->withInput();
         }
     }
 
@@ -74,23 +81,29 @@ class DiscountController extends Controller
 
         $validated = $request->validate([
             'product_id' => 'required|exists:products,id',
-            'percentage' => 'required|numeric|min:0|max:100',
-            'startdate' => 'required|date|before_or_equal:enddate',
-            'enddate' => 'required|date|after_or_equal:startdate',
+            'discount_percentage' => 'required|numeric|min:0|max:100', // Match table column
+            'start_date' => 'required|date|before_or_equal:end_date', // Match table column
+            'end_date' => 'required|date|after_or_equal:start_date', // Match table column
             'is_active' => 'boolean',
         ]);
 
         try {
-            $discount->update($validated);
+            $discount->update([
+                'product_id' => $validated['product_id'],
+                'discount_percentage' => $validated['discount_percentage'], // Match table column
+                'start_date' => $validated['start_date'], // Match table column
+                'end_date' => $validated['end_date'], // Match table column
+                'is_active' => $validated['is_active'] ?? false, // Default to false if not provided
+            ]);
 
-            // Update product price
+            // Update the product price
             $product = $discount->product;
-            $discountedPrice = $product->original_price * (1 - ($discount->percentage / 100));
+            $discountedPrice = $product->original_price * (1 - ($discount->discount_percentage / 100)); // Match table column
             $product->update(['price' => $discountedPrice]);
 
             return redirect()->route('discounts.index')->with('success', 'Discount updated successfully!');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Failed to update discount.')->withInput();
+            return redirect()->back()->with('error', 'Failed to update discount: ' . $e->getMessage())->withInput();
         }
     }
 

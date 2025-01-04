@@ -1,7 +1,7 @@
 <x-admin-app-layout>
     <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <!-- Enhanced Header Section -->
+            <!-- Header Section -->
             <div class="flex flex-col md:flex-row justify-between items-center mb-8 bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
                 <div class="flex items-center space-x-4">
                     <div class="p-3 bg-purple-100 dark:bg-purple-900 rounded-xl">
@@ -27,7 +27,7 @@
                 </button>
             </div>
 
-            <!-- Enhanced Success Message -->
+            <!-- Success Message -->
             @if(session('success'))
             <div class="mb-6 bg-green-50 dark:bg-green-900/50 border-l-4 border-green-500 p-4 rounded-r-xl animate-fade-in-down">
                 <div class="flex items-center">
@@ -39,85 +39,85 @@
             </div>
             @endif
 
-            <!--  Create/Edit Form with Validations -->
+            <!-- Create/Edit Form -->
             <div x-data="{
-    show: false,
-    image1Preview: null,
-    image2Preview: null,
-    image3Preview: null,
-    isEditing: false,
-    editProduct: null,
-    errors: {},
-    handleImageUpload(event, imageNum) {
-        const file = event.target.files[0];
-        if (file) {
-            if (file.size > 2048576) { // 2MB limit
-                this.errors[`image${imageNum}`] = 'Image must be less than 2MB';
-                event.target.value = '';
-                return;
-            }
-            if (!['image/jpeg', 'image/png', 'image/gif'].includes(file.type)) {
-                this.errors[`image${imageNum}`] = 'Image must be in JPG, PNG, or GIF format';
-                event.target.value = '';
-                return;
-            }
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                this[`image${imageNum}Preview`] = e.target.result;
-            };
-            reader.readAsDataURL(file);
-            this.errors[`image${imageNum}`] = null;
-        }
-    },
-    validateForm() {
-        this.errors = {};
-        let isValid = true;
+                show: false,
+                image1Preview: null,
+                image2Preview: null,
+                image3Preview: null,
+                isEditing: false,
+                editProduct: null,
+                errors: {},
+                selectedSize: '',
+                selectedColor: '',
+                showCustomSizeInput: false,
+                showCustomColorInput: false,
+                handleImageUpload(event, imageNum) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        if (file.size > 2048576) { // 2MB limit
+                            this.errors[`image${imageNum}`] = 'Image must be less than 2MB';
+                            event.target.value = '';
+                            return;
+                        }
+                        if (!['image/jpeg', 'image/png', 'image/gif'].includes(file.type)) {
+                            this.errors[`image${imageNum}`] = 'Image must be in JPG, PNG, or GIF format';
+                            event.target.value = '';
+                            return;
+                        }
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            this[`image${imageNum}Preview`] = e.target.result;
+                        };
+                        reader.readAsDataURL(file);
+                        this.errors[`image${imageNum}`] = null;
+                    }
+                },
+                validateForm() {
+                    this.errors = {};
+                    let isValid = true;
 
-        // Name validation
-        const name = document.querySelector('input[name=name]').value;
-        if (!name || name.length < 3) {
-            this.errors.name = 'Product name must be at least 3 characters';
-            isValid = false;
-        }
+                    // Name validation
+                    const name = document.querySelector('input[name=name]').value;
+                    if (!name || name.length < 3) {
+                        this.errors.name = 'Product name must be at least 3 characters';
+                        isValid = false;
+                    }
 
-        // Price validation
-        const newPrice = document.querySelector('input[name=new_price]').value;
-        if (!newPrice || newPrice <= 0) {
-            this.errors.new_price = 'Price must be greater than 0';
-            isValid = false;
-        }
+                    // Original Price validation
+                    const originalPrice = document.querySelector('input[name=original_price]').value;
+                    if (!originalPrice || originalPrice <= 0) {
+                        this.errors.original_price = 'Price must be greater than 0';
+                        isValid = false;
+                    }
 
-        // Category validation
-        const category = document.querySelector('select[name=category_id]').value;
-        if (!category) {
-            this.errors.category = 'Please select a category';
-            isValid = false;
-        }
+                    // Category validation
+                    const category = document.querySelector('select[name=category_id]').value;
+                    if (!category) {
+                        this.errors.category = 'Please select a category';
+                        isValid = false;
+                    }
 
-        return isValid;
-    },
-    openEditForm(product) {
-        this.isEditing = true;
-        this.editProduct = product;
-        this.$store.productForm.toggleForm();
-        this.$nextTick(() => {
-            document.querySelector('input[name=name]').value = product.name;
-            document.querySelector('input[name=new_price]').value = product.new_price;
-            document.querySelector('input[name=original_price]').value = product.original_price;
-            document.querySelector('select[name=category_id]').value = product.category_id;
-            document.querySelector('input[name=stock_quantity]').value = product.stock_quantity;
-            document.querySelector('textarea[name=description]').value = product.description;
-            document.querySelector('input[name=size]').value = product.size;
-            document.querySelector('input[name=color]').value = product.color;
-            document.querySelector('input[name=rating]').value = product.rating;
-            document.querySelector('input[name=is_on_sale]').checked = product.is_on_sale;
-            document.querySelector('input[name=discount_percentage]').value = product.discount_percentage;
-            this.image1Preview = product.image1 ? '{{ Storage::url('') }}' + product.image1 : null;
-            this.image2Preview = product.image2 ? '{{ Storage::url('') }}' + product.image2 : null;
-            this.image3Preview = product.image3 ? '{{ Storage::url('') }}' + product.image3 : null;
-        });
-    }
-}"
+                    return isValid;
+                },
+                openEditForm(product) {
+                    this.isEditing = true;
+                    this.editProduct = product;
+                    this.$store.productForm.toggleForm();
+                    this.$nextTick(() => {
+                        document.querySelector('input[name=name]').value = product.name;
+                        document.querySelector('input[name=original_price]').value = product.original_price;
+                        document.querySelector('select[name=category_id]').value = product.category_id;
+                        document.querySelector('input[name=stock_quantity]').value = product.stock_quantity;
+                        document.querySelector('textarea[name=description]').value = product.description;
+                        document.querySelector('select[name=size]').value = product.size;
+                        document.querySelector('select[name=color]').value = product.color;
+                        this.image1Preview = product.image1 ? '{{ Storage::url('') }}' + product.image1 : null;
+                        this.image2Preview = product.image2 ? '{{ Storage::url('') }}' + product.image2 : null;
+                        this.image3Preview = product.image3 ? '{{ Storage::url('') }}' + product.image3 : null;
+                    });
+                }
+            }"
                 x-show="$store.productForm.isOpen"
                 x-transition:enter="transition ease-out duration-300"
                 x-transition:enter-start="opacity-0 transform -translate-y-4"
@@ -143,72 +143,6 @@
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <!-- Product Images Section -->
-                        <div class="space-y-4">
-                            <!-- Image 1 -->
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Primary Image</label>
-                                <div class="relative aspect-square rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-gray-400 transition-colors mt-2">
-                                    <input
-                                        type="file"
-                                        name="image1"
-                                        accept="image/jpeg,image/png,image/gif"
-                                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                                        @change="handleImageUpload($event, 1)">
-                                    <div class="absolute inset-0 flex flex-col items-center justify-center" x-show="!image1Preview">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                        </svg>
-                                        <p class="mt-2 text-sm text-gray-500">Primary Image</p>
-                                    </div>
-                                    <img x-show="image1Preview" :src="image1Preview" class="absolute inset-0 w-full h-full object-cover rounded-xl">
-                                </div>
-                                <p class="text-xs text-red-500" x-text="errors.image1" x-show="errors.image1"></p>
-                            </div>
-
-                            <!-- Image 2 -->
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Secondary Image</label>
-                                <div class="relative aspect-square rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-gray-400 transition-colors mt-2">
-                                    <input
-                                        type="file"
-                                        name="image2"
-                                        accept="image/jpeg,image/png,image/gif"
-                                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                                        @change="handleImageUpload($event, 2)">
-                                    <div class="absolute inset-0 flex flex-col items-center justify-center" x-show="!image2Preview">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                        </svg>
-                                        <p class="mt-2 text-sm text-gray-500">Secondary Image</p>
-                                    </div>
-                                    <img x-show="image2Preview" :src="image2Preview" class="absolute inset-0 w-full h-full object-cover rounded-xl">
-                                </div>
-                                <p class="text-xs text-red-500" x-text="errors.image2" x-show="errors.image2"></p>
-                            </div>
-
-                            <!-- Image 3 -->
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Additional Image</label>
-                                <div class="relative aspect-square rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-gray-400 transition-colors mt-2">
-                                    <input
-                                        type="file"
-                                        name="image3"
-                                        accept="image/jpeg,image/png,image/gif"
-                                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                                        @change="handleImageUpload($event, 3)">
-                                    <div class="absolute inset-0 flex flex-col items-center justify-center" x-show="!image3Preview">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                        </svg>
-                                        <p class="mt-2 text-sm text-gray-500">Additional Image</p>
-                                    </div>
-                                    <img x-show="image3Preview" :src="image3Preview" class="absolute inset-0 w-full h-full object-cover rounded-xl">
-                                </div>
-                                <p class="text-xs text-red-500" x-text="errors.image3" x-show="errors.image3"></p>
-                            </div>
-                        </div>
-
                         <!-- Product Details -->
                         <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
                             <!-- Basic Information -->
@@ -239,47 +173,71 @@
                                 </div>
 
                                 <!-- Product Attributes -->
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Size</label>
-                                    <input
-                                        type="text"
-                                        name="size"
-                                        class="mt-1 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
-                                        placeholder="e.g., S, M, L, XL or custom size">
-                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <!-- Size -->
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Size</label>
+                                        <select
+                                            name="size"
+                                            x-model="selectedSize"
+                                            class="mt-1 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
+                                            @change="selectedSize === 'custom' ? showCustomSizeInput = true : showCustomSizeInput = false">
+                                            <option value="">Select Size</option>
+                                            <option value="S">Small (S)</option>
+                                            <option value="M">Medium (M)</option>
+                                            <option value="L">Large (L)</option>
+                                            <option value="XL">Extra Large (XL)</option>
+                                            <option value="40">40</option>
+                                            <option value="41">41</option>
+                                            <option value="42">42</option>
+                                            <option value="43">43</option>
+                                            <option value="44">44</option>
+                                            <option value="45">45</option>
+                                            <option value="custom">Custom Size</option>
+                                        </select>
+                                        <!-- Custom Size Input (Shows when "Custom" is selected) -->
+                                        <input
+                                            x-show="showCustomSizeInput"
+                                            type="text"
+                                            name="custom_size"
+                                            placeholder="Enter custom size"
+                                            class="mt-2 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500">
+                                    </div>
 
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Color</label>
-                                    <input
-                                        type="text"
-                                        name="color"
-                                        class="mt-1 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
-                                        placeholder="e.g., Red, Blue, Black">
+                                    <!-- Color -->
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Color</label>
+                                        <select
+                                            name="color"
+                                            x-model="selectedColor"
+                                            class="mt-1 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
+                                            @change="selectedColor === 'custom' ? showCustomColorInput = true : showCustomColorInput = false">
+                                            <option value="">Select Color</option>
+                                            <option value="Black">Black</option>
+                                            <option value="White">White</option>
+                                            <option value="Red">Red</option>
+                                            <option value="Blue">Blue</option>
+                                            <option value="Green">Green</option>
+                                            <option value="Yellow">Yellow</option>
+                                            <option value="Gray">Gray</option>
+                                            <option value="custom">Custom Color</option>
+                                        </select>
+                                        <!-- Custom Color Input (Shows when "Custom" is selected) -->
+                                        <input
+                                            x-show="showCustomColorInput"
+                                            type="text"
+                                            name="custom_color"
+                                            placeholder="Enter custom color"
+                                            class="mt-2 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500">
+                                    </div>
                                 </div>
                             </div>
 
                             <!-- Pricing and Stock -->
                             <div class="space-y-6">
-                                <!-- New Price -->
+                                <!-- Price -->
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">New Price</label>
-                                    <div class="relative mt-1">
-                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <span class="text-gray-500 dark:text-gray-400">JD</span>
-                                        </div>
-                                        <input
-                                            type="number"
-                                            step="0.001"
-                                            name="new_price"
-                                            class="pl-8 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
-                                            placeholder="0.000">
-                                    </div>
-                                    <p class="text-xs text-red-500" x-text="errors.new_price" x-show="errors.new_price"></p>
-                                </div>
-
-                                <!-- Original Price -->
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Original Price</label>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Price</label>
                                     <div class="relative mt-1">
                                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                             <span class="text-gray-500 dark:text-gray-400">JD</span>
@@ -291,6 +249,7 @@
                                             class="pl-8 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
                                             placeholder="0.000">
                                     </div>
+                                    <p class="text-xs text-red-500" x-text="errors.original_price" x-show="errors.original_price"></p>
                                 </div>
 
                                 <!-- Stock Quantity -->
@@ -304,60 +263,75 @@
                                         placeholder="Enter stock quantity">
                                     <p class="text-xs text-red-500" x-text="errors.stock" x-show="errors.stock"></p>
                                 </div>
-
-                                <!-- Rating -->
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Rating</label>
-                                    <input
-                                        type="number"
-                                        name="rating"
-                                        min="0"
-                                        max="5"
-                                        step="0.1"
-                                        class="mt-1 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
-                                        placeholder="Product rating (0-5)">
-                                </div>
                             </div>
 
-                            <!-- Sale Information -->
-                            <div class="md:col-span-2 space-y-6">
-                                <div class="flex items-center space-x-4">
-                                    <div class="flex items-center">
-                                        <input
-                                            type="checkbox"
-                                            name="is_on_sale"
-                                            id="is_on_sale"
-                                            class="rounded border-gray-300 text-purple-600 focus:ring-purple-500">
-                                        <label for="is_on_sale" class="ml-2 text-sm text-gray-700 dark:text-gray-300">On Sale</label>
-                                    </div>
-
-                                    <div class="flex-1">
-                                        <div class="relative">
-                                            <input
-                                                type="number"
-                                                name="discount_percentage"
-                                                min="0"
-                                                max="100"
-                                                class="w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
-                                                placeholder="Discount percentage">
-                                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                                <span class="text-gray-500 dark:text-gray-400">%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Description -->
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
-                                    <textarea
-                                        name="description"
-                                        rows="4"
-                                        class="mt-1 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
-                                        placeholder="Enter product description"></textarea>
-                                </div>
+                            <!-- Description -->
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
+                                <textarea
+                                    name="description"
+                                    rows="4"
+                                    class="mt-1 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
+                                    placeholder="Enter product description"></textarea>
                             </div>
                         </div>
+                    </div>
+
+                    <!-- Product Images Section -->
+                    <div class="space-y-4">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Product Images</label>
+                        <div class="flex space-x-4">
+                            <!-- Image 1 -->
+                            <div class="w-32 h-32 relative">
+                                <input
+                                    type="file"
+                                    name="image1"
+                                    accept="image/jpeg,image/png,image/gif"
+                                    class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                    @change="handleImageUpload($event, 1)">
+                                <div class="w-full h-full rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-gray-400 transition-colors flex items-center justify-center" id="image1Placeholder">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+                                <img x-show="image1Preview" :src="image1Preview" class="absolute inset-0 w-full h-full object-cover rounded-xl">
+                            </div>
+
+                            <!-- Image 2 -->
+                            <div class="w-32 h-32 relative">
+                                <input
+                                    type="file"
+                                    name="image2"
+                                    accept="image/jpeg,image/png,image/gif"
+                                    class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                    @change="handleImageUpload($event, 2)">
+                                <div class="w-full h-full rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-gray-400 transition-colors flex items-center justify-center" id="image2Placeholder">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+                                <img x-show="image2Preview" :src="image2Preview" class="absolute inset-0 w-full h-full object-cover rounded-xl">
+                            </div>
+
+                            <!-- Image 3 -->
+                            <div class="w-32 h-32 relative">
+                                <input
+                                    type="file"
+                                    name="image3"
+                                    accept="image/jpeg,image/png,image/gif"
+                                    class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                    @change="handleImageUpload($event, 3)">
+                                <div class="w-full h-full rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-gray-400 transition-colors flex items-center justify-center" id="image3Placeholder">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+                                <img x-show="image3Preview" :src="image3Preview" class="absolute inset-0 w-full h-full object-cover rounded-xl">
+                            </div>
+                        </div>
+                        <p class="text-xs text-red-500" x-text="errors.image1" x-show="errors.image1"></p>
+                        <p class="text-xs text-red-500" x-text="errors.image2" x-show="errors.image2"></p>
+                        <p class="text-xs text-red-500" x-text="errors.image3" x-show="errors.image3"></p>
                     </div>
 
                     <!-- Form Actions -->
@@ -383,7 +357,7 @@
                 </form>
             </div>
 
-            <!-- Enhanced Products Table -->
+            <!-- Products Table -->
             <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700">
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm text-left">
@@ -419,15 +393,7 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <div class="space-y-1">
-                                        <span class="text-gray-900 dark:text-white font-medium">JD {{ number_format($product->new_price, 3) }}</span>
-                                        @if($product->discount_percentage > 0)
-                                        <div class="flex items-center space-x-2">
-                                            <span class="text-xs text-gray-500 line-through">JD {{ number_format($product->original_price, 3) }}</span>
-                                            <span class="text-xs text-green-500">-{{ $product->discount_percentage }}%</span>
-                                        </div>
-                                        @endif
-                                    </div>
+                                    <span class="text-gray-900 dark:text-white font-medium">JD {{ number_format($product->original_price, 3) }}</span>
                                 </td>
                                 <td class="px-6 py-4">
                                     <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium

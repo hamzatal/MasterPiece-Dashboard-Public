@@ -27,18 +27,14 @@ class ProductController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:products,name',
             'description' => 'nullable|string',
-            'new_price' => 'required|numeric|min:0',
             'original_price' => 'nullable|numeric|min:0',
             'stock_quantity' => 'nullable|integer|min:0',
             'category_id' => 'required|exists:categories,id',
             'size' => 'nullable|string|max:50',
             'color' => 'nullable|string|max:50',
-            'rating' => 'nullable|numeric|min:0|max:5',
             'image1' => 'nullable|image|max:2048|mimes:jpeg,png,jpg,gif',
             'image2' => 'nullable|image|max:2048|mimes:jpeg,png,jpg,gif',
             'image3' => 'nullable|image|max:2048|mimes:jpeg,png,jpg,gif',
-            'is_on_sale' => 'nullable|boolean',
-            'discount_percentage' => 'nullable|numeric|min:0|max:100',
         ]);
 
         try {
@@ -77,18 +73,14 @@ class ProductController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:products,name,' . $product->id,
             'description' => 'nullable|string',
-            'new_price' => 'required|numeric|min:0',
             'original_price' => 'nullable|numeric|min:0',
             'stock_quantity' => 'nullable|integer|min:0',
             'category_id' => 'required|exists:categories,id',
             'size' => 'nullable|string|max:50',
             'color' => 'nullable|string|max:50',
-            'rating' => 'nullable|numeric|min:0|max:5',
             'image1' => 'nullable|image|max:2048|mimes:jpeg,png,jpg,gif',
             'image2' => 'nullable|image|max:2048|mimes:jpeg,png,jpg,gif',
             'image3' => 'nullable|image|max:2048|mimes:jpeg,png,jpg,gif',
-            'is_on_sale' => 'nullable|boolean',
-            'discount_percentage' => 'nullable|numeric|min:0|max:100',
         ]);
 
         try {
