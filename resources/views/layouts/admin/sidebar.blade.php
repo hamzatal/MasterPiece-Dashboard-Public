@@ -6,14 +6,9 @@
         <a href="{{ route('dashboard') }}"
             class="flex items-center space-x-1 text-2xl font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 transition-colors duration-300 group">
             <div class="flex items-center">
-                <i class="fas fa-code text-3xl mr-3
-                      group-hover:animate-spin
-                      group-hover:text-indigo-800
-                      transition-all duration-500
-                      dark:group-hover:text-indigo-300"></i>
-                <h1 class="text-2xl font-bold
-                       group-hover:tracking-wider
-                       transition-all duration-300">DevStore</h1>
+                <span class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                    {+} SyntaxStore
+                </span>
             </div>
         </a>
         <!-- Close Button for Mobile (unchanged) -->
@@ -156,5 +151,6 @@
             <span class="absolute right-3 top-1/2 transform -translate-y-1/2 w-2 h-2 bg-indigo-600 dark:bg-indigo-400 rounded-full"></span>
             @endif
         </a>
+
     </nav>
 </aside>

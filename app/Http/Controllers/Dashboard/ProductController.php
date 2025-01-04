@@ -155,7 +155,10 @@ class ProductController extends Controller
 
         return view('ecommerce.product-details', compact('product'));
     }
-
+    public function showinfo()
+    {
+        return view('admin.products.showinfo');
+    }
     public function checkLowStock()
     {
         $lowStockProducts = Product::where('stock_quantity', '<=', 5)

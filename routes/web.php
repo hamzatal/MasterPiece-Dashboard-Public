@@ -42,7 +42,7 @@ use Illuminate\Support\Facades\Route;
 //! Test Routes
 
 
-
+Route::get('/products/showinfo', [ProductController::class, 'showinfo'])->name('products.showinfo');
 
 //! End Test Routes
 
