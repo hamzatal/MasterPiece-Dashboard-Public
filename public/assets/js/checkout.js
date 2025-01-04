@@ -52,3 +52,49 @@ document.addEventListener("DOMContentLoaded", function () {
         this.value = this.value.replace(/[^0-9-]/g, "");
     });
 });
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("checkoutForm");
+    const submitButton = form.querySelector('.btn-place-order');
+
+    // Create button content structure
+    submitButton.innerHTML = `
+        <div class="button-content">
+            <i class="fas fa-truck truck-icon"></i>
+            <span class="button-text">Place Order</span>
+        </div>
+    `;
+
+    form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        if (!form.checkValidity()) {
+            return;
+        }
+
+        // Start animation
+        submitButton.classList.add('ordering');
+        submitButton.querySelector('.button-text').innerHTML = 'Processing<span class="loading-dots"></span>';
+
+        try {
+            // Simulate form submission (replace with your actual submission logic)
+            await new Promise(resolve => setTimeout(resolve, 2000));
+
+            // Success state
+            submitButton.classList.remove('ordering');
+            submitButton.classList.add('success');
+            submitButton.querySelector('.button-text').textContent = 'Order Placed!';
+            submitButton.querySelector('.truck-icon').classList.replace('fa-truck', 'fa-check');
+
+            // Actually submit the form after animation
+            form.submit();
+
+        } catch (error) {
+            // Error state
+            submitButton.classList.remove('ordering');
+            submitButton.querySelector('.button-text').textContent = 'Place Order';
+            alert("An error occurred. Please try again.");
+        }
+    });
+});

@@ -24,21 +24,12 @@ class WishlistController extends Controller
     {
         $wishlistItems = Wishlist::where('user_id', Auth::id())
             ->with('product')
-            ->get();
+            ->paginate(10);
 
         $productIds = $wishlistItems->pluck('product_id')->toArray();
         $products = Product::whereIn('id', $productIds)->get();
 
-        $products = Product::with('category')->paginate(5); // Adjust pagination as required
-
-        //wishlistItems pagination
-        $wishlistItems = Wishlist::where('user_id', Auth::id())
-            ->with('product')
-            ->paginate(10); // Adjust pagination as required
-
-
-
-
+        $products = Product::with('category')->paginate(5);
 
         return view('ecommerce.wishlist', compact('wishlistItems', 'products'));
     }
@@ -47,12 +38,11 @@ class WishlistController extends Controller
      * Add a product to the wishlist.
      *
      * @param int $productId
-     * @return \Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Http\JsonResponse
      */
     public function add($productId)
     {
         try {
-            // Check if the product is already in the wishlist
             if (Wishlist::where('user_id', Auth::id())->where('product_id', $productId)->exists()) {
                 return response()->json([
                     'status' => 'info',
@@ -60,7 +50,6 @@ class WishlistController extends Controller
                 ]);
             }
 
-            // Add the product to the wishlist
             Wishlist::create([
                 'user_id' => Auth::id(),
                 'product_id' => $productId,
@@ -71,8 +60,6 @@ class WishlistController extends Controller
                 'message' => 'Product added to wishlist!',
             ]);
         } catch (\Exception $e) {
-            // Log the error for debugging
-
             return response()->json([
                 'status' => 'error',
                 'message' => 'An error occurred while processing your request.',
@@ -84,7 +71,7 @@ class WishlistController extends Controller
      * Remove a product from the wishlist.
      *
      * @param int $id
-     * @return \Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Http\JsonResponse
      */
     public function remove($id)
     {
@@ -107,9 +94,6 @@ class WishlistController extends Controller
                 'message' => 'Product removed from wishlist.',
             ]);
         } catch (\Exception $e) {
-            // Log the error for debugging
-            \Log::error('Error removing product from wishlist: ' . $e->getMessage());
-
             return response()->json([
                 'status' => 'error',
                 'message' => 'An error occurred while processing your request.',
@@ -122,11 +106,9 @@ class WishlistController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-
     public function clearAll()
     {
         try {
-            // Delete all wishlist items for the authenticated user
             Wishlist::where('user_id', Auth::id())->delete();
 
             return redirect()->back()->with('success', 'All items have been removed from your wishlist.');

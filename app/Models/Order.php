@@ -2,14 +2,13 @@
 
 namespace App\Models;
 
-use Faker\Provider\ar_EG\Payment;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Order extends Model
 {
     use SoftDeletes;
+
     protected $fillable = [
         'user_id',
         'total',
@@ -39,12 +38,12 @@ class Order extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
-    // Default values
+
     protected $attributes = [
         'status' => 'pending',
         'payment_method' => 'credit_card',
     ];
-    // Relationships
+
     public function items()
     {
         return $this->hasMany(OrderItem::class);
@@ -73,6 +72,7 @@ class Order extends Model
     {
         return $query->orderBy('created_at', 'desc');
     }
+
     public function scopeByStatus($query, $status)
     {
         return $query->where('status', $status);

@@ -32,7 +32,6 @@ class ShippingAddress extends Model
     {
         return $this->hasMany(Order::class);
     }
-
     public function getFullAddressAttribute()
     {
         return "{$this->street_address}, {$this->city}, {$this->country}";

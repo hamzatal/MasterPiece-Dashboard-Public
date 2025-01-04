@@ -4,8 +4,7 @@
         <div class="nx-container">
             <!-- Logo -->
             <a class="nx-brand" href="/home">
-                <img src="assets/img/logo/SyntaxStore.png" alt="logo" class="nx-logo">
-            </a>
+                <img src="{{ asset('assets/img/logo/SyntaxStore.png') }}" alt="logo" class="nx-logo"> </a>
 
             <!-- Mobile Toggle -->
             <button class="nx-mobile-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#nxContent">
@@ -111,5 +110,5 @@
 </header>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-<link rel="stylesheet" href="css/navbar.css">
-<link rel="javascript" href="js/navbar.js">
+<link rel="stylesheet" href="{{ asset('css/navbar.css') }}">
+<script src="{{ asset('js/navbar.js') }}"></script>

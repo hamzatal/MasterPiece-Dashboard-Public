@@ -32,6 +32,7 @@ use App\Http\Controllers\Site\{
     WishlistController,
     SearchController,
     ReviewsController,
+    OrderInfoController,
 };
 use Illuminate\Support\Facades\Route;
 
@@ -55,11 +56,12 @@ Route::get('/search', [SearchController::class, 'search'])->name('search');
 Route::get('/search-products', [ShopController::class, 'searchProducts'])->name('search.products');
 
 //? Order Confirmation Routes
+Route::get('/orders/{orderId}', [OrderInfoController::class, 'show'])->name('site.orders.show');
 Route::middleware(['auth'])->group(function () {
     Route::get('/orders', [OrderConfirmationController::class, 'index'])->name('orders.index');
-    Route::get('/orders/{id}', [OrderConfirmationController::class, 'show'])->name('order.info');
     Route::get('/order-details/{id}', [OrderConfirmationController::class, 'show'])->name('order.details');
     Route::get('/order-confirmation/{orderId}', [OrderController::class, 'showOrderConfirmation'])->name('order.confirmation');
+    Route::get('/orders/{id}', [OrderConfirmationController::class, 'show'])->name('order.info');
 });
 Route::get('/order/confirmation', [OrderConfirmationController::class, 'index'])->name('orders.confirmation');
 
@@ -67,7 +69,7 @@ Route::get('/order/confirmation', [OrderConfirmationController::class, 'index'])
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/home', [HomeController::class, 'index'])->name('home.index');
 Route::get('/about-us', [AboutController::class, 'index']);
-Route::get('/404', [NotFoundController::class, 'index']);
+Route::fallback([NotFoundController::class, 'index'])->name('404');
 Route::get('/contact-us', [ContactUsController::class, 'index']);
 Route::post('/contact/store', [ContactUsController::class, 'store'])->name('contact.store');
 Route::get('/faq', [FaqController::class, 'index']);
@@ -79,6 +81,8 @@ Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::get('/shop', [ShopController::class, 'index'])->name('shop');
 
 //? Product Frontend Routes
+Route::get('/product-details/{id}', [ProductDetailsController::class, 'show'])->name('product.details');
+
 Route::prefix('products')->group(function () {
     Route::get('/', [ProductController::class, 'frontendIndex'])->name('home.products.index');
     Route::get('/{product:slug}', [ProductController::class, 'frontendShow'])->name('home.product.show');

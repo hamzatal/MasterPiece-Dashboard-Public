@@ -1,8 +1,9 @@
 <x-guest-layout>
-    <div class="container">
-        <div class="nav-buttons">
-        </div>
+    <button id="theme-toggle" class="theme-toggle">
+        🌞
+    </button>
 
+    <div class="container">
         <div class="login-header">
             <h1>Reset Password</h1>
         </div>

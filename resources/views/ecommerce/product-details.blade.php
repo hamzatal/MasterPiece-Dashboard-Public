@@ -68,16 +68,15 @@
                         @endif
                     </div>
 
-                    <div class="product__price">
-                        <span class="price__current">${{ number_format($product->new_price, 2) }}</span>
-                        @if($product->original_price)
-                        <span class="price__original">${{ number_format($product->original_price, 2) }}</span>
-                        @if($product->is_on_sale)
-                        <span class="price__discount">-{{ $product->discount_percentage }}%</span>
-                        @endif
+                    <div class="sp-price">
+                        @if ($product->is_discount_active)
+                        <span class="sp-old-price">JD {{ number_format($product->original_price, 2) }}</span>
+                        <span class="sp-current-price">JD {{ number_format($product->new_price, 2) }}</span>
+                        <span class="sp-discount-message">({{ $product->discount_percentage }}% OFF)</span>
+                        @else
+                        <span class="sp-current-price">JD {{ number_format($product->original_price, 2) }}</span>
                         @endif
                     </div>
-
                     <form action="{{ route('cart.add') }}" method="POST" class="product__form">
                         @csrf
                         <input type="hidden" name="product_id" value="{{ $product->id }}">

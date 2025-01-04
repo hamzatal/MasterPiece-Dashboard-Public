@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Site;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Product; // Ensure you import the Product model
-use App\Models\Category; // Ensure you import the Product model
+use App\Models\Product;
+use App\Models\Category;
 
 class ShopController extends Controller
 {
@@ -31,7 +31,6 @@ class ShopController extends Controller
                 $q->where('id', $category);
             });
         }
-
 
         if ($search) {
             $query->where('name', 'like', "%{$search}%");
@@ -59,14 +58,7 @@ class ShopController extends Controller
         $products = $query->paginate(12);
 
         // Get categories for sidebar
-        $categories = Category::all();
-
-        // Get top rated products for sidebar
-        $topProducts = Product::orderBy('description')
-            ->take(3)
-            ->get();
         $categories = Category::paginate(10);
-
 
         return view('ecommerce.shop', compact('products', 'categories'));
     }

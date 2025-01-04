@@ -111,19 +111,129 @@
 .order-product-image {
     border-radius: 8px;
 }
-
-.btn-primary {
-    background-color: #4299e1;
+/* Animated Place Order Button Styles */
+.btn-place-order {
+    position: relative;
+    width: 100%;
+    padding: 16px 24px;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: white;
     border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
     font-weight: 600;
+    cursor: pointer;
+    overflow: hidden;
     transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(37, 99, 235, 0.1);
+    transform: translateY(0);
 }
 
-.btn-primary:hover {
-    background-color: #3182ce;
-    transform: translateY(-1px);
+.btn-place-order:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(37, 99, 235, 0.2);
 }
 
+.btn-place-order .button-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-place-order .truck-icon {
+    position: relative;
+    font-size: 1.2em;
+}
+
+.btn-place-order.ordering {
+    background: #1d4ed8;
+    pointer-events: none;
+}
+
+.btn-place-order.ordering .button-content {
+    animation: buttonTextSlide 0.5s forwards;
+}
+
+.btn-place-order.ordering .truck-icon {
+    animation: truckSlide 1.5s infinite;
+}
+
+@keyframes buttonTextSlide {
+    0% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    20% {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    80% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes truckSlide {
+    0% {
+        transform: translateX(-150%);
+    }
+    50% {
+        transform: translateX(150%);
+    }
+    100% {
+        transform: translateX(-150%);
+    }
+}
+
+/* Loading dots animation */
+.loading-dots::after {
+    content: '.';
+    animation: dots 1.5s steps(5, end) infinite;
+}
+
+@keyframes dots {
+    0%, 20% { content: '.'; }
+    40% { content: '..'; }
+    60% { content: '...'; }
+    80%, 100% { content: ''; }
+}
+
+/* Success state */
+.btn-place-order.success {
+    background: #059669;
+}
+
+/* Add shine effect */
+.btn-place-order::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -75%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.3) 100%
+    );
+    transform: skewX(-25deg);
+    transition: 0.5s;
+}
+
+.btn-place-order:hover::before {
+    animation: shine 0.75s;
+}
+
+@keyframes shine {
+    100% {
+        left: 125%;
+    }
+}
 .order-totals {
     font-size: 1.1rem;
 }

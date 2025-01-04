@@ -93,7 +93,7 @@
                                                 @if($product->is_discount_active && $product->discount_percentage)
                                                 <span class="sp-tag sp-tag-sale">{{ $product->discount_percentage }}% OFF</span>
                                                 @endif
-                                                @if(now()->diffInDays($product->created_at) <= 30)
+                                                @if(now()->diffInDays($product->created_at) <= 7)
                                                     <span class="sp-tag sp-tag-new">NEW</span>
                                                     @endif
                                             </div>

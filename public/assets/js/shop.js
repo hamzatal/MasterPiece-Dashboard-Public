@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
+    // Search functionality
     const searchInput = document.querySelector(".product__view--search__input");
     const searchResults = document.createElement("div");
     searchResults.className =
@@ -7,16 +8,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let debounceTimer;
 
+    // Handle search input with debounce
     searchInput.addEventListener("input", function () {
         clearTimeout(debounceTimer);
         const searchTerm = this.value;
 
+        // Hide results if search term is too short
         if (searchTerm.length < 2) {
             searchResults.innerHTML = "";
             searchResults.style.display = "none";
             return;
         }
 
+        // Fetch search results after 300ms delay
         debounceTimer = setTimeout(() => {
             fetch(`/search-products?q=${encodeURIComponent(searchTerm)}`)
                 .then((response) => {
@@ -28,6 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 .then((data) => {
                     searchResults.innerHTML = "";
 
+                    // Display error message if any
                     if (data.status === "error") {
                         searchResults.innerHTML = `<div class="p-4 text-gray-500">${data.message}</div>`;
                         searchResults.style.display = "block";
@@ -36,6 +41,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     const { products, categories } = data.data;
 
+                    // Display "No results found" if no data
                     if (products.length === 0 && categories.length === 0) {
                         searchResults.innerHTML =
                             '<div class="p-4 text-gray-500">No results found</div>';
@@ -43,6 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         return;
                     }
 
+                    // Display categories
                     if (categories.length > 0) {
                         searchResults.innerHTML += `<div class="p-4 text-gray-700 font-bold">Categories</div>`;
                         categories.forEach((category) => {
@@ -62,6 +69,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         });
                     }
 
+                    // Display products
                     if (products.length > 0) {
                         searchResults.innerHTML += `<div class="p-4 text-gray-700 font-bold">Products</div>`;
                         products.forEach((product) => {
@@ -71,10 +79,16 @@ document.addEventListener("DOMContentLoaded", function () {
                                 "flex items-center p-4 hover:bg-gray-100 border-b last:border-b-0";
                             productElement.innerHTML = `
                                 <div class="flex items-center space-x-4">
-                                    <img src="/storage/${product.image}" alt="${product.name}" class="w-12 h-12 object-cover rounded">
+                                    <img src="/storage/${product.image}" alt="${
+                                product.name
+                            }" class="w-12 h-12 object-cover rounded">
                                     <div>
-                                        <div class="font-medium">${product.name}</div>
-                                        <div class="text-sm text-gray-600">JD ${parseFloat(product.price).toFixed(2)}</div>
+                                        <div class="font-medium">${
+                                            product.name
+                                        }</div>
+                                        <div class="text-sm text-gray-600">JD ${parseFloat(
+                                            product.price
+                                        ).toFixed(2)}</div>
                                     </div>
                                 </div>
                             `;
@@ -85,7 +99,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     searchResults.style.display = "block";
                 })
                 .catch((error) => {
-                    console.error("Error:", error);
+                    // Display error message if fetch fails
                     searchResults.innerHTML =
                         '<div class="p-4 text-red-500">An error occurred while searching</div>';
                     searchResults.style.display = "block";
@@ -102,203 +116,52 @@ document.addEventListener("DOMContentLoaded", function () {
             searchResults.style.display = "none";
         }
     });
-});
 
+    // Add to Cart functionality
+    document.querySelectorAll(".cart-button").forEach((button) => {
+        button.addEventListener("click", function (e) {
+            e.preventDefault();
 
+            const form = this.closest("form");
+            const url = form.action;
+            const formData = new FormData(form);
 
-// Add to Cart Button Animation
-document.querySelectorAll('.cart-button').forEach(button => {
-    button.addEventListener('click', function(e) {
-        // Don't prevent form submission, just add animation
-        const buttonContent = this.querySelector('.button-content');
-        const buttonFeedback = this.querySelector('.button-feedback');
+            fetch(url, {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "X-CSRF-TOKEN": document.querySelector(
+                        'meta[name="csrf-token"]'
+                    ).content,
+                },
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.status === "success") {
+                        // Show success notification
+                        showSuccessMessage(data.message);
 
-        // Slide out content
-        buttonContent.style.transform = 'translateY(-100%)';
-        // Slide in feedback
-        buttonFeedback.style.transform = 'translateY(0)';
+                        // Update cart count
+                        const cartCountElement =
+                            document.querySelector(".cart-count");
+                        if (cartCountElement) {
+                            cartCountElement.textContent = data.cart_count;
+                        }
 
-        // Reset after animation (and form submission)
-        setTimeout(() => {
-            buttonContent.style.transform = '';
-            buttonFeedback.style.transform = '';
-        }, 2000);
-    });
-});
-
-// Wishlist Button Animation
-document.querySelectorAll('.wishlist-button').forEach(button => {
-    button.addEventListener('click', function(e) {
-        // Add pop animation
-        this.style.transform = 'scale(0.8)';
-        setTimeout(() => {
-            this.style.transform = '';
-        }, 150);
-    });
-});
-
-// Details Button Ripple Effect
-document.querySelectorAll('.details-button').forEach(button => {
-    button.addEventListener('click', function(e) {
-        const rect = this.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-
-        const ripple = document.createElement('span');
-        ripple.style.cssText = `
-            position: absolute;
-            background: rgba(255, 255, 255, 0.7);
-            border-radius: 50%;
-            pointer-events: none;
-            width: 100px;
-            height: 100px;
-            left: ${x - 50}px;
-            top: ${y - 50}px;
-            transform: scale(0);
-            animation: ripple 0.6s linear;
-        `;
-
-        this.appendChild(ripple);
-
-        setTimeout(() => ripple.remove(), 600);
-    });
-});
-
-// Add necessary keyframes to the stylesheet
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes ripple {
-        to {
-            transform: scale(4);
-            opacity: 0;
-        }
-    }
-`;
-document.head.appendChild(style);
-
-
-
-// Image Loading Enhancement
-document.querySelectorAll('.sp-image').forEach(img => {
-    img.addEventListener('load', function() {
-        this.classList.add('loaded');
-    });
-
-    // Add loading animation if image takes time to load
-    if (!img.complete) {
-        img.closest('.sp-card').classList.add('loading');
-    }
-});
-
-// Smooth Scroll to Top after Pagination Click
-document.querySelectorAll('.pagination .page-link').forEach(link => {
-    link.addEventListener('click', function(e) {
-        // Don't prevent default navigation
-        setTimeout(() => {
-            window.scrollTo({
-                top: document.querySelector('.shop__product--wrapper').offsetTop - 100,
-                behavior: 'smooth'
-            });
-        }, 100);
-    });
-});
-
-// Lazy Loading Images
-if ('IntersectionObserver' in window) {
-    const imageObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const img = entry.target;
-                img.src = img.dataset.src;
-                img.classList.remove('lazy');
-                observer.unobserve(img);
-            }
+                        // Reload the page after 1 second
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error:", error);
+                });
         });
     });
 
-    document.querySelectorAll('.sp-image[data-src]').forEach(img => {
-        imageObserver.observe(img);
-    });
-}
-
-// Price Animation on Load
-document.querySelectorAll('.sp-current-price').forEach(price => {
-    price.style.opacity = '0';
-    price.style.transform = 'translateY(10px)';
-
-    setTimeout(() => {
-        price.style.transition = 'all 0.5s ease';
-        price.style.opacity = '1';
-        price.style.transform = 'translateY(0)';
-    }, 300);
-});
-
-// Category Tag Hover Effect
-document.querySelectorAll('.sp-category').forEach(category => {
-    category.addEventListener('mouseenter', function() {
-        this.style.transform = 'scale(1.05)';
-    });
-
-    category.addEventListener('mouseleave', function() {
-        this.style.transform = 'scale(1)';
-    });
-});
-
-// Add to Cart Success Feedback
-document.querySelectorAll('.action-button').forEach(button => {
-    button.addEventListener('click', function() {
-        const feedback = document.createElement('div');
-        feedback.className = 'cart-feedback';
-        feedback.textContent = 'Added to Cart!';
-
-        this.appendChild(feedback);
-        setTimeout(() => feedback.remove(), 2000);
-    });
-});
-
-// Add Required Styles for Animations
-const style = document.createElement('style');
-style.textContent = `
-    .sp-image.loaded {
-        animation: fadeIn 0.5s ease;
-    }
-
-    .cart-feedback {
-        position: absolute;
-        top: -30px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: #2ecc71;
-        color: white;
-        padding: 0.5rem 1rem;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        animation: slideUp 0.3s ease, fadeOut 0.3s ease 1.7s;
-    }
-
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-
-    @keyframes slideUp {
-        from { transform: translate(-50%, 10px); opacity: 0; }
-        to { transform: translate(-50%, 0); opacity: 1; }
-    }
-
-    @keyframes fadeOut {
-        to { opacity: 0; }
-    }
-`;
-document.head.appendChild(style);
-
-
-
-
-document.addEventListener("DOMContentLoaded", () => {
-    const wishlistButtons = document.querySelectorAll(".wishlist-button");
-
-    wishlistButtons.forEach(button => {
+    // Wishlist functionality
+    document.querySelectorAll(".wishlist-button").forEach((button) => {
         button.addEventListener("click", function (e) {
             e.preventDefault();
 
@@ -309,21 +172,96 @@ document.addEventListener("DOMContentLoaded", () => {
             fetch(url, {
                 method: "POST",
                 headers: {
-                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+                    "X-CSRF-TOKEN": document.querySelector(
+                        'meta[name="csrf-token"]'
+                    ).content,
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({}),
             })
-                .then(response => response.json())
-                .then(data => {
+                .then((response) => response.json())
+                .then((data) => {
                     if (data.status === "success") {
                         heartIcon.classList.add("heart-added");
-                        this.querySelector(".tooltip").textContent = "In Wishlist";
-                    } else if (data.status === "info") {
-                        alert(data.message);
+                        this.querySelector(".tooltip").textContent =
+                            "In Wishlist";
+
+                        // Show success notification
+                        showSuccessMessage(data.message);
                     }
                 })
-                .catch(error => console.error("Error:", error));
+                .catch((error) => console.error("Error:", error));
         });
     });
+
+    // Function to show success notification
+    function showSuccessMessage(message) {
+        const successMessage = document.createElement("div");
+        successMessage.className = "success-notification";
+        successMessage.textContent = message;
+        document.body.appendChild(successMessage);
+
+        // Hide the message after 3 seconds
+        setTimeout(() => {
+            successMessage.remove();
+        }, 3000);
+    }
 });
+
+// Image loading enhancement
+document.querySelectorAll(".sp-image").forEach((img) => {
+    img.addEventListener("load", function () {
+        this.classList.add("loaded");
+    });
+
+    // Add loading animation if image takes time to load
+    if (!img.complete) {
+        img.closest(".sp-card").classList.add("loading");
+    }
+});
+
+// Lazy loading images
+if ("IntersectionObserver" in window) {
+    const imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                img.src = img.dataset.src;
+                img.classList.remove("lazy");
+                observer.unobserve(img);
+            }
+        });
+    });
+
+    document.querySelectorAll(".sp-image[data-src]").forEach((img) => {
+        imageObserver.observe(img);
+    });
+}
+
+
+
+// Add required styles for animations
+const style = document.createElement("style");
+style.textContent = `
+    .success-notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #2ecc71;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        z-index: 1000;
+        animation: slideIn 0.5s ease, fadeOut 0.5s ease 2.5s;
+    }
+
+    @keyframes slideIn {
+        from { transform: translateX(100%); }
+        to { transform: translateX(0); }
+    }
+
+    @keyframes fadeOut {
+        to { opacity: 0; }
+    }
+`;
+document.head.appendChild(style);

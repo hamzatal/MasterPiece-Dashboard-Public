@@ -76,6 +76,7 @@ class CartController extends Controller
 
         return redirect()->back()->cookie($this->cookieName, json_encode($cartData), $this->cookieExpiration);
     }
+
     public function addToCart(Request $request)
     {
         try {
@@ -83,45 +84,27 @@ class CartController extends Controller
             $productId = $request->input('product_id');
             $quantity = $request->input('quantity', 1);
 
-            // Check if the product exists
             $product = Product::find($productId);
             if (!$product) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Product not found.',
-                ], 404);
+                return redirect()->back()->with('error', 'Product not found.');
             }
 
-            // Check if the product is already in the cart
             $itemKey = array_search($productId, array_column($cartData['items'], 'product_id'));
 
             if ($itemKey !== false) {
-                // Update quantity if the product is already in the cart
                 $cartData['items'][$itemKey]['quantity'] += $quantity;
             } else {
-                // Add new item to the cart
                 $cartData['items'][] = [
                     'product_id' => $productId,
                     'quantity' => $quantity,
                 ];
             }
 
-            // Save the updated cart data in the cookie
             $cookie = cookie('shopping_cart', json_encode($cartData), 60 * 24 * 7);
 
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Product added to cart successfully!',
-                'cart_count' => array_sum(array_column($cartData['items'], 'quantity')),
-            ])->withCookie($cookie);
+            return redirect()->back()->with('success', 'Product added to cart successfully!')->withCookie($cookie);
         } catch (\Exception $e) {
-            // Log the error for debugging
-            \Log::error('Error adding product to cart: ' . $e->getMessage());
-
-            return response()->json([
-                'status' => 'error',
-                'message' => 'An error occurred while processing your request.',
-            ], 500);
+            return redirect()->back()->with('error', 'An error occurred while processing your request.');
         }
     }
 

@@ -5,7 +5,8 @@
         </h2>
         <link rel="stylesheet" href="css/home.css">
         <link rel="stylesheet" href="css/newproduct.css">
-        <link rel="javascript" href="js/home.js">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="{{ asset('js/home.js') }}"></script>
 
     </x-slot>
 
@@ -95,7 +96,7 @@
                                     @if($product->is_discount_active && $product->discount_percentage)
                                     <span class="sp-tag sp-tag-sale">{{ $product->discount_percentage }}% OFF</span>
                                     @endif
-                                    @if(now()->diffInDays($product->created_at) <= 30)
+                                    @if(now()->diffInDays($product->created_at) <= 7)
                                         <span class="sp-tag sp-tag-new">NEW</span>
                                         @endif
                                 </div>
@@ -222,8 +223,13 @@
 
                                         <!-- Price -->
                                         <div class="sp-price">
+                                            @if ($product->is_discount_active)
                                             <span class="sp-old-price">JD {{ number_format($product->original_price, 2) }}</span>
                                             <span class="sp-current-price">JD {{ number_format($product->new_price, 2) }}</span>
+                                            <span class="sp-discount-message">({{ $product->discount_percentage }}% OFF)</span>
+                                            @else
+                                            <span class="sp-current-price">JD {{ number_format($product->original_price, 2) }}</span>
+                                            @endif
                                         </div>
 
                                         <!-- Actions -->
