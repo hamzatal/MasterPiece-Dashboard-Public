@@ -43,10 +43,12 @@ class CheckoutController extends Controller
                 $products[] = [
                     'id' => $product->id,
                     'name' => $product->name,
-                    'image' => $product->image,
+                    'image' => $product->image1,
                     'price' => $price,
                     'quantity' => $item['quantity'],
                     'total' => $itemTotal,
+                    'color' => $item['color'] ?? null,
+                    'size' => $item['size'] ?? null, 
                 ];
             }
         }
@@ -115,6 +117,8 @@ class CheckoutController extends Controller
                         'product_id' => $product->id,
                         'quantity' => $item['quantity'],
                         'price' => $price,
+                        'color' => $item['color'] ?? null,
+                        'size' => $item['size'] ?? null,
                     ];
                 }
             }
@@ -135,11 +139,12 @@ class CheckoutController extends Controller
                 'payment_status' => 'pending',
                 'price' => $validatedData['subtotal'],
                 'status' => 'pending',
-                'payment_method' => $validatedData['payment_method'], // Correct input
+                'payment_method' => $validatedData['payment_method'],
                 'amount' => 1,
                 'total_price' => $validatedData['total'],
                 'total_amount' => 1,
             ]);
+
             foreach ($orderItems as $orderItem) {
                 OrderItem::create(array_merge($orderItem, ['order_id' => $order->id]));
             }
@@ -166,7 +171,7 @@ class CheckoutController extends Controller
             return redirect()->back()->with('error', 'Failed to place order: ' . $e->getMessage());
         }
     }
-    
+
     public function confirmation($id)
     {
         $order = Cache::remember("order_{$id}", 600, function () use ($id) {

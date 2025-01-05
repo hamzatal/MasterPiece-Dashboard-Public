@@ -71,6 +71,8 @@
                                         <i class="fas fa-check"></i>
                                         <span class="item__name">{{ $item->product->name ?? 'Product not found' }}</span>
                                         <span class="item__quantity">x{{ $item->quantity }}</span>
+                                        <span class="item__color">Color: {{ $item->color ?? 'N/A' }}</span>
+                                        <span class="item__size">Size: {{ $item->size ?? 'N/A' }}</span>
                                         <span class="item__price">JD {{ number_format($item->price * $item->quantity, 2) }}</span>
                                     </li>
                                     @endforeach

@@ -167,12 +167,48 @@
     border-radius: 4px;
     margin-left: 1rem;
 }
+.color-picker__title {
+    margin-bottom: 2rem;
+}
+.color-picker__options {
+    display: flex;
+    gap: 10px;
+}
 
+.color-picker__option {
+    display: inline-block;
+    cursor: pointer;
+}
+
+.color-picker__label {
+    display: block;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.color-picker__option input[type="radio"] {
+    display: none;
+}
+
+.color-picker__option input[type="radio"]:checked + .color-picker__label {
+    border-color: #000;
+    box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #1354c5;
+}
 /* Form Elements */
 .form__group {
     margin-bottom: 1.5rem;
 }
-
+.form__label {
+    display: block;
+    margin-bottom: 1.5rem;
+    margin-top: 1.5rem;
+}
+.stock-status i {
+    color: green;
+}
 .form__options {
     display: flex;
     gap: 1rem;

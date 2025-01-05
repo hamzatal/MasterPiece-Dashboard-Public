@@ -4,6 +4,7 @@
         <link rel="stylesheet" href="css/product-details.css">
         <link rel="javascript" href="js/product-details.js">
     </x-slot>
+
     <!-- Start breadcrumb section -->
     <section class="breadcrumb__section breadcrumb__bg">
         <div class="container">
@@ -57,10 +58,9 @@
                     <div class="product__meta">
                         <span class="product__category">{{ $product->category->name ?? 'N/A' }}</span>
                         @if($product->rating)
-                       
+
                         @endif
                     </div>
-
                     <div class="sp-price">
                         @if ($product->is_discount_active)
                         <span class="sp-old-price">JD {{ number_format($product->original_price, 2) }}</span>
@@ -75,13 +75,13 @@
                         <input type="hidden" name="product_id" value="{{ $product->id }}">
 
                         @if($product->color)
-                        <div class="form__group">
-                            <h3 class="form__label">Select Color</h3>
-                            <div class="form__options">
+                        <div class="color-picker">
+                            <h3 class="color-picker__title">Select Color</h3>
+                            <div class="color-picker__options">
                                 @foreach(explode(',', $product->color) as $color)
-                                <label class="form__option">
+                                <label class="color-picker__option">
                                     <input type="radio" name="color" value="{{ trim($color) }}" {{ $loop->first ? 'checked' : '' }}>
-                                    <span class="option__label">{{ trim($color) }}</span>
+                                    <span class="color-picker__label" style="background-color: {{ trim($color) }};"></span>
                                 </label>
                                 @endforeach
                             </div>
@@ -112,10 +112,11 @@
                         </div>
 
                         <div class="form__actions">
-                            <button type="submit" class="btn btn--primary">Add to Cart</button>
-                            <button type="button" class="btn btn--secondary" data-product="{{ $product->id }}">
-                                <i class="far fa-heart"></i>
-                                <span>Add to Wishlist</span>
+                            <button type="submit"
+                                class="btn btn--primary {{ $product->stock_quantity <= 0 ? 'btn--disabled' : '' }}"
+                                {{ $product->stock_quantity <= 0 ? 'disabled' : '' }}>
+                                <i class="fas fa-shopping-cart"></i>
+                                Add to Cart
                             </button>
                         </div>
                     </form>
@@ -128,47 +129,6 @@
                     </div>
                 </div>
             </div>
-
-                <div class="reviews__header">
-                    <h2 class="reviews__title">Customer Reviews</h2>
-                    <button class="btn btn--primary" id="writeReviewBtn">Write a Review</button>
-                </div>
-
-                <div class="reviews__content">
-                    <div class="reviews__list" id="reviewsList">
-                    </div>
-
-                    <form id="reviewForm" action="{{ route('reviews.store') }}" method="POST" style="display: none;">
-                        @csrf
-                        <h3 class="form__title">Write Your Review</h3>
-                        <div class="form__group">
-                            <label>Your Rating:</label>
-                            <div class="rating__input">
-                                @for($i = 5; $i >= 1; $i--)
-                                <input type="radio" name="rating" value="{{ $i }}" id="star{{ $i }}" required>
-                                <label for="star{{ $i }}">
-                                    <i class="fas fa-star"></i>
-                                </label>
-                                @endfor
-                            </div>
-                        </div>
-                        <div class="form__group">
-                            <textarea name="comment" placeholder="Your review" required></textarea>
-                        </div>
-                        <div class="form__row">
-                            <div class="form__group">
-                                <input type="text" name="name" placeholder="Your name" required>
-                            </div>
-                            <div class="form__group">
-                                <input type="email" name="email" placeholder="Your email" required>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn--primary">Submit Review</button>
-                    </form>
-                </div>
-            </section> -->
-
-
         </div>
     </main>
 </x-ecommerce-app-layout>

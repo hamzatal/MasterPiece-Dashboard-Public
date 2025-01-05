@@ -118,6 +118,8 @@
                                 <thead>
                                     <tr>
                                         <th>Product</th>
+                                        <th>Color</th>
+                                        <th>Size</th>
                                         <th>Qty</th>
                                         <th>Price</th>
                                         <th>Total</th>
@@ -127,6 +129,8 @@
                                     @foreach($products as $product)
                                     <tr>
                                         <td>{{ $product['name'] }}</td>
+                                        <td>{{ $product['color'] ?? 'N/A' }}</td>
+                                        <td>{{ $product['size'] ?? 'N/A' }}</td>
                                         <td>{{ $product['quantity'] }}</td>
                                         <td>JD {{ number_format($product['price'], 2) }}</td>
                                         <td>JD {{ number_format($product['total'], 2) }}</td>
@@ -163,4 +167,5 @@
         </section>
 
     </main>
+
 </x-ecommerce-app-layout>

@@ -120,6 +120,8 @@
                                             @foreach($order->items as $item)
                                             <tr>
                                                 <td>{{ $item->product->name ?? 'Product not found' }}</td>
+                                                <td>{{ $item->color ?? 'N/A' }}</td>
+                                                <td>{{ $item->size ?? 'N/A' }}</td>
                                                 <td>{{ $item->quantity }}</td>
                                                 <td>JD {{ number_format($item->price, 2) }}</td>
                                                 <td>JD {{ number_format($item->quantity * $item->price, 2) }}</td>
