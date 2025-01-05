@@ -5,10 +5,10 @@ namespace App\Http\Controllers\Site;
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\Product;
-use App\Models\Category; // Import the Category model
+use App\Models\Category;
 use App\Models\Wishlist;
-use App\Models\Banner; // Import the Banner model
-use App\Models\Coupon; // Import the Coupon model
+use App\Models\Banner;
+use App\Models\Coupon; 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 

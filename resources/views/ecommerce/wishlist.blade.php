@@ -205,19 +205,16 @@
 
                                             <!-- Actions -->
                                             <div class="action-group">
-                                                <form action="{{ route('cart.add') }}" method="POST" class="action-form">
-                                                    @csrf
-                                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                                    <button type="submit" class="action-button cart-button">
-                                                        <span class="button-content">
-                                                            <svg class="button-icon" viewBox="0 0 24 24" width="18" height="18">
-                                                                <path d="M9 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM19 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
-                                                                <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" />
-                                                            </svg>
-                                                            <span class="button-text">Add to Cart</span>
-                                                        </span>
-                                                    </button>
-                                                </form>
+                                                <a href="{{ route('product.details', $product->id) }}" class="action-button cart-button">
+                                                    <span class="button-content">
+                                                        <svg class="button-icon" viewBox="0 0 24 24" width="18" height="18">
+                                                            <path d="M9 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM19 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
+                                                            <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" />
+                                                        </svg>
+                                                        <span class="button-text">Add To Cart</span>
+                                                    </span>
+                                                </a>
+
 
                                                 <div class="action-controls">
                                                     @php

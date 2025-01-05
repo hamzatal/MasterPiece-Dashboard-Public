@@ -183,59 +183,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-//? Add to cart
-document.addEventListener("DOMContentLoaded", () => {
-    const addToCartButtons = document.querySelectorAll(".cart-button");
 
-    addToCartButtons.forEach((button) => {
-        button.addEventListener("click", function (e) {
-            e.preventDefault();
-
-            const form = this.closest("form");
-            const url = form.action;
-            const productId = form.querySelector(
-                'input[name="product_id"]'
-            ).value;
-
-            fetch(url, {
-                method: "POST",
-                headers: {
-                    "X-CSRF-TOKEN": document.querySelector(
-                        'meta[name="csrf-token"]'
-                    ).content,
-                    "Content-Type": "application/json",
-                    Accept: "application/json",
-                },
-                body: JSON.stringify({ product_id: productId }),
-            })
-                .then((response) => {
-                    if (!response.ok) {
-                        throw new Error("Network response was not ok");
-                    }
-                    return response.json();
-                })
-                .then((data) => {
-                    console.log("Server Response:", data); // Debugging: Log the server response
-
-                    if (data.status === "success") {
-                        showNotification(data.message, "notification-success");
-
-                        // Reload the page to reflect changes
-                        window.location.reload();
-                    } else if (data.status === "error") {
-                        showNotification(data.message, "notification-error");
-                    }
-                })
-                .catch((error) => {
-                    console.error("Error:", error); // Debugging: Log any errors
-                    showNotification(
-                        "An error occurred while adding the product to the cart.",
-                        "notification-error"
-                    );
-                });
-        });
-    });
-});
 
 //? Coupon popup
 document.addEventListener("DOMContentLoaded", function () {

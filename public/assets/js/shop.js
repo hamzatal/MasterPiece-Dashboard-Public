@@ -117,49 +117,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Add to Cart functionality
-    document.querySelectorAll(".cart-button").forEach((button) => {
-        button.addEventListener("click", function (e) {
-            e.preventDefault();
-
-            const form = this.closest("form");
-            const url = form.action;
-            const formData = new FormData(form);
-
-            fetch(url, {
-                method: "POST",
-                body: formData,
-                headers: {
-                    "X-CSRF-TOKEN": document.querySelector(
-                        'meta[name="csrf-token"]'
-                    ).content,
-                },
-            })
-                .then((response) => response.json())
-                .then((data) => {
-                    if (data.status === "success") {
-                        // Show success notification
-                        showSuccessMessage(data.message);
-
-                        // Update cart count
-                        const cartCountElement =
-                            document.querySelector(".cart-count");
-                        if (cartCountElement) {
-                            cartCountElement.textContent = data.cart_count;
-                        }
-
-                        // Reload the page after 1 second
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 1000);
-                    }
-                })
-                .catch((error) => {
-                    console.error("Error:", error);
-                });
-        });
-    });
-
     // Wishlist functionality
     document.querySelectorAll(".wishlist-button").forEach((button) => {
         button.addEventListener("click", function (e) {
@@ -237,8 +194,6 @@ if ("IntersectionObserver" in window) {
         imageObserver.observe(img);
     });
 }
-
-
 
 // Add required styles for animations
 const style = document.createElement("style");
