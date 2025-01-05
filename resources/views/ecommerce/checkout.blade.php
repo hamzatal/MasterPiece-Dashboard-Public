@@ -79,7 +79,7 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="street_address"><i class="fas fa-road"></i> Street Address</label>
+                            <label for="street_address"><i class="fas fa-road"></i>Address</label>
                             <input type="text" name="street_address" id="street_address" class="form-input" required>
                         </div>
                         <div class="form-grid">

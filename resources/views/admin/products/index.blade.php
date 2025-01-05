@@ -41,83 +41,93 @@
 
             <!-- Create/Edit Form -->
             <div x-data="{
-                show: false,
-                image1Preview: null,
-                image2Preview: null,
-                image3Preview: null,
-                isEditing: false,
-                editProduct: null,
-                errors: {},
-                selectedSize: '',
-                selectedColor: '',
-                showCustomSizeInput: false,
-                showCustomColorInput: false,
-                handleImageUpload(event, imageNum) {
-                    const file = event.target.files[0];
-                    if (file) {
-                        if (file.size > 2048576) { // 2MB limit
-                            this.errors[`image${imageNum}`] = 'Image must be less than 2MB';
-                            event.target.value = '';
-                            return;
-                        }
-                        if (!['image/jpeg', 'image/png', 'image/gif'].includes(file.type)) {
-                            this.errors[`image${imageNum}`] = 'Image must be in JPG, PNG, or GIF format';
-                            event.target.value = '';
-                            return;
-                        }
-                        const reader = new FileReader();
-                        reader.onload = (e) => {
-                            this[`image${imageNum}Preview`] = e.target.result;
-                        };
-                        reader.readAsDataURL(file);
-                        this.errors[`image${imageNum}`] = null;
-                    }
-                },
-                validateForm() {
-                    this.errors = {};
-                    let isValid = true;
+    show: false,
+    image1Preview: null,
+    image2Preview: null,
+    image3Preview: null,
+    isEditing: false,
+    editProduct: null,
+    errors: {},
+    handleImageUpload(event, imageNum) {
+        const file = event.target.files[0];
+        if (file) {
+            if (file.size > 2048576) { // 2MB limit
+                this.errors[`image${imageNum}`] = 'Image must be less than 2MB';
+                event.target.value = '';
+                return;
+            }
+            if (!['image/jpeg', 'image/png', 'image/gif'].includes(file.type)) {
+                this.errors[`image${imageNum}`] = 'Image must be in JPG, PNG, or GIF format';
+                event.target.value = '';
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                this[`image${imageNum}Preview`] = e.target.result;
+            };
+            reader.readAsDataURL(file);
+            this.errors[`image${imageNum}`] = null;
+        }
+    },
+validateForm() {
+    this.errors = {};
+    let isValid = true;
 
-                    // Name validation
-                    const name = document.querySelector('input[name=name]').value;
-                    if (!name || name.length < 3) {
-                        this.errors.name = 'Product name must be at least 3 characters';
-                        isValid = false;
-                    }
+    // Name validation
+    const name = document.querySelector('input[name=name]').value;
+    if (!name || name.length < 3) {
+        this.errors.name = 'Product name must be at least 3 characters';
+        isValid = false;
+    }
 
-                    // Original Price validation
-                    const originalPrice = document.querySelector('input[name=original_price]').value;
-                    if (!originalPrice || originalPrice <= 0) {
-                        this.errors.original_price = 'Price must be greater than 0';
-                        isValid = false;
-                    }
+    // Original Price validation
+    const originalPrice = document.querySelector('input[name=original_price]').value;
+    if (!originalPrice || originalPrice <= 0) {
+        this.errors.original_price = 'Price must be greater than 0';
+        isValid = false;
+    }
 
-                    // Category validation
-                    const category = document.querySelector('select[name=category_id]').value;
-                    if (!category) {
-                        this.errors.category = 'Please select a category';
-                        isValid = false;
-                    }
+    // Category validation
+    const category = document.querySelector('select[name=category_id]').value;
+    if (!category) {
+        this.errors.category = 'Please select a category';
+        isValid = false;
+    }
 
-                    return isValid;
-                },
-                openEditForm(product) {
-                    this.isEditing = true;
-                    this.editProduct = product;
-                    this.$store.productForm.toggleForm();
-                    this.$nextTick(() => {
-                        document.querySelector('input[name=name]').value = product.name;
-                        document.querySelector('input[name=original_price]').value = product.original_price;
-                        document.querySelector('select[name=category_id]').value = product.category_id;
-                        document.querySelector('input[name=stock_quantity]').value = product.stock_quantity;
-                        document.querySelector('textarea[name=description]').value = product.description;
-                        document.querySelector('select[name=size]').value = product.size;
-                        document.querySelector('select[name=color]').value = product.color;
-                        this.image1Preview = product.image1 ? '{{ Storage::url('') }}' + product.image1 : null;
-                        this.image2Preview = product.image2 ? '{{ Storage::url('') }}' + product.image2 : null;
-                        this.image3Preview = product.image3 ? '{{ Storage::url('') }}' + product.image3 : null;
-                    });
-                }
-            }"
+    // Size validation
+    const size = document.querySelector('input[name=size]').value;
+    if (size && !/^[^,]+(,[^,]+)*$/.test(size)) {
+        this.errors.size = 'Size must be separated by a single comma (e.g., 40,44 or S,L,XL)';
+        isValid = false;
+    }
+
+    // Color validation
+    const color = document.querySelector('input[name=color]').value;
+    if (color && !/^[^,]+(,[^,]+)*$/.test(color)) {
+        this.errors.color = 'Color must be separated by a single comma (e.g., black,red)';
+        isValid = false;
+    }
+
+    return isValid;
+},
+    openEditForm(product) {
+        this.isEditing = true;
+        this.editProduct = product;
+        this.$store.productForm.toggleForm();
+        this.$nextTick(() => {
+            document.querySelector('input[name=name]').value = product.name;
+            document.querySelector('input[name=original_price]').value = product.original_price;
+            document.querySelector('select[name=category_id]').value = product.category_id;
+            document.querySelector('input[name=stock_quantity]').value = product.stock_quantity;
+            document.querySelector('textarea[name=description]').value = product.description;
+            document.querySelector('input[name=size]').value = product.size;
+            document.querySelector('input[name=color]').value = product.color;
+            this.image1Preview = product.image1 ? '{{ Storage::url('') }}' + product.image1 : null;
+            this.image2Preview = product.image2 ? '{{ Storage::url('') }}' + product.image2 : null;
+            this.image3Preview = product.image3 ? '{{ Storage::url('') }}' + product.image3 : null;
+        });
+    }
+}"
                 x-show="$store.productForm.isOpen"
                 x-transition:enter="transition ease-out duration-300"
                 x-transition:enter-start="opacity-0 transform -translate-y-4"
@@ -177,59 +187,29 @@
                                     <!-- Size -->
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Size</label>
-                                        <select
-                                            name="size"
-                                            x-model="selectedSize"
-                                            class="mt-1 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
-                                            @change="selectedSize === 'custom' ? showCustomSizeInput = true : showCustomSizeInput = false">
-                                            <option value="">Select Size</option>
-                                            <option value="S">Small (S)</option>
-                                            <option value="M">Medium (M)</option>
-                                            <option value="L">Large (L)</option>
-                                            <option value="XL">Extra Large (XL)</option>
-                                            <option value="40">40</option>
-                                            <option value="41">41</option>
-                                            <option value="42">42</option>
-                                            <option value="43">43</option>
-                                            <option value="44">44</option>
-                                            <option value="45">45</option>
-                                            <option value="custom">Custom Size</option>
-                                        </select>
-                                        <!-- Custom Size Input (Shows when "Custom" is selected) -->
                                         <input
-                                            x-show="showCustomSizeInput"
                                             type="text"
-                                            name="custom_size"
-                                            placeholder="Enter custom size"
-                                            class="mt-2 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500">
+                                            name="size"
+                                            class="mt-1 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
+                                            placeholder="e.g., 40,41,42,43 or S,M,L">
+                                        <p class="text-xs text-red-500" x-text="errors.size" x-show="errors.size"></p>
                                     </div>
 
                                     <!-- Color -->
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Color</label>
-                                        <select
-                                            name="color"
-                                            x-model="selectedColor"
-                                            class="mt-1 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
-                                            @change="selectedColor === 'custom' ? showCustomColorInput = true : showCustomColorInput = false">
-                                            <option value="">Select Color</option>
-                                            <option value="Black">Black</option>
-                                            <option value="White">White</option>
-                                            <option value="Red">Red</option>
-                                            <option value="Blue">Blue</option>
-                                            <option value="Green">Green</option>
-                                            <option value="Yellow">Yellow</option>
-                                            <option value="Gray">Gray</option>
-                                            <option value="custom">Custom Color</option>
-                                        </select>
-                                        <!-- Custom Color Input (Shows when "Custom" is selected) -->
                                         <input
-                                            x-show="showCustomColorInput"
                                             type="text"
-                                            name="custom_color"
-                                            placeholder="Enter custom color"
-                                            class="mt-2 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500">
+                                            name="color"
+                                            class="mt-1 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
+                                            placeholder="e.g., black,red,green,white">
+                                        <p class="text-xs text-red-500" x-text="errors.color" x-show="errors.color"></p>
                                     </div>
+                                </div>
+                                <div class="mt-2">
+                                    <p class="text-xs text-red-500">
+                                        Please use commas to separate values (e.g., 40,44 or black,red). Otherwise, the product will not be stored correctly.
+                                    </p>
                                 </div>
                             </div>
 

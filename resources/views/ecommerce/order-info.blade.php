@@ -220,6 +220,10 @@
                 box-shadow: var(--shadow-lg);
             }
 
+            .order-summary {
+                font-size: 1rem;
+            }
+
             .info-card__title {
                 font-size: 1.5rem;
                 font-weight: 700;

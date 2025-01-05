@@ -115,69 +115,32 @@
 
                 {{-- Size and Color --}}
                 <div class="grid md:grid-cols-2 gap-6">
-                    {{-- Size Dropdown with Custom Option --}}
+                    {{-- Size Input --}}
                     <div>
                         <label for="size" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Size
                         </label>
-                        <select
+                        <input
+                            type="text"
                             name="size"
                             id="size"
-                            class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition duration-300"
-                            onchange="toggleCustomInput('size', 'customSizeInput')">
-                            <option value="">Select Size</option>
-                            <option value="S" {{ old('size', $product->size) == 'S' ? 'selected' : '' }}>Small (S)</option>
-                            <option value="M" {{ old('size', $product->size) == 'M' ? 'selected' : '' }}>Medium (M)</option>
-                            <option value="L" {{ old('size', $product->size) == 'L' ? 'selected' : '' }}>Large (L)</option>
-                            <option value="XL" {{ old('size', $product->size) == 'XL' ? 'selected' : '' }}>Extra Large (XL)</option>
-                            <option value="40" {{ old('size', $product->size) == '40' ? 'selected' : '' }}>40</option>
-                            <option value="41" {{ old('size', $product->size) == '41' ? 'selected' : '' }}>41</option>
-                            <option value="42" {{ old('size', $product->size) == '42' ? 'selected' : '' }}>42</option>
-                            <option value="43" {{ old('size', $product->size) == '43' ? 'selected' : '' }}>43</option>
-                            <option value="44" {{ old('size', $product->size) == '44' ? 'selected' : '' }}>44</option>
-                            <option value="45" {{ old('size', $product->size) == '45' ? 'selected' : '' }}>45</option>
-                            <option value="custom">Custom Size</option>
-                        </select>
-                        {{-- Custom Size Input (Shows when "Custom" is selected) --}}
-                        <input
-                            x-show="showCustomSizeInput"
-                            type="text"
-                            name="custom_size"
-                            id="customSizeInput"
-                            placeholder="Enter custom size"
-                            class="mt-2 w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition duration-300"
-                            style="display: none;" />
+                            value="{{ old('size', $product->size) }}"
+                            placeholder="Enter size"
+                            class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition duration-300" />
                     </div>
 
-                    {{-- Color Dropdown with Custom Option --}}
+                    {{-- Color Input --}}
                     <div>
                         <label for="color" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Color
                         </label>
-                        <select
+                        <input
+                            type="text"
                             name="color"
                             id="color"
-                            class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition duration-300"
-                            onchange="toggleCustomInput('color', 'customColorInput')">
-                            <option value="">Select Color</option>
-                            <option value="Black" {{ old('color', $product->color) == 'Black' ? 'selected' : '' }}>Black</option>
-                            <option value="White" {{ old('color', $product->color) == 'White' ? 'selected' : '' }}>White</option>
-                            <option value="Red" {{ old('color', $product->color) == 'Red' ? 'selected' : '' }}>Red</option>
-                            <option value="Blue" {{ old('color', $product->color) == 'Blue' ? 'selected' : '' }}>Blue</option>
-                            <option value="Green" {{ old('color', $product->color) == 'Green' ? 'selected' : '' }}>Green</option>
-                            <option value="Yellow" {{ old('color', $product->color) == 'Yellow' ? 'selected' : '' }}>Yellow</option>
-                            <option value="Gray" {{ old('color', $product->color) == 'Gray' ? 'selected' : '' }}>Gray</option>
-                            <option value="custom">Custom Color</option>
-                        </select>
-                        {{-- Custom Color Input (Shows when "Custom" is selected) --}}
-                        <input
-                            x-show="showCustomColorInput"
-                            type="text"
-                            name="custom_color"
-                            id="customColorInput"
-                            placeholder="Enter custom color"
-                            class="mt-2 w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition duration-300"
-                            style="display: none;" />
+                            value="{{ old('color', $product->color) }}"
+                            placeholder="Enter color"
+                            class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition duration-300" />
                     </div>
                 </div>
 
@@ -275,7 +238,7 @@
 
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     const img = document.createElement('img');
                     img.src = e.target.result;
                     img.classList.add('w-full', 'h-full', 'object-cover', 'rounded-xl');
@@ -290,18 +253,6 @@
                     </svg>
                 `;
             }
-        }
-
-        function toggleCustomInput(selectId, customInputId) {
-            const select = document.getElementById(selectId);
-            const customInput = document.getElementById(customInputId);
-
-            if (select.value === 'custom') {
-                customInput.style.display = 'block';
-            } else {
-                customInput.style.display = 'none';
-            }
-
         }
     </script>
 </x-admin-app-layout>

@@ -53,10 +53,9 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-
 document.addEventListener("DOMContentLoaded", function () {
     const form = document.getElementById("checkoutForm");
-    const submitButton = form.querySelector('.btn-place-order');
+    const submitButton = form.querySelector(".btn-place-order");
 
     // Create button content structure
     submitButton.innerHTML = `
@@ -74,26 +73,30 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         // Start animation
-        submitButton.classList.add('ordering');
-        submitButton.querySelector('.button-text').innerHTML = 'Processing<span class="loading-dots"></span>';
+        submitButton.classList.add("ordering");
+        submitButton.querySelector(".button-text").innerHTML =
+            'Processing<span class="loading-dots"></span>';
 
         try {
             // Simulate form submission (replace with your actual submission logic)
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            await new Promise((resolve) => setTimeout(resolve, 2000));
 
             // Success state
-            submitButton.classList.remove('ordering');
-            submitButton.classList.add('success');
-            submitButton.querySelector('.button-text').textContent = 'Order Placed!';
-            submitButton.querySelector('.truck-icon').classList.replace('fa-truck', 'fa-check');
+            submitButton.classList.remove("ordering");
+            submitButton.classList.add("success");
+            submitButton.querySelector(".button-text").textContent =
+                "Order Placed!";
+            submitButton
+                .querySelector(".truck-icon")
+                .classList.replace("fa-truck", "fa-check");
 
             // Actually submit the form after animation
             form.submit();
-
         } catch (error) {
             // Error state
-            submitButton.classList.remove('ordering');
-            submitButton.querySelector('.button-text').textContent = 'Place Order';
+            submitButton.classList.remove("ordering");
+            submitButton.querySelector(".button-text").textContent =
+                "Place Order";
             alert("An error occurred. Please try again.");
         }
     });
