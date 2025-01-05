@@ -37,6 +37,8 @@ class CartController extends Controller
                     'quantity' => $item['quantity'],
                     'total' => $itemTotal,
                     'category' => $product->category ? $product->category->name : 'Uncategorized',
+                    'color' => $item['color'] ?? null,
+                    'size' => $item['size'] ?? null,
                 ];
             }
         }
@@ -54,7 +56,8 @@ class CartController extends Controller
             ->orderBy('discount_value', 'desc')
             ->first();
 
-        return view('ecommerce.cart', compact('products', 'subtotal', 'discount', 'total', 'appliedCoupon', 'coupon'));
+        // Pass $cartData as $cart to the view
+        return view('ecommerce.cart', compact('products', 'subtotal', 'discount', 'total', 'appliedCoupon', 'coupon', 'cartData'));
     }
 
     public function add(Request $request)
@@ -80,9 +83,12 @@ class CartController extends Controller
     public function addToCart(Request $request)
     {
         try {
-            $cartData = json_decode(request()->cookie('shopping_cart'), true) ?? ['items' => []];
+            $cartData = json_decode(request()->cookie($this->cookieName), true) ?? ['items' => [], 'coupon' => null];
+
             $productId = $request->input('product_id');
             $quantity = $request->input('quantity', 1);
+            $color = $request->input('color');
+            $size = $request->input('size');
 
             $product = Product::find($productId);
             if (!$product) {
@@ -97,12 +103,16 @@ class CartController extends Controller
                 $cartData['items'][] = [
                     'product_id' => $productId,
                     'quantity' => $quantity,
+                    'color' => $color,
+                    'size' => $size,
                 ];
             }
 
-            $cookie = cookie('shopping_cart', json_encode($cartData), 60 * 24 * 7);
+            $cookie = cookie($this->cookieName, json_encode($cartData), 60 * 24 * 7);
 
-            return redirect()->back()->with('success', 'Product added to cart successfully!')->withCookie($cookie);
+            return redirect()->back()
+                ->with('success', 'Product added to cart successfully!')
+                ->withCookie($cookie);
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'An error occurred while processing your request.');
         }

@@ -55,6 +55,8 @@
                                     <thead>
                                         <tr>
                                             <th>Product</th>
+                                            <th>Color</th>
+                                            <th>Size</th>
                                             <th>Price</th>
                                             <th>Quantity</th>
                                             <th>Total</th>
@@ -62,26 +64,28 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($products as $product)
-                                        <tr data-product-id="{{ $product['id'] }}">
+                                        @foreach($products as $item)
+                                        <tr data-product-id="{{ $item['id'] }}">
                                             <td>
                                                 <div class="cart-product-info d-flex align-items-center">
-                                                    <img src="{{ Storage::url($product['image']) }}" alt="{{ $product['name'] }}" class="cart-product-image">
+                                                    <img src="{{ Storage::url($item['image']) }}" alt="{{ $item['name'] }}" class="cart-product-image">
                                                     <div>
-                                                        <h6>{{ $product['name'] }}</h6>
-                                                        <p class="text-muted">{{ $product['category'] }}</p>
+                                                        <h6>{{ $item['name'] }}</h6>
+                                                        <p class="text-muted">{{ $item['category'] }}</p>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td>JD {{ number_format($product['price'], 2) }}</td>
+                                            <td>{{ $item['color'] ?? 'N/A' }}</td>
+                                            <td>{{ $item['size'] ?? 'N/A' }}</td>
+                                            <td>JD {{ number_format($item['price'], 2) }}</td>
                                             <td>
                                                 <div class="quantity-controls">
                                                     <button type="button" class="quantity-decrease">-</button>
-                                                    <input type="number" class="quantity-input" value="{{ $product['quantity'] }}" min="1">
+                                                    <input type="number" class="quantity-input" value="{{ $item['quantity'] }}" min="1">
                                                     <button type="button" class="quantity-increase">+</button>
                                                 </div>
                                             </td>
-                                            <td class="product-total">JD {{ number_format($product['total'], 2) }}</td>
+                                            <td class="product-total">JD {{ number_format($item['price'] * $item['quantity'], 2) }}</td>
                                             <td>
                                                 <button type="button" class="remove-item-btn">
                                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -95,9 +99,6 @@
                                         @endforeach
                                     </tbody>
                                 </table>
-                            </div>
-                            <div class="cart-actions mt-4">
-                                <button type="button" class="btn btn-danger" id="clear-cart">Clear Cart</button>
                             </div>
                         </div>
                         <div class="col-lg-4">

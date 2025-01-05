@@ -111,14 +111,7 @@
                             </div>
                         </div>
 
-                        <div class="form__actions">
-                            <button type="submit"
-                                class="btn btn--primary {{ $product->stock_quantity <= 0 ? 'btn--disabled' : '' }}"
-                                {{ $product->stock_quantity <= 0 ? 'disabled' : '' }}>
-                                <i class="fas fa-shopping-cart"></i>
-                                Add to Cart
-                            </button>
-                        </div>
+                        <button type="submit" class="btn btn--primary">Add to Cart</button>
                     </form>
                     <div>
                         <!-- Product Description -->
@@ -131,4 +124,5 @@
             </div>
         </div>
     </main>
+
 </x-ecommerce-app-layout>
