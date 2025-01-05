@@ -29,6 +29,12 @@ class CartController extends Controller
                 $itemTotal = $price * $item['quantity'];
                 $subtotal += $itemTotal;
 
+                $variantKey = $item['variant_key'] ?? $this->generateItemKey(
+                    $product->id,
+                    $item['color'] ?? null,
+                    $item['size'] ?? null
+                );
+
                 $products[] = [
                     'id' => $product->id,
                     'name' => $product->name,
@@ -39,6 +45,7 @@ class CartController extends Controller
                     'category' => $product->category ? $product->category->name : 'Uncategorized',
                     'color' => $item['color'] ?? null,
                     'size' => $item['size'] ?? null,
+                    'variant_key' => $variantKey
                 ];
             }
         }
@@ -56,8 +63,38 @@ class CartController extends Controller
             ->orderBy('discount_value', 'desc')
             ->first();
 
-        // Pass $cartData as $cart to the view
         return view('ecommerce.cart', compact('products', 'subtotal', 'discount', 'total', 'appliedCoupon', 'coupon', 'cartData'));
+    }
+
+    private function generateItemKey($productId, $color = null, $size = null)
+    {
+        $specs = [
+            'product_id' => $productId,
+            'color' => $color,
+            'size' => $size
+        ];
+
+        return implode('_', array_filter($specs));
+    }
+
+    private function findItemKey($items, $productId, $color = null, $size = null)
+    {
+        foreach ($items as $key => $item) {
+            $itemProductId = $item['product_id'];
+            $itemColor = $item['color'] ?? null;
+            $itemSize = $item['size'] ?? null;
+
+            // Check if this is the item we're looking for
+            $productMatches = (string)$itemProductId === (string)$productId;
+            $colorMatches = $itemColor === $color || ($itemColor === null && $color === null);
+            $sizeMatches = $itemSize === $size || ($itemSize === null && $size === null);
+
+            if ($productMatches && $colorMatches && $sizeMatches) {
+                return $key;
+            }
+        }
+
+        return false;
     }
 
     public function add(Request $request)
@@ -95,20 +132,24 @@ class CartController extends Controller
                 return redirect()->back()->with('error', 'Product not found.');
             }
 
-            $itemKey = array_search($productId, array_column($cartData['items'], 'product_id'));
+            // Find item based on product ID, color, and size
+            $itemKey = $this->findItemKey($cartData['items'], $productId, $color, $size);
 
             if ($itemKey !== false) {
+                // Update quantity if exact same variant exists
                 $cartData['items'][$itemKey]['quantity'] += $quantity;
             } else {
+                // Add as new item if variant doesn't exist
                 $cartData['items'][] = [
                     'product_id' => $productId,
                     'quantity' => $quantity,
                     'color' => $color,
                     'size' => $size,
+                    'variant_key' => $this->generateItemKey($productId, $color, $size)
                 ];
             }
 
-            $cookie = cookie($this->cookieName, json_encode($cartData), 60 * 24 * 7);
+            $cookie = cookie($this->cookieName, json_encode($cartData), $this->cookieExpiration);
 
             return redirect()->back()
                 ->with('success', 'Product added to cart successfully!')
@@ -120,58 +161,61 @@ class CartController extends Controller
 
     public function update(Request $request)
     {
-        $cartData = json_decode(request()->cookie($this->cookieName), true) ?? ['items' => []];
-        $productId = $request->input('product_id');
-        $quantity = $request->input('quantity');
+        try {
+            $cartData = json_decode(request()->cookie($this->cookieName), true) ?? ['items' => []];
 
-        $itemKey = $this->findItemKey($cartData['items'], $productId);
+            $productId = $request->input('product_id');
+            $quantity = max(1, intval($request->input('quantity'))); // Ensure quantity is at least 1
+            $color = $request->input('color');
+            $size = $request->input('size');
 
-        if ($itemKey !== false) {
-            if ($quantity > 0) {
+            $itemKey = $this->findItemKey($cartData['items'], $productId, $color, $size);
+
+            if ($itemKey !== false) {
+                // Update quantity for the specific variant
                 $cartData['items'][$itemKey]['quantity'] = $quantity;
-            } else {
-                unset($cartData['items'][$itemKey]);
-                $cartData['items'] = array_values($cartData['items']);
-            }
-        }
 
-        $subtotal = 0;
-        $discount = 0;
-        $products = [];
+                // Recalculate totals
+                $subtotal = $this->calculateSubtotal($cartData['items']);
+                $discount = $this->calculateDiscount($subtotal, $cartData['coupon'] ?? null);
+                $total = $subtotal - $discount;
 
-        foreach ($cartData['items'] as $item) {
-            $product = Product::find($item['product_id']);
-            if ($product) {
+                // Prepare updated product information
+                $product = Product::find($productId);
                 $price = $product->is_discount_active ? $product->new_price : $product->original_price;
-                $itemTotal = $price * $item['quantity'];
-                $subtotal += $itemTotal;
+                $itemTotal = $price * $quantity;
 
-                $products[] = [
+                $updatedProduct = [
                     'id' => $product->id,
                     'name' => $product->name,
                     'price' => $price,
-                    'quantity' => $item['quantity'],
+                    'quantity' => $quantity,
                     'total' => $itemTotal,
+                    'color' => $color,
+                    'size' => $size
                 ];
+
+                $cookie = cookie($this->cookieName, json_encode($cartData), $this->cookieExpiration);
+
+                return response()->json([
+                    'success' => true,
+                    'product' => $updatedProduct,
+                    'subtotal' => $subtotal,
+                    'discount' => $discount,
+                    'total' => $total
+                ])->cookie($cookie);
             }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Item not found in cart'
+            ], 404);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update cart: ' . $e->getMessage()
+            ], 500);
         }
-
-        if (!empty($cartData['coupon'])) {
-            $coupon = Coupon::where('code', $cartData['coupon'])->where('is_active', true)->first();
-            if ($coupon) {
-                $discount = ($subtotal * $coupon->discount_value) / 100;
-            }
-        }
-
-        $total = $subtotal - $discount;
-
-        return response()->json([
-            'success' => true,
-            'products' => $products,
-            'subtotal' => $subtotal,
-            'discount' => $discount,
-            'total' => $total,
-        ])->cookie($this->cookieName, json_encode($cartData), $this->cookieExpiration);
     }
 
     public function applyCoupon(Request $request)
@@ -262,41 +306,76 @@ class CartController extends Controller
         return view('ecommerce.checkout', compact('products', 'subtotal', 'discount', 'total', 'appliedCoupon', 'user'));
     }
 
-    public function removeCoupon()
+    public function removeCoupon(Request $request)
     {
-        $cartData = json_decode(request()->cookie($this->cookieName), true) ?? ['items' => []];
+        try {
+            $cartData = json_decode(request()->cookie($this->cookieName), true) ?? ['items' => []];
 
-        if (!empty($cartData['coupon'])) {
-            unset($cartData['coupon']);
+            // Remove coupon from cart data
+            if (isset($cartData['coupon'])) {
+                unset($cartData['coupon']);
+            }
+
+            // Recalculate totals without coupon
+            $subtotal = $this->calculateSubtotal($cartData['items']);
+            $total = $subtotal; // No discount since coupon is removed
+
+            $cookie = cookie($this->cookieName, json_encode($cartData), $this->cookieExpiration);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Coupon removed successfully',
+                'subtotal' => $subtotal,
+                'discount' => 0,
+                'total' => $total
+            ])->cookie($cookie);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to remove coupon: ' . $e->getMessage()
+            ], 500);
         }
-
-        return redirect()->back()->cookie($this->cookieName, json_encode($cartData), $this->cookieExpiration);
     }
 
     public function removeItem($productId)
     {
         try {
             $cartData = json_decode(request()->cookie($this->cookieName), true) ?? ['items' => []];
-            $itemKey = $this->findItemKey($cartData['items'], $productId);
+
+            // Get color and size from the request
+            $color = request()->input('color') ?? null;
+            $size = request()->input('size') ?? null;
+
+            // Find the specific variant to remove
+            $itemKey = $this->findItemKey($cartData['items'], $productId, $color, $size);
 
             if ($itemKey !== false) {
+                // Remove the specific item
                 unset($cartData['items'][$itemKey]);
-                $cartData['items'] = array_values($cartData['items']);
+                $cartData['items'] = array_values($cartData['items']); // Reindex array
+
+                // Recalculate totals
+                $subtotal = $this->calculateSubtotal($cartData['items']);
+                $discount = $this->calculateDiscount($subtotal, $cartData['coupon'] ?? null);
+                $total = $subtotal - $discount;
 
                 return response()->json([
                     'success' => true,
                     'message' => 'Item removed successfully',
+                    'subtotal' => $subtotal,
+                    'discount' => $discount,
+                    'total' => $total
                 ])->cookie($this->cookieName, json_encode($cartData), $this->cookieExpiration);
-            } else {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Item not found in cart',
-                ], 404);
             }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Item not found in cart'
+            ], 404);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to remove item',
+                'message' => 'Failed to remove item: ' . $e->getMessage()
             ], 500);
         }
     }
@@ -318,23 +397,15 @@ class CartController extends Controller
         }
     }
 
-    private function findItemKey($items, $productId)
-    {
-        foreach ($items as $key => $item) {
-            if ($item['product_id'] == $productId) {
-                return $key;
-            }
-        }
-
-        return false;
-    }
-
     private function calculateDiscount($subtotal, $couponCode)
     {
         $discount = 0;
 
         if ($couponCode) {
-            $coupon = Coupon::where('code', $couponCode)->where('is_active', true)->first();
+            $coupon = Coupon::where('code', $couponCode)
+                ->where('is_active', true)
+                ->first();
+
             if ($coupon) {
                 $discount = ($subtotal * $coupon->discount_value) / 100;
             }

@@ -104,15 +104,17 @@ class ShoppingCart {
             const increaseBtn = control.querySelector(".quantity-increase");
             const input = control.querySelector(".quantity-input");
             const productId = control.closest("tr").dataset.productId;
+            const color = control.closest("tr").dataset.color;
+            const size = control.closest("tr").dataset.size;
 
             decreaseBtn?.addEventListener("click", () =>
-                this.handleQuantityChange(input, -1, productId)
+                this.handleQuantityChange(input, -1, productId, color, size)
             );
             increaseBtn?.addEventListener("click", () =>
-                this.handleQuantityChange(input, 1, productId)
+                this.handleQuantityChange(input, 1, productId, color, size)
             );
             input?.addEventListener("change", (e) =>
-                this.handleQuantityInput(e, productId)
+                this.handleQuantityInput(e, productId, color, size)
             );
         });
     }
@@ -144,23 +146,54 @@ class ShoppingCart {
         );
     }
 
-    async handleQuantityChange(input, change, productId) {
+    async handleQuantityChange(input, change, productId, color, size) {
         const newValue = Math.max(1, parseInt(input.value) + change);
         input.value = newValue;
-        this.debounceUpdateCart(productId, newValue);
+        await this.updateCart(productId, newValue, color, size);
     }
 
-    handleQuantityInput(event, productId) {
+    async handleQuantityInput(event, productId, color, size) {
         const newValue = Math.max(1, parseInt(event.target.value) || 1);
         event.target.value = newValue;
-        this.debounceUpdateCart(productId, newValue);
+        await this.updateCart(productId, newValue, color, size);
     }
 
-    debounceUpdateCart(productId, quantity) {
-        clearTimeout(this.debounceTimeout);
-        this.debounceTimeout = setTimeout(() => {
-            this.updateCart(productId, quantity);
-        }, 500);
+    async updateCart(productId, quantity, color, size) {
+        try {
+            const response = await this.makeRequest("/cart/update", {
+                product_id: productId,
+                quantity: quantity,
+                color: color,
+                size: size,
+            });
+
+            if (response.success) {
+                // Update product total
+                const row = document.querySelector(
+                    `tr[data-product-id="${productId}"][data-color="${color}"][data-size="${size}"]`
+                );
+                if (row) {
+                    row.querySelector(
+                        ".product-total"
+                    ).textContent = `JD ${response.product.total.toFixed(2)}`;
+                }
+
+                // Update cart totals
+                this.updateCartTotals({
+                    subtotal: response.subtotal,
+                    discount: response.discount,
+                    total: response.total,
+                });
+
+                NotificationManager.show(
+                    "Cart updated successfully",
+                    "success"
+                );
+            }
+        } catch (error) {
+            NotificationManager.show("Failed to update cart", "error");
+            console.error("Update cart error:", error);
+        }
     }
 
     async handleCouponApplication() {
@@ -189,9 +222,10 @@ class ShoppingCart {
             );
         }
     }
-    // Add this method to the ShoppingCart class
+
     async handleCouponRemoval(event) {
         event.preventDefault();
+
         const confirmed = await ConfirmationDialog.show(
             "Are you sure you want to remove the coupon?"
         );
@@ -203,11 +237,12 @@ class ShoppingCart {
                     {},
                     "DELETE"
                 );
+
                 if (response.success) {
-                    // Update cart totals immediately
+                    // Update cart totals
                     this.updateCartTotals({
                         subtotal: response.subtotal,
-                        discount: 0,
+                        discount: response.discount,
                         total: response.total,
                     });
 
@@ -218,22 +253,19 @@ class ShoppingCart {
                         appliedCouponDiv.remove();
                     }
 
-                    // Show coupon input form
-                    const couponForm = document.createElement("div");
-                    couponForm.className = "coupon-form";
-                    couponForm.innerHTML = `
-                        <input type="text" id="coupon-code" placeholder="Enter coupon code" class="form-control">
-                        <button type="button" id="apply-coupon" class="btn btn-primary">Apply Coupon</button>
+                    // Show the coupon input form
+                    const couponSection =
+                        document.querySelector(".coupon-section");
+                    couponSection.innerHTML = `
+                        <div class="coupon-form">
+                            <input type="text" id="coupon-code" placeholder="Enter coupon code" class="form-control">
+                            <button type="button" id="apply-coupon" class="btn btn-primary">Apply Coupon</button>
+                        </div>
+                        <div id="coupon-message" class="mt-2"></div>
                     `;
 
-                    document
-                        .querySelector(".coupon-section")
-                        .appendChild(couponForm);
-
                     // Reinitialize coupon controls
-                    this.couponInput = document.getElementById("coupon-code");
-                    this.applyCouponBtn =
-                        document.getElementById("apply-coupon");
+                    this.initializeElements();
                     this.setupCouponControls();
 
                     NotificationManager.show(
@@ -243,14 +275,18 @@ class ShoppingCart {
                 }
             } catch (error) {
                 NotificationManager.show("Failed to remove coupon", "error");
+                console.error("Remove coupon error:", error);
             }
         }
     }
-
     async handleItemRemoval(event) {
         event.preventDefault();
         const row = event.target.closest("tr");
         const productId = row.dataset.productId;
+        const color = row.dataset.color || null; // Ensure color is sent, even if null
+        const size = row.dataset.size || null; // Ensure size is sent, even if null
+
+        console.log("Removing item:", { productId, color, size }); // Debugging
 
         const confirmed = await ConfirmationDialog.show(
             "Are you sure you want to remove this item?"
@@ -260,31 +296,28 @@ class ShoppingCart {
             try {
                 const response = await this.makeRequest(
                     `/cart/remove/${productId}`,
-                    {},
+                    { color: color, size: size },
                     "DELETE"
                 );
 
-                // تحقق من وجود response.success
-                if (response && response.success) {
+                if (response.success) {
                     row.remove();
-                    this.updateUI(response);
+                    this.updateCartTotals({
+                        subtotal: response.subtotal,
+                        discount: response.discount,
+                        total: response.total,
+                    });
+
                     NotificationManager.show(
                         response.message || "Item removed successfully",
                         "success"
                     );
-                    this.checkEmptyCart();
 
-                    // إعادة تحميل الصفحة بعد الحذف
-                    window.location.reload();
-                } else {
-                    NotificationManager.show(
-                        response.message || "Failed to remove item",
-                        "error"
-                    );
+                    this.checkEmptyCart();
                 }
             } catch (error) {
-                console.error("Error removing item:", error);
                 NotificationManager.show("Failed to remove item", "error");
+                console.error("Remove item error:", error);
             }
         }
     }
@@ -322,82 +355,29 @@ class ShoppingCart {
         }
     }
 
-    async updateCart(productId, quantity) {
-        try {
-            const response = await this.makeRequest("/cart/update", {
-                product_id: productId,
-                quantity: quantity,
-            });
-
-            if (response.success) {
-                this.updateUI(response);
-                NotificationManager.show(
-                    "Cart updated successfully",
-                    "success"
-                );
-            }
-        } catch (error) {
-            NotificationManager.show("Failed to update cart", "error");
-        }
-    }
-
     async makeRequest(url, data, method = "POST") {
         try {
-            console.log("Sending request to:", url); // Debugging
-            console.log("Request data:", data); // Debugging
-
             const response = await fetch(url, {
                 method: method,
                 headers: {
                     "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": this.csrfToken,
+                    "X-CSRF-TOKEN": document.querySelector(
+                        'meta[name="csrf-token"]'
+                    ).content,
                     Accept: "application/json",
                 },
                 body: JSON.stringify(data),
             });
-
-            console.log("Response status:", response.status); // Debugging
 
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.message || response.statusText);
             }
 
-            const responseData = await response.json();
-            console.log("Response data:", responseData); // Debugging
-
-            return responseData;
+            return await response.json();
         } catch (error) {
             console.error("Error in makeRequest:", error);
             throw error;
-        }
-    }
-
-    updateUI(data) {
-        if (data.products) {
-            this.updateProductTotals(data);
-        }
-        if (
-            data.subtotal !== undefined ||
-            data.discount !== undefined ||
-            data.total !== undefined
-        ) {
-            this.updateCartTotals(data);
-        }
-    }
-
-    updateProductTotals(data) {
-        if (data.products) {
-            data.products.forEach((product) => {
-                const row = document.querySelector(
-                    `tr[data-product-id="${product.id}"]`
-                );
-                if (row) {
-                    row.querySelector(
-                        ".product-total"
-                    ).textContent = `JD ${product.total.toFixed(2)}`;
-                }
-            });
         }
     }
 

@@ -65,7 +65,7 @@
                                     </thead>
                                     <tbody>
                                         @foreach($products as $item)
-                                        <tr data-product-id="{{ $item['id'] }}">
+                                        <tr data-product-id="{{ $item['id'] }}" data-color="{{ $item['color'] ?? '' }}" data-size="{{ $item['size'] ?? '' }}">
                                             <td>
                                                 <div class="cart-product-info d-flex align-items-center">
                                                     <img src="{{ Storage::url($item['image']) }}" alt="{{ $item['name'] }}" class="cart-product-image">

@@ -20,5 +20,4 @@ class ProductDetailsController extends Controller
 
         return view('ecommerce.product-details', compact('product'));
     }
-    
 }
