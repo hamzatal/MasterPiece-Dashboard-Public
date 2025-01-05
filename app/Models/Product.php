@@ -66,4 +66,14 @@ class Product extends Model
     {
         return $this->is_discount_active && $this->discount_percentage > 0;
     }
+
+    public function colors()
+    {
+        return $this->belongsToMany(Color::class);
+    }
+
+    public function sizes()
+    {
+        return $this->belongsToMany(Size::class);
+    }
 }

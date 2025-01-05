@@ -56,6 +56,7 @@
         <div class="swiper-container">
             <div class="swiper-wrapper">
                 @foreach($categories as $category)
+                @if($category->status === 'active') 
                 <div class="swiper-slide">
                     <a href="{{ route('shop', ['category' => $category->id]) }}" class="category-item">
                         <div class="category-circle">
@@ -68,6 +69,7 @@
                         <span class="category-name">{{ $category->name }}</span>
                     </a>
                 </div>
+                @endif
                 @endforeach
             </div>
         </div>

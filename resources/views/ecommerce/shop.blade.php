@@ -196,10 +196,11 @@
                                     <li class="widget__categories--menu__list {{ !request('category') ? 'active' : '' }}">
                                         <a href="{{ route('shop') }}" class="widget__categories--menu__label">
                                             All Categories
-                                            <span class="widget__categories--menu__text">({{ App\Models\Category::count() }})</span>
+                                            <span class="widget__categories--menu__text">({{ App\Models\Category::where('status', 'active')->count() }})</span>
                                         </a>
                                     </li>
                                     @foreach ($categories as $category)
+                                    @if($category->status === 'active')
                                     <li class="widget__categories--menu__list {{ request('category') == $category->id ? 'active' : '' }}">
                                         <a href="{{ route('shop', ['category' => $category->id]) }}"
                                             class="widget__categories--menu__label d-flex align-items-center">
@@ -211,13 +212,13 @@
                                             </span>
                                         </a>
                                     </li>
+                                    @endif
                                     @endforeach
                                 </ul>
                                 <!-- Pagination for Categories -->
                                 <div class="widget__pagination">
                                     {{ $categories->links() }}
                                 </div>
-
                             </div>
 
                             <!-- Price Filter Widget -->

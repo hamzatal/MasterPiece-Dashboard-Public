@@ -9,8 +9,10 @@ use Illuminate\Support\Facades\Auth;
 class RedirectIfAuthenticatedWithRole
 {
 
-public function handle(Request $request, Closure $next){
-    if (Auth::check()) {$user = Auth::user();
+    public function handle(Request $request, Closure $next)
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
 
             // Check if the user is active
             if (!$user->is_active) {
@@ -34,7 +36,9 @@ public function handle(Request $request, Closure $next){
                     !$request->routeIs('discounts.*') &&
                     !$request->routeIs('coupons.*') &&
                     !$request->routeIs('reviews.*') &&
-                    !$request->routeIs('profile.*')
+                    !$request->routeIs('profile.*') &&
+                    !$request->routeIs('banners.*')
+
                 ) {
                     return redirect()->route('dashboard');
                 }
@@ -42,7 +46,7 @@ public function handle(Request $request, Closure $next){
 
             if ($userRole === 'user') { // Customer Role
                 // Allow only the welcome page
-                if (!$request->routeIs('home')&& !$request->routeIs('profile.*')) {
+                if (!$request->routeIs('home') && !$request->routeIs('profile.*')) {
                     return redirect()->route('home.index');
                 }
             }

@@ -60,38 +60,27 @@
                             <label for="image" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                 {{ __('Category Image') }}
                             </label>
-                            <div class="mt-1 flex items-center space-x-4">
-                                <div class="w-32 h-32 relative group">
-                                    <div class="w-full h-full bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                        </svg>
-                                    </div>
-                                </div>
-                                <div>
+                            <div class="flex space-x-4">
+                                <div class="w-32 h-32 relative">
                                     <input
                                         type="file"
                                         name="image"
                                         id="image"
-                                        class="hidden"
                                         accept="image/*"
-                                        onchange="document.getElementById('file-chosen').textContent = this.files[0].name">
-                                    <label for="image" class="cursor-pointer inline-flex items-center px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition duration-300">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                        onchange="previewImage(event, 'imagePreview')" />
+                                    <div class="w-full h-full rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-gray-400 transition-colors flex items-center justify-center" id="imagePlaceholder">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                         </svg>
-                                        {{ __('Choose File') }}
-                                    </label>
-                                    <p id="file-chosen" class="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                                        {{ __('No file chosen') }}
-                                    </p>
+                                    </div>
+                                    <img id="imagePreview" class="w-full h-full object-cover rounded-xl hidden" />
                                 </div>
                             </div>
                             @error('image')
                             <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                             @enderror
                         </div>
-
                         <div class="flex items-center justify-between">
                             <button
                                 type="submit"
@@ -111,4 +100,24 @@
             </div>
         </div>
     </div>
+    <script>
+        function previewImage(event, previewId) {
+            const input = event.target;
+            const preview = document.getElementById(previewId);
+            const placeholder = document.getElementById('imagePlaceholder');
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.classList.remove('hidden');
+                    placeholder.classList.add('hidden');
+                };
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                preview.classList.add('hidden');
+                placeholder.classList.remove('hidden');
+            }
+        }
+    </script>
 </x-admin-app-layout>

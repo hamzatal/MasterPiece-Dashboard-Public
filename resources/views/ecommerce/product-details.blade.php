@@ -57,14 +57,7 @@
                     <div class="product__meta">
                         <span class="product__category">{{ $product->category->name ?? 'N/A' }}</span>
                         @if($product->rating)
-                        <div class="product__rating">
-                            <!-- <div class="rating__stars">
-                                @for($i = 1; $i <= 5; $i++)
-                                    <i class="fas fa-star {{ $i <= $product->rating ? 'rating__star--active' : '' }}"></i>
-                                    @endfor
-                            </div>
-                            <span class="rating__count">({{ $product->reviews_count ?? 0 }} reviews)</span> -->
-                        </div>
+                       
                         @endif
                     </div>
 
@@ -136,8 +129,6 @@
                 </div>
             </div>
 
-            <!-- Product Reviews Section -->
-            <!-- <section class="product__reviews">
                 <div class="reviews__header">
                     <h2 class="reviews__title">Customer Reviews</h2>
                     <button class="btn btn--primary" id="writeReviewBtn">Write a Review</button>

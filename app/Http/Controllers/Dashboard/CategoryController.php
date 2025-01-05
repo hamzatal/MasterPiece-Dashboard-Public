@@ -29,7 +29,7 @@ class CategoryController extends Controller
                     ->orWhere('description', 'like', "%{$search}%");
             });
         }
-
+        $categories = \App\Models\Category::where('status', 'active')->get();
         $categories = $query->paginate($request->input('per_page', 10));
 
         return view('admin.categories.index', compact('categories'));
