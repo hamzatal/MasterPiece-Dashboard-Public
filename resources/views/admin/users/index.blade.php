@@ -11,12 +11,12 @@
                             Users Management
                         </h1>
 
-                        <a href="{{ route('users.create') }}" class="w-full sm:w-auto flex items-center justify-center space-x-2 px-4 py-2 bg-white dark:bg-gray-700 text-blue-600 dark:text-white rounded-lg shadow-lg hover:bg-blue-50 dark:hover:bg-gray-600 transition-all duration-300">
+                        <!-- <a href="{{ route('users.create') }}" class="w-full sm:w-auto flex items-center justify-center space-x-2 px-4 py-2 bg-white dark:bg-gray-700 text-blue-600 dark:text-white rounded-lg shadow-lg hover:bg-blue-50 dark:hover:bg-gray-600 transition-all duration-300">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                             </svg>
                             <span class="font-semibold">Create User</span>
-                        </a>
+                        </a> -->
                     </div>
                 </div>
 

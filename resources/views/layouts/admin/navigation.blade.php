@@ -73,7 +73,7 @@
                     </button>
 
                     <!-- Theme Toggle -->
-                    <button
+                    <!-- <button
                         @click="toggleDarkMode()"
                         aria-label="Toggle Dark Mode"
                         class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
@@ -103,7 +103,7 @@
                                 stroke-width="2"
                                 d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                         </svg>
-                    </button>
+                    </button> -->
 
                     <!-- Navigation Links -->
 
