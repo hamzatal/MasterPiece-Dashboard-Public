@@ -6,6 +6,8 @@
         </h2>
         <link rel="stylesheet" href="css/shop.css">
         <link rel="javascript" href="js/shop.js">
+        <link rel="stylesheet" href="css/newproduct.css">
+
     </x-slot>
 
     <main class="main__content_wrapper">
@@ -78,17 +80,14 @@
                             <div class="tab_content">
                                 <!-- Grid View -->
                                 <div class="sp-container">
-                                    <div class="sp-grid">
+                                    <div class="sp-grid1">
                                         @foreach($products as $product)
                                         <div class="sp-card">
-                                            <!-- Image Container -->
                                             <div class="sp-image-wrap">
                                                 <a href="{{ route('product.details', $product->id) }}">
-                                                    @if($product->image1)
-                                                    <img src="{{ Storage::url($product->image1) }}" alt="{{ $product->name }}" class="sp-image">
-                                                    @else
-                                                    <img src="assets/img/product/default.png" alt="default-product-image" class="sp-image">
-                                                    @endif
+                                                    <img src="{{ $product->image1 ? Storage::url($product->image1) : 'assets/img/product/default.png' }}"
+                                                        alt="{{ $product->name }}"
+                                                        class="sp-image">
                                                 </a>
                                                 @if($product->is_discount_active && $product->discount_percentage)
                                                 <span class="sp-tag sp-tag-sale">{{ $product->discount_percentage }}% OFF</span>
@@ -98,14 +97,12 @@
                                                     @endif
                                             </div>
 
-                                            <!-- Content -->
                                             <div class="sp-content">
                                                 <span class="sp-category">{{ $product->category->name ?? 'Uncategorized' }}</span>
                                                 <h3 class="sp-name">
                                                     <a href="{{ route('products.show', $product->id) }}">{{ htmlspecialchars($product->name) }}</a>
                                                 </h3>
 
-                                                <!-- Price -->
                                                 <div class="sp-price">
                                                     @if ($product->is_discount_active)
                                                     <span class="sp-old-price">JD {{ number_format($product->original_price, 2) }}</span>
@@ -114,22 +111,23 @@
                                                     <span class="sp-current-price">JD {{ number_format($product->original_price, 2) }}</span>
                                                     @endif
                                                 </div>
-                                                <!-- Actions -->
-                                                <div class="action-group">
+
+                                                <div class="action-group_11">
                                                     <a href="{{ route('product.details', $product->id) }}" class="action-button cart-button">
                                                         <span class="button-content">
                                                             <svg class="button-icon" viewBox="0 0 24 24" width="18" height="18">
                                                                 <path d="M9 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM19 20a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
                                                                 <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17" />
                                                             </svg>
-                                                            <span class="button-text">Add To Cart</span>
+                                                            <span class="button-text">Add</span>
                                                         </span>
                                                     </a>
 
-
                                                     <div class="action-controls">
                                                         @php
-                                                        $isInWishlist = \App\Models\Wishlist::where('user_id', auth()->id())->where('product_id', $product->id)->exists();
+                                                        $isInWishlist = \App\Models\Wishlist::where('user_id', auth()->id())
+                                                        ->where('product_id', $product->id)
+                                                        ->exists();
                                                         @endphp
 
                                                         <form action="{{ route('wishlist.add', $product->id) }}" method="POST" class="action-form">
@@ -142,12 +140,10 @@
                                                             </button>
                                                         </form>
 
-
                                                         <a href="{{ route('product.details', $product->id) }}" class="icon-button details-button" title="View Details">
-                                                            <svg class="details-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                                                            <svg class="details-icon" viewBox="0 0 24 24" width="20" height="20">
                                                                 <path d="M12 2a10 10 0 1010 10A10 10 0 0012 2zm0 18a8 8 0 118-8 8 8 0 01-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" />
                                                             </svg>
-
                                                             <span class="tooltip">View Details</span>
                                                         </a>
                                                     </div>

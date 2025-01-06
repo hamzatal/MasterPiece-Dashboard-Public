@@ -29,8 +29,14 @@
     background: #01206e;
     border-radius: 2px;
 }
-
-.sp-grid {
+.action-group_11 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+.sp-grid1 {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 20px;

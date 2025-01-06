@@ -85,7 +85,7 @@
                             @enderror
                         </div>
 
-                        <div>
+                        <!-- <div>
                             <label for="min_order_value" class="flex items-center space-x-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <line x1="12" y1="1" x2="12" y2="23"></line>
@@ -98,7 +98,7 @@
                             @error('min_order_value')
                                 <div class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</div>
                             @enderror
-                        </div>
+                        </div> -->
                     </div>
                 </div>
 

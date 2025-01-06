@@ -76,4 +76,12 @@ class Product extends Model
     {
         return $this->belongsToMany(Size::class);
     }
+    public function decrementStock($quantity)
+{
+    if ($this->stock_quantity < $quantity) {
+        throw new \Exception("not enough stock for {$this->name}");
+    }
+
+    $this->decrement('stock_quantity', $quantity);
+}
 }

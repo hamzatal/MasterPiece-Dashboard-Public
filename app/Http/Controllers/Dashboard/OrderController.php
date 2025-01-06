@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\Product;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -11,7 +13,6 @@ use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\OrdersExport;
-use App\Models\Product;
 
 class OrderController extends Controller
 {
@@ -31,7 +32,6 @@ class OrderController extends Controller
         // Get user statistics
         $userStatistics = $this->getUserStatistics();
 
-
         if ($request->ajax()) {
             return view('orders.partials.table-rows', compact('orders'));
         }
@@ -45,11 +45,8 @@ class OrderController extends Controller
     public function show($orderId)
     {
         $order = Order::with(['shipping_address', 'orderItems.product'])->findOrFail($orderId);
-        // dd($order->shipping_address);
-
         return view('order.show', compact('order'));
     }
-
 
     public function create()
     {
@@ -58,16 +55,17 @@ class OrderController extends Controller
 
     public function store(Request $request)
     {
-
         $validatedData = $this->validateOrderData($request);
+
         try {
-            DB::transaction(function () use ($validatedData) {
+            DB::transaction(function () use ($validatedData, $request) {
                 $user = User::firstOrCreate(
                     ['email' => $validatedData['email']],
                     ['name' => $validatedData['name']]
                 );
 
-                Order::create([
+                // Create the order
+                $order = Order::create([
                     'user_id' => $user->id,
                     'status' => $validatedData['status'],
                     'total' => $validatedData['total'],
@@ -75,49 +73,67 @@ class OrderController extends Controller
                     'payment_status' => $validatedData['payment_status'] ?? 'pending',
                     'notes' => $validatedData['notes'],
                     'shipping_address_id' => $validatedData['shipping_address_id'],
-
                 ]);
+
+                // Add order items and update product stock quantities
+                foreach ($request->input('items', []) as $item) {
+                    $product = Product::findOrFail($item['product_id']);
+
+                    // Check if the requested quantity is available
+                    if ($product->stock_quantity < $item['quantity']) {
+                        throw new \Exception("الكمية المطلوبة غير متوفرة للمنتج: {$product->name}");
+                    }
+
+                    // Decrease the product's stock quantity
+                    $product->decrement('stock_quantity', $item['quantity']);
+
+                    // Create the order item
+                    OrderItem::create([
+                        'order_id' => $order->id,
+                        'product_id' => $product->id,
+                        'quantity' => $item['quantity'],
+                        'price' => $product->original_price,
+                    ]);
+                }
             });
 
             return redirect()
                 ->route('orders.index')
-                ->with('success', 'Order created successfully');
+                ->with('success', 'تم إنشاء الطلب بنجاح!');
         } catch (\Exception $e) {
             return redirect()
                 ->back()
                 ->withInput()
-                ->with('error', 'Failed to create order: ' . $e->getMessage());
+                ->with('error', 'فشل في إنشاء الطلب: ' . $e->getMessage());
         }
     }
 
     public function update(Request $request, Order $order)
     {
-
         $validatedData = $this->validateOrderData($request);
+
         try {
+            $order->update([
+                'status' => $validatedData['status'],
+                'total' => $validatedData['total'],
+                'payment' => $validatedData['payment'],
+                'payment_status' => $validatedData['payment_status'],
+            ]);
 
-            $order->status = $validatedData['status'];
-            $order->total = $validatedData['total'];
-            $order->payment = $validatedData['payment'];
-            $order->payment_status = $validatedData['payment_status'];
-
-            $order->save();
             return redirect()
                 ->route('orders.index')
-                ->with('success', 'Order updated successfully');
+                ->with('success', 'تم تحديث الطلب بنجاح!');
         } catch (\Exception $e) {
             return redirect()
                 ->back()
                 ->withInput()
-                ->with('error', 'Failed to update order: ' . $e->getMessage());
+                ->with('error', 'فشل في تحديث الطلب: ' . $e->getMessage());
         }
     }
 
     public function view($id)
     {
         $order = Order::with(['user', 'orderItems'])->findOrFail($id);
-
-        // dd($order);
         return view('admin.orders.view', compact('order'));
     }
 
@@ -213,18 +229,15 @@ class OrderController extends Controller
 
     public function updateStatus(Request $request, Order $order)
     {
-        // Validate the incoming status
         $validatedData = $request->validate([
-            'status' => 'required|in:pending,processing,shipped,delivered,cancelled'
+            'status' => 'required|in:' . implode(',', self::ALLOWED_STATUSES)
         ]);
 
-        // Update the order status
         $order->update([
             'status' => $validatedData['status']
         ]);
 
-        // Optional: Add a flash message
-        return redirect()->back()->with('success', 'Order status updated successfully');
+        return redirect()->back()->with('success', 'تم تحديث حالة الطلب بنجاح!');
     }
 
     private function validateOrderData(Request $request)
@@ -237,7 +250,10 @@ class OrderController extends Controller
             'payment' => 'required|in:' . implode(',', self::ALLOWED_PAYMENT_METHODS),
             'payment_status' => 'nullable|in:paid,pending,failed',
             'email' => 'required|email|max:255',
-            'notes' => 'nullable|string|max:1000'
+            'notes' => 'nullable|string|max:1000',
+            'items' => 'required|array',
+            'items.*.product_id' => 'required|exists:products,id',
+            'items.*.quantity' => 'required|integer|min:1', 
         ]);
     }
 }

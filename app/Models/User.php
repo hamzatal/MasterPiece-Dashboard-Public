@@ -73,7 +73,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->role === 'admin'; // Adjust this condition based on how roles are stored in your system.
     }
     public function shippingAddresses()
-    {
-        return $this->hasMany(ShippingAddress::class);
-    }
+{
+    return $this->hasMany(ShippingAddress::class, 'user_id');
+}
 }

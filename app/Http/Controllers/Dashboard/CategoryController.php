@@ -11,17 +11,19 @@ use Illuminate\Support\Facades\Storage;
 
 class CategoryController extends Controller
 {
-    // Display all categories
+    // Display all categories with optional search and status filters
     public function index(Request $request)
     {
+        // Start building the query
         $query = Category::query();
 
-        if ($request->has('status')) {
+        // Apply status filter if provided
+        if ($request->has('status') && !empty($request->status)) {
             $query->where('status', $request->status);
         }
-        $search = $request->input('search');
-        $status = $request->input('status');
-        if ($request->has('search')) {
+
+        // Apply search filter if provided
+        if ($request->has('search') && !empty($request->search)) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('id', 'like', "%{$search}%")
@@ -29,18 +31,24 @@ class CategoryController extends Controller
                     ->orWhere('description', 'like', "%{$search}%");
             });
         }
-        $categories = \App\Models\Category::where('status', 'active')->get();
-        $categories = $query->paginate($request->input('per_page', 10));
 
-        return view('admin.categories.index', compact('categories'));
+        // Paginate the results (default: 10 items per page)
+        $perPage = $request->input('per_page', 10);
+        $categories = $query->paginate($perPage);
+
+        // Pass search and status parameters to the view
+        $search = $request->input('search');
+        $status = $request->input('status');
+
+        return view('admin.categories.index', compact('categories', 'search', 'status'));
     }
 
-    // Toggle Category Status
+    // Toggle the status of a category (active/inactive)
     public function toggle(Category $category)
     {
         // Use a database transaction to ensure data integrity
         DB::transaction(function () use ($category) {
-            // Toggle category status
+            // Toggle the category status
             $category->status = $category->status == 'active' ? 'inactive' : 'active';
             $category->save();
 
@@ -48,8 +56,7 @@ class CategoryController extends Controller
             if ($category->status == 'inactive') {
                 Product::where('category_id', $category->id)->update(['status' => 'inactive']);
             } else {
-                // Optionally, you might want to reactivate products
-                // This depends on your specific business logic
+                // If activating, reactivate all products in this category
                 Product::where('category_id', $category->id)->update(['status' => 'active']);
             }
         });
@@ -57,7 +64,7 @@ class CategoryController extends Controller
         return redirect()->route('categories.index')->with('success', 'Category status updated successfully!');
     }
 
-    // Show form to create a category
+    // Show the form to create a new category
     public function create()
     {
         return view('admin.categories.create');
@@ -66,14 +73,17 @@ class CategoryController extends Controller
     // Store a new category in the database
     public function store(Request $request)
     {
+        // Validate the incoming request data
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:50000',
         ]);
 
+        // Store the uploaded image (if provided)
         $imagePath = $request->file('image') ? $request->file('image')->store('categories', 'public') : null;
 
+        // Create the category
         Category::create([
             'name' => $validated['name'],
             'description' => $validated['description'],
@@ -83,32 +93,37 @@ class CategoryController extends Controller
         return redirect()->route('categories.index')->with('success', 'Category created successfully!');
     }
 
-    // Show form to edit a category
+    // Show the form to edit an existing category
     public function edit($id)
     {
         $category = Category::findOrFail($id);
         return view('admin.categories.edit', compact('category'));
     }
 
-    // Update a category in the database
+    // Update an existing category in the database
     public function update(Request $request, Category $category)
     {
+        // Validate the incoming request data
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
+        // Handle image upload (if provided)
         if ($request->file('image')) {
             // Delete the old image if it exists
             if ($category->image) {
                 Storage::disk('public')->delete($category->image);
             }
+            // Store the new image
             $imagePath = $request->file('image')->store('categories', 'public');
         } else {
+            // Keep the existing image
             $imagePath = $category->image;
         }
 
+        // Update the category
         $category->update([
             'name' => $validated['name'],
             'description' => $validated['description'],
@@ -118,21 +133,24 @@ class CategoryController extends Controller
         return redirect()->route('categories.index')->with('success', 'Category updated successfully!');
     }
 
-    // Delete a category
+    // Delete a category from the database
     public function destroy(Category $category)
     {
+        // Delete the category image if it exists
         if ($category->image) {
             Storage::disk('public')->delete($category->image);
         }
 
+        // Delete the category
         $category->delete();
 
         return redirect()->route('categories.index')->with('success', 'Category deleted successfully!');
     }
 
+    // Show details of a specific category and its products
     public function show(Category $category)
     {
-        // Retrieve products or any related data for this category
+        // Retrieve products belonging to this category (paginated)
         $products = $category->products()->paginate(12);
 
         return view('ecommerce.categories', compact('category', 'products'));

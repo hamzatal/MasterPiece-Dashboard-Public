@@ -17,18 +17,16 @@
                 <!-- Content Section -->
                 <div class="p-8">
                     <!-- User Basic Info -->
-
                     <div class="mb-8">
                         <div class="flex items-center space-x-6">
                             <div class="flex-shrink-0 h-24 w-24">
                                 @if($user->image && file_exists(public_path('storage/' . $user->image)))
-                                <img src="{{ asset('storage/' . $user->image) }}" alt="{{ $user->image }}" class="h-24 w-24 rounded-2xl object-cover shadow-lg">
+                                <img src="{{ asset('storage/' . $user->image) }}" alt="{{ $user->name }}" class="h-24 w-24 rounded-2xl object-cover shadow-lg">
                                 @else
                                 <div class="h-24 w-24 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-2xl flex items-center justify-center text-3xl font-bold shadow-lg">
                                     {{ strtoupper(substr($user->name, 0, 1)) }}
                                 </div>
                                 @endif
-
                             </div>
 
                             <div>
@@ -45,52 +43,72 @@
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                             <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
                                         </svg>
-                                        {{ $user->phone }}
+                                        {{ $user->phone ?? 'N/A' }}
                                     </p>
                                 </div>
                             </div>
                         </div>
                     </div>
+
                     <!-- Address Information -->
+                    @if($user->shippingAddresses->count() > 0)
                     <div class="mb-8 bg-gray-50 dark:bg-gray-700/50 rounded-2xl p-6">
                         <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4 flex items-center gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
                                 <circle cx="12" cy="10" r="3" />
                             </svg>
-                            Address Details
+                            Shipping Addresses
                         </h3>
-                        <div class="grid grid-cols-2 gap-4 text-gray-700 dark:text-gray-300">
-                            <div class="flex items-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z" />
-                                </svg>
-                                <span class="font-medium">City:</span> {{ $user->city }}
+                        @foreach($user->shippingAddresses as $address)
+                        <div class="mb-6 p-4 bg-white dark:bg-gray-700 rounded-lg shadow-sm">
+                            <div class="grid grid-cols-2 gap-4 text-gray-700 dark:text-gray-300">
+                                <div class="flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z" />
+                                    </svg>
+                                    <span class="font-medium">City:</span> {{ $address->city ?? 'N/A' }}
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                                        <polyline points="22,6 12,13 2,6" />
+                                    </svg>
+                                    <span class="font-medium">Street:</span> {{ $address->street_address ?? 'N/A' }}
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                                        <polyline points="9 22 9 12 15 12 15 22" />
+                                    </svg>
+                                    <span class="font-medium">Country:</span> {{ $address->country ?? 'N/A' }}
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M9 21h6" />
+                                        <path d="M12 21v-2" />
+                                        <path d="M3 7v3c0 6.075 3.925 11 9 11s9-4.925 9-11V7" />
+                                    </svg>
+                                    <span class="font-medium">Type:</span> {{ $address->address_type ?? 'N/A' }}
+                                </div>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                                    <polyline points="22,6 12,13 2,6" />
+                            @if($address->default_address)
+                            <div class="mt-4 text-sm text-green-600 dark:text-green-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                    <polyline points="22 4 12 14.01 9 11.01" />
                                 </svg>
-                                <span class="font-medium">District:</span> {{ $user->district }}
+                                Default Address
                             </div>
-                            <div class="flex items-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M9 21h6" />
-                                    <path d="M12 21v-2" />
-                                    <path d="M3 7v3c0 6.075 3.925 11 9 11s9-4.925 9-11V7" />
-                                </svg>
-                                <span class="font-medium">Street:</span> {{ $user->street }}
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                                    <polyline points="9 22 9 12 15 12 15 22" />
-                                </svg>
-                                <span class="font-medium">Building Number:</span> {{ $user->building_num }}
-                            </div>
+                            @endif
                         </div>
+                        @endforeach
                     </div>
+                    @else
+                    <div class="mb-8 bg-gray-50 dark:bg-gray-700/50 rounded-2xl p-6">
+                        <p class="text-gray-600 dark:text-gray-400">No shipping addresses found.</p>
+                    </div>
+                    @endif
 
                     <!-- Action Buttons -->
                     <div class="flex justify-end space-x-4">
@@ -115,17 +133,3 @@
         </div>
     </div>
 </x-admin-app-layout>
-<script>
-    document.getElementById('userImageInput').addEventListener('change', function(event) {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-
-            reader.onload = function(e) {
-                document.getElementById('userImagePreview').src = e.target.result;
-            };
-
-            reader.readAsDataURL(file);
-        }
-    });
-</script>

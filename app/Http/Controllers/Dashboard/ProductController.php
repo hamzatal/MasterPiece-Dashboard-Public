@@ -106,6 +106,7 @@ class ProductController extends Controller
                 $data['image3'] = $request->file('image3')->store('products', 'public');
             }
 
+            // Update the product
             $product->update($data);
 
             return redirect()->route('products.index')
@@ -140,7 +141,6 @@ class ProductController extends Controller
                 ->with('error', 'Failed to delete product. Please try again.');
         }
     }
-
     public function show($id)
     {
         $product = Product::findOrFail($id);

@@ -29,7 +29,7 @@ class WishlistController extends Controller
         $productIds = $wishlistItems->pluck('product_id')->toArray();
         $products = Product::whereIn('id', $productIds)->get();
 
-        $products = Product::with('category')->paginate(5);
+        $products = Product::with('category')->paginate(10);
 
         return view('ecommerce.wishlist', compact('wishlistItems', 'products'));
     }

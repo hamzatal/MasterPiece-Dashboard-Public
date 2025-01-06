@@ -104,7 +104,7 @@
         // Color validation
         const color = document.querySelector('input[name=color]').value;
         if (color && !/^[^,]+(,[^,]+)*$/.test(color)) {
-            this.errors.color = 'Color must be separated by a single comma (e.g., black,red)';
+            this.errors.color = 'Color must be separated by a single comma (e.g., black,red ,gray)';
             isValid = false;
         }
 
@@ -128,211 +128,211 @@
         });
     }
 }"
-    x-show="$store.productForm.isOpen"
-    x-transition:enter="transition ease-out duration-300"
-    x-transition:enter-start="opacity-0 transform -translate-y-4"
-    x-transition:enter-end="opacity-100 transform translate-y-0"
-    x-transition:leave="transition ease-in duration-300"
-    x-transition:leave-start="opacity-100 transform translate-y-0"
-    x-transition:leave-end="opacity-0 transform -translate-y-4"
-    class="mb-8 bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 border border-gray-100 dark:border-gray-700">
+                x-show="$store.productForm.isOpen"
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0 transform -translate-y-4"
+                x-transition:enter-end="opacity-100 transform translate-y-0"
+                x-transition:leave="transition ease-in duration-300"
+                x-transition:leave-start="opacity-100 transform translate-y-0"
+                x-transition:leave-end="opacity-0 transform -translate-y-4"
+                class="mb-8 bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 border border-gray-100 dark:border-gray-700">
 
-    <form
-        x-bind:action="isEditing ? '{{ route('products.update', ['product' => ':id']) }}'.replace(':id', editProduct ? editProduct.id : '') : '{{ route('products.store') }}'"
-        method="POST"
-        enctype="multipart/form-data"
-        @submit.prevent="if(validateForm()) $el.submit()"
-        class="space-y-6">
-        @csrf
-        <input type="hidden" name="_method" x-bind:value="isEditing ? 'PUT' : 'POST'">
+                <form
+                    x-bind:action="isEditing ? '{{ route('products.update', ['product' => ':id']) }}'.replace(':id', editProduct ? editProduct.id : '') : '{{ route('products.store') }}'"
+                    method="POST"
+                    enctype="multipart/form-data"
+                    @submit.prevent="if(validateForm()) $el.submit()"
+                    class="space-y-6">
+                    @csrf
+                    <input type="hidden" name="_method" x-bind:value="isEditing ? 'PUT' : 'POST'">
 
-        <!-- Form Header -->
-        <div class="border-b border-gray-200 dark:border-gray-700 pb-4">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white" x-text="isEditing ? 'Edit Product' : 'Add New Product'"></h3>
-            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Fill in the information below to create a new product.</p>
-        </div>
-
-        <!-- Basic Information -->
-        <div class="space-y-6">
-            <!-- Product Name -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Product Name</label>
-                <input
-                    type="text"
-                    name="name"
-                    class="mt-1 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
-                    placeholder="Enter product name">
-                <p class="text-xs text-red-500" x-text="errors.name" x-show="errors.name"></p>
-            </div>
-
-            <!-- Category -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Category</label>
-                <select
-                    name="category_id"
-                    class="mt-1 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500">
-                    <option value="">Select Category</option>
-                    @foreach($categories as $category)
-                    <option value="{{ $category->id }}">{{ $category->name }}</option>
-                    @endforeach
-                </select>
-                <p class="text-xs text-red-500" x-text="errors.category" x-show="errors.category"></p>
-            </div>
-
-            <!-- Description -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
-                <textarea
-                    name="description"
-                    rows="4"
-                    class="mt-1 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
-                    placeholder="Enter product description"></textarea>
-            </div>
-        </div>
-
-        <!-- Product Attributes -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Size -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Size</label>
-                <input
-                    type="text"
-                    name="size"
-                    class="mt-1 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
-                    placeholder="e.g., 40,44 or S,L,XL">
-                <p class="text-xs text-red-500" x-text="errors.size" x-show="errors.size"></p>
-            </div>
-
-            <!-- Color -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Color</label>
-                <input
-                    type="text"
-                    name="color"
-                    class="mt-1 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
-                    placeholder="e.g., black,red">
-                <p class="text-xs text-red-500" x-text="errors.color" x-show="errors.color"></p>
-            </div>
-        </div>
-
-        <!-- Note under attributes -->
-        <div class="mt-2">
-            <p class="text-xs text-red-500">
-                Please use commas to separate values (e.g., 40,44 or black,red). Otherwise, the product will not be stored correctly.
-            </p>
-        </div>
-
-        <!-- Pricing and Stock -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Price -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Price</label>
-                <div class="relative mt-1">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <span class="text-gray-500 dark:text-gray-400">JD</span>
+                    <!-- Form Header -->
+                    <div class="border-b border-gray-200 dark:border-gray-700 pb-4">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white" x-text="isEditing ? 'Edit Product' : 'Add New Product'"></h3>
+                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Fill in the information below to create a new product.</p>
                     </div>
-                    <input
-                        type="number"
-                        step="0.001"
-                        name="original_price"
-                        class="pl-8 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
-                        placeholder="0.000">
-                </div>
-                <p class="text-xs text-red-500" x-text="errors.original_price" x-show="errors.original_price"></p>
-            </div>
 
-            <!-- Stock Quantity -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Stock Quantity</label>
-                <input
-                    type="number"
-                    name="stock_quantity"
-                    min="0"
-                    class="mt-1 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
-                    placeholder="Enter stock quantity">
-                <p class="text-xs text-red-500" x-text="errors.stock" x-show="errors.stock"></p>
-            </div>
-        </div>
+                    <!-- Basic Information -->
+                    <div class="space-y-6">
+                        <!-- Product Name -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Product Name</label>
+                            <input
+                                type="text"
+                                name="name"
+                                class="mt-1 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
+                                placeholder="Enter product name">
+                            <p class="text-xs text-red-500" x-text="errors.name" x-show="errors.name"></p>
+                        </div>
 
-        <!-- Product Images Section -->
-        <div class="space-y-4">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Product Images</label>
-            <div class="flex space-x-4">
-                <!-- Image 1 -->
-                <div class="w-32 h-32 relative">
-                    <input
-                        type="file"
-                        name="image1"
-                        accept="image/jpeg,image/png,image/gif"
-                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                        @change="handleImageUpload($event, 1)">
-                    <div class="w-full h-full rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-gray-400 transition-colors flex items-center justify-center" id="image1Placeholder">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
+                        <!-- Category -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Category</label>
+                            <select
+                                name="category_id"
+                                class="mt-1 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500">
+                                <option value="">Select Category</option>
+                                @foreach($categories as $category)
+                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                @endforeach
+                            </select>
+                            <p class="text-xs text-red-500" x-text="errors.category" x-show="errors.category"></p>
+                        </div>
+
+                        <!-- Description -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
+                            <textarea
+                                name="description"
+                                rows="4"
+                                class="mt-1 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
+                                placeholder="Enter product description"></textarea>
+                        </div>
                     </div>
-                    <img x-show="image1Preview" :src="image1Preview" class="absolute inset-0 w-full h-full object-cover rounded-xl">
-                </div>
 
-                <!-- Image 2 -->
-                <div class="w-32 h-32 relative">
-                    <input
-                        type="file"
-                        name="image2"
-                        accept="image/jpeg,image/png,image/gif"
-                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                        @change="handleImageUpload($event, 2)">
-                    <div class="w-full h-full rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-gray-400 transition-colors flex items-center justify-center" id="image2Placeholder">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                    </div>
-                    <img x-show="image2Preview" :src="image2Preview" class="absolute inset-0 w-full h-full object-cover rounded-xl">
-                </div>
+                    <!-- Product Attributes -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Size -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Size</label>
+                            <input
+                                type="text"
+                                name="size"
+                                class="mt-1 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
+                                placeholder="e.g., 40,44 or S,L,XL">
+                            <p class="text-xs text-red-500" x-text="errors.size" x-show="errors.size"></p>
+                        </div>
 
-                <!-- Image 3 -->
-                <div class="w-32 h-32 relative">
-                    <input
-                        type="file"
-                        name="image3"
-                        accept="image/jpeg,image/png,image/gif"
-                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                        @change="handleImageUpload($event, 3)">
-                    <div class="w-full h-full rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-gray-400 transition-colors flex items-center justify-center" id="image3Placeholder">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
+                        <!-- Color -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Color</label>
+                            <input
+                                type="text"
+                                name="color"
+                                class="mt-1 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
+                                placeholder="e.g., black,red,gray">
+                            <p class="text-xs text-red-500" x-text="errors.color" x-show="errors.color"></p>
+                        </div>
                     </div>
-                    <img x-show="image3Preview" :src="image3Preview" class="absolute inset-0 w-full h-full object-cover rounded-xl">
-                </div>
+
+                    <!-- Note under attributes -->
+                    <div class="mt-2">
+                        <p class="text-xs text-red-500">
+                            Please use commas to separate values (e.g., 40,44 or black,red). Otherwise, the product will not be stored correctly.
+                        </p>
+                    </div>
+
+                    <!-- Pricing and Stock -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Price -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Price</label>
+                            <div class="relative mt-1">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-500 dark:text-gray-400">JD</span>
+                                </div>
+                                <input
+                                    type="number"
+                                    step="0.001"
+                                    name="original_price"
+                                    class="pl-8 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
+                                    placeholder="0.000">
+                            </div>
+                            <p class="text-xs text-red-500" x-text="errors.original_price" x-show="errors.original_price"></p>
+                        </div>
+
+                        <!-- Stock Quantity -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Stock Quantity</label>
+                            <input
+                                type="number"
+                                name="stock_quantity"
+                                min="0"
+                                class="mt-1 w-full rounded-lg border-gray-300 dark:bg-gray-700 dark:border-gray-600 focus:ring-purple-500 focus:border-purple-500"
+                                placeholder="Enter stock quantity">
+                            <p class="text-xs text-red-500" x-text="errors.stock" x-show="errors.stock"></p>
+                        </div>
+                    </div>
+
+                    <!-- Product Images Section -->
+                    <div class="space-y-4">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Product Images</label>
+                        <div class="flex space-x-4">
+                            <!-- Image 1 -->
+                            <div class="w-32 h-32 relative">
+                                <input
+                                    type="file"
+                                    name="image1"
+                                    accept="image/jpeg,image/png,image/gif"
+                                    class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                    @change="handleImageUpload($event, 1)">
+                                <div class="w-full h-full rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-gray-400 transition-colors flex items-center justify-center" id="image1Placeholder">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+                                <img x-show="image1Preview" :src="image1Preview" class="absolute inset-0 w-full h-full object-cover rounded-xl">
+                            </div>
+
+                            <!-- Image 2 -->
+                            <div class="w-32 h-32 relative">
+                                <input
+                                    type="file"
+                                    name="image2"
+                                    accept="image/jpeg,image/png,image/gif"
+                                    class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                    @change="handleImageUpload($event, 2)">
+                                <div class="w-full h-full rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-gray-400 transition-colors flex items-center justify-center" id="image2Placeholder">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+                                <img x-show="image2Preview" :src="image2Preview" class="absolute inset-0 w-full h-full object-cover rounded-xl">
+                            </div>
+
+                            <!-- Image 3 -->
+                            <div class="w-32 h-32 relative">
+                                <input
+                                    type="file"
+                                    name="image3"
+                                    accept="image/jpeg,image/png,image/gif"
+                                    class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                    @change="handleImageUpload($event, 3)">
+                                <div class="w-full h-full rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-gray-400 transition-colors flex items-center justify-center" id="image3Placeholder">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+                                <img x-show="image3Preview" :src="image3Preview" class="absolute inset-0 w-full h-full object-cover rounded-xl">
+                            </div>
+                        </div>
+                        <p class="text-xs text-red-500" x-text="errors.image1" x-show="errors.image1"></p>
+                        <p class="text-xs text-red-500" x-text="errors.image2" x-show="errors.image2"></p>
+                        <p class="text-xs text-red-500" x-text="errors.image3" x-show="errors.image3"></p>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="flex justify-end space-x-4 mt-6">
+                        <button
+                            type="button"
+                            @click="$store.productForm.toggleForm(); isEditing = false"
+                            class="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            class="px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 text-white rounded-lg transition-colors flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span x-text="isEditing ? 'Update Product' : 'Save Product'"></span>
+                        </button>
+                    </div>
+                </form>
             </div>
-            <p class="text-xs text-red-500" x-text="errors.image1" x-show="errors.image1"></p>
-            <p class="text-xs text-red-500" x-text="errors.image2" x-show="errors.image2"></p>
-            <p class="text-xs text-red-500" x-text="errors.image3" x-show="errors.image3"></p>
-        </div>
-
-        <!-- Form Actions -->
-        <div class="flex justify-end space-x-4 mt-6">
-            <button
-                type="button"
-                @click="$store.productForm.toggleForm(); isEditing = false"
-                class="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-                Cancel
-            </button>
-            <button
-                type="submit"
-                class="px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 text-white rounded-lg transition-colors flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
-                <span x-text="isEditing ? 'Update Product' : 'Save Product'"></span>
-            </button>
-        </div>
-    </form>
-</div>
 
             <!-- Products Table -->
             <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700">
@@ -383,11 +383,11 @@
                                 <td class="px-6 py-4">
                                     <div class="flex items-center">
                                         <span class="w-2 h-2 rounded-full mr-2
-                                {{ $product->stock_quantity > 10 ? 'bg-green-500' :
-                                   ($product->stock_quantity > 0 ? 'bg-yellow-500' : 'bg-red-500') }}">
+            {{ $product->stock_quantity > 10 ? 'bg-green-500' :
+               ($product->stock_quantity > 0 ? 'bg-yellow-500' : 'bg-red-500') }}">
                                         </span>
                                         <span class="font-medium {{ $product->stock_quantity > 10 ? 'text-green-600 dark:text-green-400' :
-                                   ($product->stock_quantity > 0 ? 'text-yellow-600 dark:text-yellow-400' : 'text-red-600 dark:text-red-400') }}">
+               ($product->stock_quantity > 0 ? 'text-yellow-600 dark:text-yellow-400' : 'text-red-600 dark:text-red-400') }}">
                                             {{ $product->stock_quantity }}
                                         </span>
                                         @if($product->stock_quantity == 0)
