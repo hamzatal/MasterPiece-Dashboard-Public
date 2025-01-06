@@ -21,6 +21,8 @@ class Order extends Model
         'total_price',
         'total_amount',
         'coupon_id',
+        'shipping_address_id',
+
     ];
 
     // Add payment enum values as constants
@@ -55,12 +57,12 @@ class Order extends Model
 
     public function orderItems()
     {
-        return $this->belongsToMany(Product::class, 'order_items')->withPivot('quantity', 'price');
+        return $this->belongsToMany(Product::class, 'order_items')->withPivot('quantity', 'price', 'size', 'color');
     }
 
     public function shippingAddress()
     {
-        return $this->hasOne(ShippingAddress::class);
+        return $this->belongsTo(ShippingAddress::class, 'shipping_address_id');
     }
 
     public function user()

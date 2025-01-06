@@ -44,7 +44,7 @@ class OrderController extends Controller
 
     public function show($orderId)
     {
-        $order = Order::with(['shipping_address', 'orderItems.product'])->findOrFail($orderId);
+        $order = Order::with(['user', 'orderItems.product', 'shipping_address'])->findOrFail($orderId);
         return view('order.show', compact('order'));
     }
 
@@ -58,53 +58,59 @@ class OrderController extends Controller
         $validatedData = $this->validateOrderData($request);
 
         try {
-            DB::transaction(function () use ($validatedData, $request) {
-                $user = User::firstOrCreate(
-                    ['email' => $validatedData['email']],
-                    ['name' => $validatedData['name']]
-                );
+            DB::beginTransaction();
 
-                // Create the order
-                $order = Order::create([
-                    'user_id' => $user->id,
-                    'status' => $validatedData['status'],
-                    'total' => $validatedData['total'],
-                    'payment' => $validatedData['payment'],
-                    'payment_status' => $validatedData['payment_status'] ?? 'pending',
-                    'notes' => $validatedData['notes'],
-                    'shipping_address_id' => $validatedData['shipping_address_id'],
-                ]);
+            $user = User::firstOrCreate(
+                ['email' => $validatedData['email']],
+                ['name' => $validatedData['name']]
+            );
 
-                // Add order items and update product stock quantities
-                foreach ($request->input('items', []) as $item) {
-                    $product = Product::findOrFail($item['product_id']);
+            // Create the order
+            $order = Order::create([
+                'user_id' => $user->id,
+                'status' => $validatedData['status'],
+                'total' => $validatedData['total'],
+                'payment' => $validatedData['payment'],
+                'payment_status' => $validatedData['payment_status'] ?? 'pending',
+                'notes' => $validatedData['notes'],
+                'shipping_address_id' => $validatedData['shipping_address_id'],
+            ]);
 
-                    // Check if the requested quantity is available
-                    if ($product->stock_quantity < $item['quantity']) {
-                        throw new \Exception("الكمية المطلوبة غير متوفرة للمنتج: {$product->name}");
-                    }
+            // Process order items and update stock
+            foreach ($request->input('items', []) as $item) {
+                $product = Product::lockForUpdate()->findOrFail($item['product_id']);
 
-                    // Decrease the product's stock quantity
-                    $product->decrement('stock_quantity', $item['quantity']);
-
-                    // Create the order item
-                    OrderItem::create([
-                        'order_id' => $order->id,
-                        'product_id' => $product->id,
-                        'quantity' => $item['quantity'],
-                        'price' => $product->original_price,
-                    ]);
+                if ($product->stock_quantity < $item['quantity']) {
+                    throw new \Exception("Not enough stock for product: {$product->name}");
                 }
-            });
 
-            return redirect()
-                ->route('orders.index')
-                ->with('success', 'تم إنشاء الطلب بنجاح!');
+                // Log the product and quantity before decrementing
+                logger("Updating stock for product ID: {$product->id}, current stock: {$product->stock_quantity}, quantity to decrement: {$item['quantity']}");
+
+                // Decrement stock using Eloquent
+                $product->decrement('stock_quantity', $item['quantity']);
+
+                // Log the updated stock
+                $updatedProduct = Product::find($product->id);
+                logger("Updated stock for product ID: {$updatedProduct->id}, new stock: {$updatedProduct->stock_quantity}");
+
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'product_id' => $product->id,
+                    'quantity' => $item['quantity'],
+                    'price' => $product->original_price,
+                    'color' => $item['color'],
+                    'size' => $item['size'],
+                ]);
+            }
+
+            DB::commit();
+            logger("Transaction committed successfully.");
+            return redirect()->route('orders.index')->with('success', 'Order created successfully');
         } catch (\Exception $e) {
-            return redirect()
-                ->back()
-                ->withInput()
-                ->with('error', 'فشل في إنشاء الطلب: ' . $e->getMessage());
+            DB::rollBack();
+            logger("Transaction rolled back due to error: " . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', 'Failed to create order: ' . $e->getMessage());
         }
     }
 
@@ -122,12 +128,12 @@ class OrderController extends Controller
 
             return redirect()
                 ->route('orders.index')
-                ->with('success', 'تم تحديث الطلب بنجاح!');
+                ->with('success', 'order updated successfully');
         } catch (\Exception $e) {
             return redirect()
                 ->back()
                 ->withInput()
-                ->with('error', 'فشل في تحديث الطلب: ' . $e->getMessage());
+                ->with('error', 'failed to update order: ' . $e->getMessage());
         }
     }
 
@@ -237,7 +243,7 @@ class OrderController extends Controller
             'status' => $validatedData['status']
         ]);
 
-        return redirect()->back()->with('success', 'تم تحديث حالة الطلب بنجاح!');
+        return redirect()->back()->with('success', 'order status updated successfully');
     }
 
     private function validateOrderData(Request $request)
@@ -253,7 +259,9 @@ class OrderController extends Controller
             'notes' => 'nullable|string|max:1000',
             'items' => 'required|array',
             'items.*.product_id' => 'required|exists:products,id',
-            'items.*.quantity' => 'required|integer|min:1', 
+            'items.*.quantity' => 'required|integer|min:1',
+            'items.*.color' => 'nullable|string',
+            'items.*.size' => 'nullable|string',
         ]);
     }
 }

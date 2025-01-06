@@ -120,6 +120,7 @@ class CheckoutController extends Controller
                         'color' => $item['color'] ?? null,
                         'size' => $item['size'] ?? null,
                     ];
+                    $product->decrementStock($item['quantity']);
                 }
             }
 
