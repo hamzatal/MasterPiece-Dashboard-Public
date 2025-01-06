@@ -27,8 +27,8 @@
                 </div>
                 @endif
 
-                {{-- Name and Category --}}
-                <div class="grid md:grid-cols-2 gap-6">
+                {{-- Basic Information --}}
+                <div class="space-y-6">
                     {{-- Name Input --}}
                     <div>
                         <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -63,23 +63,23 @@
                             @endforeach
                         </select>
                     </div>
+
+                    {{-- Description --}}
+                    <div>
+                        <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Description
+                        </label>
+                        <textarea
+                            name="description"
+                            id="description"
+                            rows="4"
+                            class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition duration-300"
+                            placeholder="Enter product description"
+                            required>{{ old('description', $product->description) }}</textarea>
+                    </div>
                 </div>
 
-                {{-- Description --}}
-                <div>
-                    <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Description
-                    </label>
-                    <textarea
-                        name="description"
-                        id="description"
-                        rows="4"
-                        class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition duration-300"
-                        placeholder="Enter product description"
-                        required>{{ old('description', $product->description) }}</textarea>
-                </div>
-
-                {{-- Price and Stock --}}
+                {{-- Pricing and Stock --}}
                 <div class="grid md:grid-cols-2 gap-6">
                     {{-- Price Input --}}
                     <div>
@@ -125,7 +125,7 @@
                             name="size"
                             id="size"
                             value="{{ old('size', $product->size) }}"
-                            placeholder="Enter size"
+                            placeholder="Enter size (e.g., 40,44 or S,L,XL)"
                             class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition duration-300" />
                     </div>
 
@@ -139,9 +139,16 @@
                             name="color"
                             id="color"
                             value="{{ old('color', $product->color) }}"
-                            placeholder="Enter color"
+                            placeholder="Enter color (e.g., black,red)"
                             class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition duration-300" />
                     </div>
+                </div>
+
+                {{-- Note under Size and Color --}}
+                <div class="mt-2">
+                    <p class="text-xs text-red-500">
+                        Please use commas to separate values (e.g., 40,44 or black,red). Otherwise, the product will not be stored correctly.
+                    </p>
                 </div>
 
                 {{-- Image Upload Section --}}
