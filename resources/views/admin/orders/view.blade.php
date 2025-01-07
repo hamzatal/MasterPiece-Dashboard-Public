@@ -391,7 +391,7 @@
                             </h2>
                         </div>
                         <div class="p-6">
-                            @if($order->shipping_address)
+                            @if($order->shippingAddress)
                             <div class="space-y-4">
                                 <div class="flex items-center mb-4">
                                     <div class="bg-purple-100 dark:bg-purple-800/20 p-3 rounded-xl mr-4">
@@ -401,14 +401,14 @@
 
                                     </div>
                                     <h3 class="font-semibold text-xl text-gray-800 dark:text-white">
-                                        {{ $order->shipping_address->address_type ?? 'N/A' }}
+                                        {{ $order->shippingAddress->address_type ?? 'N/A' }}
                                     </h3>
                                 </div>
                                 <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-xl space-y-2">
                                     <p class="text-gray-600 dark:text-gray-300">
-                                        Street Address : {{ $order->shipping_address->street_address ?? 'N/A' }}<br>
-                                        City : {{ $order->shipping_address->city ?? 'N/A' }},
-                                        Country : {{ $order->shipping_address->country ?? 'N/A' }}
+                                        Street Address : {{ $order->shippingAddress->street_address ?? 'N/A' }}<br>
+                                        City : {{ $order->shippingAddress->city ?? 'N/A' }},
+                                        Country : {{ $order->shippingAddress->country ?? 'N/A' }}
                                     </p>
 
                                 </div>

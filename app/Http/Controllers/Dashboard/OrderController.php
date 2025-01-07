@@ -45,6 +45,7 @@ class OrderController extends Controller
     public function show($orderId)
     {
         $order = Order::with(['user', 'orderItems.product', 'shipping_address'])->findOrFail($orderId);
+        //dd($order);
         return view('order.show', compact('order'));
     }
 
@@ -101,6 +102,7 @@ class OrderController extends Controller
                     'price' => $product->original_price,
                     'color' => $item['color'],
                     'size' => $item['size'],
+                    //'shipping'
                 ]);
             }
 
@@ -139,7 +141,8 @@ class OrderController extends Controller
 
     public function view($id)
     {
-        $order = Order::with(['user', 'orderItems'])->findOrFail($id);
+        $order = Order::with(['user', 'orderItems','shippingAddress'])->findOrFail($id);
+       // dd($order);
         return view('admin.orders.view', compact('order'));
     }
 
